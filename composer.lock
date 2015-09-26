@@ -1,0 +1,37 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "344e7200fbd8269c5e4bffae83cbe7a8",
+    "packages": [
+        {
+            "name": "seanmorris/rhino",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "/home/sean/packages/SeanMorris/Rhino",
+                "reference": "a365620a38e52939493d8e78fbdd6f256015de0c"
+            },
+            "type": "library",
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "sean@sean-morris.com"
+                }
+            ],
+            "time": "2015-09-25 13:46:55"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "seanmorris/rhino": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
