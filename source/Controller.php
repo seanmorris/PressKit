@@ -148,7 +148,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		{
 			$modelPath = $this->model->publicId;
 
-			$contextMenu = [
+			$contextMenu = [ 'Content' => [
 				'Context' => [
 					'_weight' => 100
 					, '_access'	=> isset($this->access['_contextMenu'])
@@ -173,7 +173,7 @@ class Controller implements \SeanMorris\Ids\Routable
 							: false
 					]
 				]
-			];
+			]];
 
 			$user = NULL;
 
