@@ -1,0 +1,10 @@
+{
+    "name": "seanmorris/presskit",
+    "authors": [
+        {
+            "name": "Sean Morris",
+            "email": "sean@sean-morris.com"
+        }
+    ],
+    "require": {}
+}

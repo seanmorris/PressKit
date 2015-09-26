@@ -1,0 +1,345 @@
+[data-PressKit-Object]::after { 
+    /*content: " [" attr(data-PressKit-Object) "]";*/
+}
+
+form{
+	
+	padding-left:10px;
+	padding-right:10px;
+	padding-bottom:10px;
+	padding-top:10px;
+}
+
+fieldset {
+	padding-left:10px;
+	padding-right:10px;
+	padding-bottom:10px;
+	margin-bottom:10px;
+}
+
+fieldset, form{
+	background-color:rgba(150,150,150,0.25);
+	transition: background-color 1s;
+}
+
+fieldset:hover, form:hover
+, fieldset:focus, form:focus{
+	background-color:rgba(150,150,150,0.4);
+	border: 1px #666 solid !important;
+}
+
+
+input:hover{
+	border: 1px #666 solid !important;
+	color:#000;
+}
+
+fieldset, form, input, textarea {
+	border: 1px #777 solid !important;
+	border-radius:4px;
+}
+
+label, button, input[type="submit"], input[type="button"] {
+	font-size: 12.5pt;
+	margin-top:10px;
+}
+
+button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+	background-color:rgba(255,255,255,0.85);
+	transition:background-color 1s ease-in;	
+}
+
+button, input[type="submit"], input[type="button"] {
+	background-color:rgba(255,255,255,0.5);
+	transition:background-color 1s ease-out;	
+}
+
+button, input[type="submit"], input[type="button"] {
+	padding:10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	min-width: 90px;
+}
+
+button, input[type="submit"], input[type="button"], a{
+	filter: auto;
+	-webkit-filter: auto;
+}
+
+button:active, input[type="submit"]:active, input[type="button"]:active, a:active{
+	filter: invert(10%) hue-rotate(180deg);
+	-webkit-filter: invert(10%) hue-rotate(180deg);
+	transition: background-color 10ms;
+}
+
+fieldset legend {
+	margin-left:-10px;
+	margin-top:5px;
+	padding-left:2px;
+	padding-right:10px;
+	padding-bottom:10px;
+	margin-bottom:-20px;
+	background: transparent; 
+	border:none;
+	width:auto;
+	position: relative;
+	top:-5px;
+}
+
+input[type="text"], input[type=""], textarea {
+	box-sizing: border-box;
+	width: 100%;
+	font-size: 13pt;
+	min-height: 21pt;
+	position:relative;
+	z-index:1;
+}
+
+fieldset[name*="\[-"] {
+	display: none;
+}
+
+.PressKitAjaxSearchResults{
+	position: relative;
+	top: -12px;
+	background: #ccc;
+	/*
+	height:0px;
+	overflow: visible;
+	*/
+}
+
+.PressKitAjaxSearchResult{
+	padding:5px;
+	font-size: 13pt;
+	border-left:1px #999 solid;
+	border-right:1px #999 solid;
+	border-bottom:1px #999 solid;
+}
+
+.PressKitAjaxSearchResult:last-child{
+	border-bottom-left-radius:4px;
+	border-bottom-right-radius:4px;
+}
+
+div.container{
+	margin-top:10px;
+}
+
+fieldset[data-presskit-field="indicator"]{
+	display: none;
+	margin-top:8px;
+}
+
+fieldset[data-presskit-field="indicator"] div.selection {
+	/*margin-top:5px;*/
+}
+
+fieldset[data-presskit-field="indicator"] .PressKitAjaxSearchResult:last-child{
+	border-top:1px #999 solid;
+	border-top-left-radius:4px;
+	border-top-right-radius:4px;
+}
+
+fieldset.selectedModel > legend{
+	font-size: 12pt;
+}
+
+fieldset.selectedModel{
+	padding:0px;
+	border:none !important;
+	background: transparent;
+}
+
+.PressKitAjaxSearchResult:nth-child(2n){
+	background: #ddd;
+}
+
+.PressKitAjaxSearchResult:nth-child(2n+1){
+	background: #ccc;
+}
+
+.PressKitAjaxSearchResult:hover{
+	background: #eee;
+}
+
+img.preview {
+	width: 55px;
+	margin-right:10px;
+}
+
+h3 {
+	font-size: 19pt;
+}
+
+h4 {
+	font-size: 15pt;
+}
+
+table.packageInfo {
+	table-layout: fixed;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+table.packageInfo td {
+	border-bottom: 1px #999 solid;
+}
+
+table.packageInfo td {
+	padding-right:10px;
+	vertical-align: top;
+	word-wrap:break-word;
+}
+
+table.PressKitList{
+	width:100%;
+}
+
+table.PressKitList tr:nth-child(2n+1){
+	background:rgba(210, 210, 210, 0.8);
+}
+
+table.PressKitList tr:nth-child(2n){
+	background:rgba(180, 180, 180, 0.8);
+}
+
+table.PressKitList tr:nth-child(1) td
+, table.PressKitList tr.buttons div.buttons{
+	padding:10px;
+}
+
+table.PressKitList tr:nth-child(2){
+	background:rgba(100, 100, 100, 0.8);
+	color:#CCC;
+	font-size:1.7em;
+}
+
+table.PressKitList tr.buttons{
+	background:none;
+	color:#444;
+	font-size:0.8em;
+}
+
+table.PressKitList tr.buttons td{
+	padding:0px;
+}
+
+table.PressKitList tr.buttons:nth-child(2n) div.buttons{
+	background:rgba(100, 100, 100, 0.2);
+}
+
+table.PressKitList tr.buttons:nth-child(2n+1) div.buttons{
+	background:rgba(100, 100, 100, 0.2);
+}
+
+table.PressKitList tr.buttons div.buttons{
+	text-align:right;
+}
+
+table.PressKitList tr td{
+	padding:5px;
+	text-align: center;
+}
+
+table.PressKitList tr:not(.buttons) td:nth-child(1){
+	padding-left:10px;
+}
+
+table.PressKitList tr:not(.buttons) td a{
+	display:block;
+	text-align:center;
+	clear:both;
+}
+
+.PressKitList td.id {
+	max-width:4em;
+}
+
+.PressKitList td.view,
+.PressKitList td.edit,
+.PressKitList td.delete {
+	max-width:8em;
+}
+
+table.PressKitList tr td:nth-child(2n){
+		background:rgba(100, 100, 100, 0.2);
+	}
+
+@media (min-width: 1200px){
+	hr{
+		margin: 10px;
+	}
+}
+@media (max-width: 1199px) and (min-width: 511px){
+	hr{
+		margin: 7px;
+	}
+}
+@media (max-width: 510px){
+	hr{
+		margin: 4px;
+	}
+}
+
+@media (max-width: 800px){
+	table.PressKitList tr td:nth-child(3n){
+		background:rgba(100, 100, 100, 0.4);
+	}
+	table.PressKitList tr td:nth-child(3n+1){
+		background:rgba(100, 100, 100, 0.2);
+	}
+	table.PressKitList tr td:nth-child(3n+2){
+		background:transparent;
+	}
+
+	table.PressKitList tr :not(.droppable)+.droppable ~ td:nth-child(3n){
+		background:transparent;
+	}
+	table.PressKitList tr :not(.droppable)+.droppable ~ td:nth-child(3n+1){
+		background:rgba(100, 100, 100, 0.1);
+	}
+	table.PressKitList tr :not(.droppable)+.droppable ~ td:nth-child(3n+2){
+		background:rgba(100, 100, 100, 0.3);
+	}
+
+	table.PressKitList tr .droppable+.droppable ~ td:nth-child(3n){
+		background:transparent;
+	}
+	table.PressKitList tr .droppable+.droppable ~ td:nth-child(3n+1){
+		background:rgba(100, 100, 100, 0.1);
+	}
+	table.PressKitList tr .droppable+.droppable ~ td:nth-child(3n+2){
+		background:rgba(100, 100, 100, 0.3);
+	}
+
+	table.PressKitList tr .droppable+.droppable+.droppable ~ td:nth-child(3n){
+		background:rgba(100, 100, 100, 0.3);
+	}
+	table.PressKitList tr .droppable+.droppable+.droppable ~ td:nth-child(3n+1){
+		background:rgba(100, 100, 100, 0.1);
+	}
+	table.PressKitList tr .droppable+.droppable+.droppable ~ td:nth-child(3n+2){
+		background:transparent;
+	}
+
+	.droppable{
+		display: none;
+	}
+}
+
+table.PressKitList:hover{
+	color:#444;
+}
+
+table.PressKitList tr:hover:not(.buttons) {
+	background:rgba(0,0,0, 0.4);
+}
+
+table.PressKitList tr:hover:not(.buttons){
+	color:#111;
+}
+table.PressKitList tr:not(.buttons) td:hover{
+	color:#000;
+	background:rgba(255, 255, 255, 0.15)!important;
+}
