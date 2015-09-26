@@ -12,16 +12,22 @@
             "source": {
                 "type": "git",
                 "url": "/home/sean/packages/SeanMorris/Rhino",
-                "reference": "a365620a38e52939493d8e78fbdd6f256015de0c"
+                "reference": "917dae51426fdb4f97eef18f9d12d9b6636fd87f"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Rhino\\Test\\": "test/",
+                    "SeanMorris\\Rhino\\": "source/"
+                }
+            },
             "authors": [
                 {
                     "name": "Sean Morris",
                     "email": "sean@sean-morris.com"
                 }
             ],
-            "time": "2015-09-25 13:46:55"
+            "time": "2015-09-26 02:37:32"
         }
     ],
     "packages-dev": [],
