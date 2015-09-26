@@ -6,5 +6,16 @@
             "email": "sean@sean-morris.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "SeanMorris\\": "./project/"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "SeanMorris\\PressKit\\Test\\": "test/",
+            "SeanMorris\\PressKit\\": "source/"
+        }
+    }
 }
