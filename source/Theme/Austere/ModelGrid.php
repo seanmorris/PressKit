@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit\Theme\Austere;
 class ModelGrid extends Grid
 {
-	protected function preprocess()
+	protected function preprocess(&$vars)
 	{
 		$objects =& $this->vars['content'];
 		$extraColumns =& $this->vars['extraColumns'];
