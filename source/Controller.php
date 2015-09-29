@@ -76,12 +76,14 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function _access($endPoint, $router)
 	{
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking for access to %s'
+			'Checking for access to %s::%s'
+			, get_called_class()
 			, $endPoint
 		));
 
 		if(!$this->access)
 		{
+			\SeanMorris\Ids\Log::debug('Access always granted.');
 			return true;
 		}
 
@@ -91,6 +93,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if($roleNeeded === TRUE)
 			{
+				\SeanMorris\Ids\Log::debug('Access always granted.');
 				return TRUE;
 			}
 
@@ -98,10 +101,17 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if(isset($session['user']))
 			{
+				\SeanMorris\Ids\Log::debug(sprintf(
+					'Access requires %s.'
+					, $roleNeeded
+				));
+
 				$user = $session['user'];
 
 				return $user->hasRole($roleNeeded);
 			}
+
+			\SeanMorris\Ids\Log::debug('Access Denied.');
 
 			return false;
 		}		
@@ -315,13 +325,8 @@ class Controller implements \SeanMorris\Ids\Routable
 
 					$subPath = $router->path()->getSpentPath();
 
-					$subPath = $subPath->append($subRouteNode);
+					$subPath = $subPath->append($subRouteNode, ...$subRouteNodes);
 					$subPath->consumeNode();
-
-					while($subRouteSubNode = array_shift($subRouteNodes))
-					{
-						$subPath = $subPath->append($subRouteSubNode);
-					}
 
 					$subRequest = $router->request()->copy([
 						'path' => $subPath
@@ -339,6 +344,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					}
 					catch(\SeanMorris\Ids\Http\HttpException $e)
 					{
+						\SeanMorris\Ids\Log::logException($e);
 						continue;
 					}
 				}
@@ -756,10 +762,10 @@ class Controller implements \SeanMorris\Ids\Routable
 		return $this->models;
 	}
 
-	public function _notFound()
+	public function _notFound($router)
 	{
 		\SeanMorris\Ids\Log::trace();
-		throw new \SeanMorris\Ids\Http\Http404('Not Found');
+		throw new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
 		return FALSE;
 		//return 404;
 	}

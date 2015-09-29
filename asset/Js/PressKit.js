@@ -36,15 +36,11 @@ PressKit.Registry = PressKit.Class.extend({
 			{
 				if(tag.is(selector))
 				{
-					classObj = this.selectorClasses[selector]
+					classObj = this.selectorClasses[selector];
+					widgetObj = new classObj(tag, event);
+					this.register(widgetObj, tag);
 					break;
 				}
-			}
-
-			if(classObj)
-			{
-				widgetObj = new classObj(tag, event);
-				this.register(widgetObj, tag);
 			}
 		}
 
@@ -85,10 +81,9 @@ PressKit.Registry = PressKit.Class.extend({
 
 		for(var selector in classes)
 		{
-			$(selector).each(function()
+			$(selector).map(function(index, tag)
 			{
-				//console.log(this);
-				PressKit.getRegistry().getObjectForTag($(this));
+				PressKit.getRegistry().getObjectForTag($(tag));
 			});
 		}
 	}
@@ -173,11 +168,25 @@ PressKit.WidgetModel = PressKit.Class.extend({
 			}
 		}
 	}
-	, getSubwidget: function(name)
+	, getSubwidget: function(name, index)
 	{
 		var subTag = $(this.tag).find(this.subWidgetSelectors[name]);
 
-		return PressKit.getRegistry().getObjectForTag(subTag);
+		var subWidgets = subTag.map(function(index, element){
+			// console.log(element);
+			return PressKit.getRegistry().getObjectForTag($(element))
+		});
+
+		if(typeof index !== 'undefined')
+		{
+			subTag = subTag[index];
+		}
+		else
+		{
+			index = 0;
+		}
+
+		return subWidgets[index];
 	}
 	, onSubWidgetLink: function(subWidgetName, subWidget) {}
 	, subWidgetInit: function(subWidget, event)
@@ -461,9 +470,11 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 	{
 		event.preventDefault();
 
-		var idWidget = this.subWidgets.id;
-		var classWidget = this.subWidgets.class;
-		var searchWidget = this.subWidgets.search;
+		// console.log(this.subWidgets);
+
+		var idWidget = this.getSubwidget('id');
+		var classWidget = this.getSubwidget('class');
+		var searchWidget = this.getSubwidget('search');
 		
 		var modelId = linkWidget.tag.attr('data-PressKit-id');
 		var modelClass = linkWidget.tag.attr('data-PressKit-class');
@@ -488,10 +499,10 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 	}
 	, setIndicator: function(html, immediate)
 	{
-		var indicatorWidget = this.subWidgets.indicator;
-		console.log(this.objectId, this.subWidgets);
+		var indicatorWidget = this.getSubwidget('indicator');
+		// console.log(this.objectId, this.subWidgets);
 		var container = indicatorWidget.tag.children('div.selection');
-		console.log(indicatorWidget);
+		// console.log(indicatorWidget);
 		container.html(' ');
 		container.append(html);
 
@@ -504,7 +515,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 			indicatorWidget.tag.slideDown();
 		}
 
-		console.log(container, indicatorWidget);
+		// console.log(container, indicatorWidget);
 	}
 	, searchSubWidgetKeyupHandler: function(event, subWidget)
 	{
@@ -635,9 +646,11 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 	, init: function(tag, event)
 	{
 		this._super(tag, event);
-
-		if(tag.attr('data-multi'))
+		if(this.tag.attr('data-multi'))
 		{
+			console.log('Add Button for #'+this.objectId);
+
+			this.removeAddButton();	
 			this.appendAddButton();
 		}
 	}
@@ -655,10 +668,10 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 	{
 		var protoTag = null;
 
+		this.getSubwidget('subFields');
+
 		this.subWidgets.subFields.map(function(subWidget)
 		{
-			console.log(subWidget);
-
 			var name = subWidget.tag.attr('name');
 
 			if(name.match(/^\w+\[-1\]/))
@@ -689,7 +702,7 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 
 		newTag.removeAttr('data-PressKit-Object');
 
-		var index = this.subWidgets.subFields.length - 1;
+		var index = this.subWidgets.subFields.length;
 
 		var newName = parentName + '[' + index + ']';
 
@@ -712,6 +725,8 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 
 			$(this).attr('for', newName);
 		});
+
+		console.log(newTag);
 
 		this.tag.append(newTag);
 

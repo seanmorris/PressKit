@@ -50,7 +50,7 @@ __halt_compiler();
 				</div>
 			</div>
 			<div class = "main container">
-				<div class = "postBoardRow">
+				<div class = "postBoardWrapper">
 					<div class = "breadcrumbs"><?=$breadcrumbs?></div>
 					<?php if(isset($title) && $title){?> <h1><?=$title;?></h1><?php } ?>
 					<div class = "body">

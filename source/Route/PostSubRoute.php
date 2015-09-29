@@ -9,7 +9,10 @@ class PostSubRoute extends \SeanMorris\PressKit\Route\ModelSubRoute
 			, 'comments2' => '\SeanMorris\PressKit\Route\CommentRoute'
 		]
 		, $subRoutes = [
-			'view' => ['comments', 'comments/create', 'comments2', 'comments2/create']
+			'view' => [
+				'comments', 'comments/create'
+				, 'comments2', 'comments2/create'
+			]
 		]
 	;
 }

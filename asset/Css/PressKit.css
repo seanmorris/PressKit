@@ -1,5 +1,5 @@
 [data-PressKit-Object]::after { 
-    /*content: " [" attr(data-PressKit-Object) "]";*/
+    content: " [" attr(data-PressKit-Object) "]";
 }
 
 form{
