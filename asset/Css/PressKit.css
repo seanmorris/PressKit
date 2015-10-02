@@ -1,7 +1,8 @@
+/*
 [data-PressKit-Object]::after { 
     content: " [" attr(data-PressKit-Object) "]";
 }
-
+*/
 form{
 	
 	padding-left:10px;

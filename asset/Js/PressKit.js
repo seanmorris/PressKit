@@ -7,9 +7,21 @@ PressKit.Registry = PressKit.Class.extend({
 	, selectorClasses: {}
 	, objectCount: 0
 	, bindingAttr: 'data-PressKit-Object'
+	, observer: null
 	, init: function()
 	{
-		
+		this.observer = new MutationObserver(function(){
+			mutations.forEach(function (mutation) {
+				// or use all mutation records is entirely up to you
+				var entry = {
+					mutation: mutation,
+					el: mutation.target,
+					value: mutation.target.textContent,
+					oldValue: mutation.oldValue
+				};
+				console.log('Recording mutation:', entry);
+			});
+		});
 	}
 	, register: function(object, tag)
 	{

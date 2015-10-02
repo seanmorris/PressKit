@@ -1,0 +1,708 @@
+{
+    "revisions": {
+        "0": {
+            "PressKitPost": {
+                "fields": {
+                    "id": {
+                        "Field": "id",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "auto_increment",
+                        "Comment": "This is a test."
+                    },
+                    "publicId": {
+                        "Field": "publicId",
+                        "Type": "binary(16)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "UNI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "written": {
+                        "Field": "written",
+                        "Type": "int(11) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "edited": {
+                        "Field": "edited",
+                        "Type": "int(11) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "weight": {
+                        "Field": "weight",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "author": {
+                        "Field": "author",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "category": {
+                        "Field": "category",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "title": {
+                        "Field": "title",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "body": {
+                        "Field": "body",
+                        "Type": "text",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "summary": {
+                        "Field": "summary",
+                        "Type": "text",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "slugSize": {
+                        "Field": "slugSize",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": "1",
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "ctaLink": {
+                        "Field": "ctaLink",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "ctaLinkText": {
+                        "Field": "ctaLinkText",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "state": {
+                        "Field": "state",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "PRIMARY": {
+                        "1": {
+                            "Table": "PressKitPost",
+                            "Non_unique": "0",
+                            "Key_name": "PRIMARY",
+                            "Seq_in_index": "1",
+                            "Column_name": "id",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "publicId": {
+                        "1": {
+                            "Table": "PressKitPost",
+                            "Non_unique": "0",
+                            "Key_name": "publicId",
+                            "Seq_in_index": "1",
+                            "Column_name": "publicId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "publicId_2": {
+                        "1": {
+                            "Table": "PressKitPost",
+                            "Non_unique": "0",
+                            "Key_name": "publicId_2",
+                            "Seq_in_index": "1",
+                            "Column_name": "publicId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            },
+            "PressKitImage": {
+                "fields": {
+                    "id": {
+                        "Field": "id",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "auto_increment",
+                        "Comment": ""
+                    },
+                    "publicId": {
+                        "Field": "publicId",
+                        "Type": "binary(16)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "UNI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "created": {
+                        "Field": "created",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "title": {
+                        "Field": "title",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "name": {
+                        "Field": "name",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "url": {
+                        "Field": "url",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "state": {
+                        "Field": "state",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "PRIMARY": {
+                        "1": {
+                            "Table": "PressKitImage",
+                            "Non_unique": "0",
+                            "Key_name": "PRIMARY",
+                            "Seq_in_index": "1",
+                            "Column_name": "id",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "publicId": {
+                        "1": {
+                            "Table": "PressKitImage",
+                            "Non_unique": "0",
+                            "Key_name": "publicId",
+                            "Seq_in_index": "1",
+                            "Column_name": "publicId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "publicId_2": {
+                        "1": {
+                            "Table": "PressKitImage",
+                            "Non_unique": "0",
+                            "Key_name": "publicId_2",
+                            "Seq_in_index": "1",
+                            "Column_name": "publicId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            },
+            "PressKitComment": {
+                "fields": {
+                    "id": {
+                        "Field": "id",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "auto_increment",
+                        "Comment": ""
+                    },
+                    "publicId": {
+                        "Field": "publicId",
+                        "Type": "binary(16)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "title": {
+                        "Field": "title",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "body": {
+                        "Field": "body",
+                        "Type": "varchar(1024)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "author": {
+                        "Field": "author",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "written": {
+                        "Field": "written",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "state": {
+                        "Field": "state",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "PRIMARY": {
+                        "1": {
+                            "Table": "PressKitComment",
+                            "Non_unique": "0",
+                            "Key_name": "PRIMARY",
+                            "Seq_in_index": "1",
+                            "Column_name": "id",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            },
+            "PressKitRelationship": {
+                "fields": {
+                    "ownerClass": {
+                        "Field": "ownerClass",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "ownerId": {
+                        "Field": "ownerId",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "subjectClass": {
+                        "Field": "subjectClass",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "subjectId": {
+                        "Field": "subjectId",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "delta": {
+                        "Field": "delta",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "ownerClass": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_2": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            },
+            "StateFlowState": {
+                "fields": {
+                    "id": {
+                        "Field": "id",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "PRI",
+                        "Default": null,
+                        "Extra": "auto_increment",
+                        "Comment": ""
+                    },
+                    "publicId": {
+                        "Field": "publicId",
+                        "Type": "binary(16)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "state": {
+                        "Field": "state",
+                        "Type": "int(10) unsigned",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "owner": {
+                        "Field": "owner",
+                        "Type": "binary(16)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "PRIMARY": {
+                        "1": {
+                            "Table": "StateFlowState",
+                            "Non_unique": "0",
+                            "Key_name": "PRIMARY",
+                            "Seq_in_index": "1",
+                            "Column_name": "id",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1": {
+            "PressKitPost": {
+                "fields": {
+                    "class": {
+                        "Field": "class",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            },
+            "PressKitImage": {
+                "fields": {
+                    "class": {
+                        "Field": "class",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            },
+            "PressKitComment": {
+                "fields": {
+                    "class": {
+                        "Field": "class",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            },
+            "StateFlowState": {
+                "fields": {
+                    "class": {
+                        "Field": "class",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            }
+        }
+    }
+}
