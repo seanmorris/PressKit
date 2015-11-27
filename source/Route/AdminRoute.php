@@ -1,0 +1,32 @@
+<?php
+namespace SeanMorris\PressKit\Route;
+class AdminRoute extends \SeanMorris\PressKit\Controller
+{
+	public
+		$title = 'Admin'
+		, $routes = [
+			'posts' => 'SeanMorris\PressKit\Route\AdminPostRoute'
+			, 'images' => 'SeanMorris\PressKit\Route\AdminImageRoute'
+			, 'comments' => 'SeanMorris\PressKit\Route\AdminCommentRoute'
+		]
+	;
+
+	protected $theme = 'SeanMorris\PressKit\Theme\Austere\Theme';
+
+	protected static
+		$menus = [
+			'main' => [
+				'Administrate' => [
+					'_link' => ''
+					, '_access' => 'SeanMorris\Access\Role\Administrator'
+				]
+			]
+		]
+
+	;
+
+	public function index($router)
+	{
+		return 'admin';
+	}
+}
