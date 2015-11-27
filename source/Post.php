@@ -50,14 +50,14 @@ class Post extends \SeanMorris\Ids\Model
 			, 'distinct' => TRUE
 			, 'where' => [
 				'OR' => [
-					['title' => '?', 'LIKE', '%%%s%%', 'test_title', FALSE]
-					, ['body' => '?', 'LIKE', '%%%s%%', 'test_title2']
+					['title' => '?', 'LIKE', '%%%s%%', 'keyword', FALSE]
+					, ['body' => '?', 'LIKE', '%%%s%%', 'keyword', FALSE]
 				]
 			]
 			, 'join' => [
 				'SeanMorris\PressKit\State' => [
 					'on' => 'state'
-					, 'by' => 'moderated'
+					, 'by' => 'stateNamed'
 					, 'type' => 'INNER'
 				]
 			]
@@ -67,7 +67,7 @@ class Post extends \SeanMorris\Ids\Model
 				'SeanMorris\PressKit\State' => [
 					'on' => 'state'
 					, 'by' => 'moderated'
-					, 'type' => 'LEFT'
+					, 'type' => 'INNER'
 				]
 			]
 		]

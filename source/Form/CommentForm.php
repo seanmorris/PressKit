@@ -35,7 +35,7 @@ class CommentForm extends \SeanMorris\Form\Form
 				]
 			]
 		];
-
+		
 		$skeleton['submit'] = [
 			'_title' => 'Submit'
 			, 'type' => 'submit'

@@ -34,14 +34,13 @@ class Image extends \SeanMorris\Ids\Model
 		]
 		, $byAll = []
 		, $byModerated = [
-			//'where' => []
-			/*'join' => [
+			'join' => [
 				'SeanMorris\PressKit\State' => [
 					'on' => 'state'
 					, 'by' => 'moderated'
 					, 'type' => 'LEFT'
 				]
-			]*/
+			]
 		]
 		, $bySearch = [
 			'named' => TRUE

@@ -45,7 +45,17 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 		\SeanMorris\Ids\Log::debug('State', $state);
 
-		$this->title = $model->title;
+		$titleField = 'title';
+
+		if(static::$titleField)
+		{
+			$titleField = static::$titleField;
+		}
+
+		if($model->{$titleField})
+		{
+			$this->title = $model->{$titleField};
+		}
 
 		if(!$router->subRouted())
 		{
@@ -194,10 +204,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 		if($params = $router->request()->params())
 		{
+			$messages = \SeanMorris\Message\MessageHandler::get();
+
 			if(isset($params['delete']) && $params['delete'])
 			{
-				$messages = \SeanMorris\Message\MessageHandler::get();
-
 				if($model->delete())
 				{
 					$messages->addFlash(
@@ -214,6 +224,16 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 						new \SeanMorris\Message\ErrorMessage('Unexpected error.')
 					);
 				}
+			}
+			else
+			{
+				$messages->addFlash(
+					new \SeanMorris\Message\AlertMessage('Record NOT deleted.')
+				);
+
+				throw new \SeanMorris\Ids\Http\Http303(
+					$router->path()->pathString(1)
+				);
 			}
 		}
 

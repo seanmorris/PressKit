@@ -42,13 +42,30 @@ class Comment extends \SeanMorris\Ids\Model
 					, ['id' => '?', '=', '%s', 'id', FALSE]
 				]
 			]
+			, 'join' => [
+				'SeanMorris\PressKit\State' => [
+					'on' => 'state'
+					, 'by' => 'stateNamed'
+					, 'type' => 'INNER'
+				]
+			]
 		]
 		, $byModerated = [
 			'join' => [
 				'SeanMorris\PressKit\State' => [
 					'on' => 'state'
 					, 'by' => 'moderated'
-					, 'type' => 'LEFT'
+					, 'type' => 'INNER'
+				]
+			]
+		]
+		, $byState = [
+			'named' => TRUE
+			, 'join' => [
+				'SeanMorris\PressKit\State' => [
+					'on' => 'state'
+					, 'by' => 'stateNamed'
+					, 'type' => 'INNER'
 				]
 			]
 		]

@@ -6,37 +6,32 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 		$title = 'Posts'
 		// , $modelClass = 'SeanMorris\PressKit\Post'
 		, $modelClass = 'SeanMorris\Portfolio\SuperPost'
-		, $modelRoute = 'SeanMorris\PressKit\Route\PostSubRoute'
 		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		, $routes = [
+			'images' => 'SeanMorris\PressKit\Route\ImageRoute'
+			, 'comments' => 'SeanMorris\PressKit\Route\CommentRoute'
+		]
 		, $access = [
-			'create' => 'SeanMorris\Access\Role\Administrator'
-			, 'edit' => 'SeanMorris\Access\Role\Administrator'
-			, 'delete' => 'SeanMorris\Access\Role\Administrator'
-			, 'view' => TRUE
+			'view' => TRUE
 			, 'index' => TRUE
-			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
 		]
 		, $hideTitle = [
 			'index'
 		]
 	;
-	protected static 
-		$forms = [
+	protected static
+		$listBy = 'byModerated' 
+		, $modelRoute = 'SeanMorris\PressKit\Route\PostSubRoute' 
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\PostForm'
 		]
 		, $menus = [
 			'main' => [
 				'Content' => [
-					'_access' => 'SeanMorris\Access\Role\Administrator'
+					'_access' => 'SeanMorris\Access\Role\Moderator'
 					, 'Posts' => [
 						'_link'		=> ''
-						, 'List'	=> [
-							'_link' => ''
-							, '_access' => 'SeanMorris\Access\Role\Administrator'
-						]
-						, 'Create'	=> [
-							'_link' => 'create'
-						]
+						, '_weight'	=> -1
 					]
 				]
 			]

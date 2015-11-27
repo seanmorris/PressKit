@@ -61,11 +61,13 @@ class State extends \SeanMorris\Ids\Model
 			'owner' => 'UNHEX(%s)'
 		]
 		, $byModerated = [
-			'where' => [['state' => '-1', '>']]
+			'where' => ['AND' => [['state' => 0, '>']]]
+			// Also good: 'where' => [['state' => '0', '>']]
 		]
 		, $byStateNamed = [
-			'where' => [
-				['state' => '?', '=', '%s', 'ssss', TRUE]
+			'named' => TRUE
+			, 'where' => [
+				['state' => '?', '=', '%s', 'state', FALSE]
 			]
 		]
 	;

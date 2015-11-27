@@ -14,7 +14,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		$fieldDef['_titlePoint'] = isset($fieldDef['_titlePoint'])
 			? $fieldDef['_titlePoint']
 			: 'title'
-	;
+		;
 
 		$fieldDef['_previewImagePoint'] = isset($fieldDef['_previewImagePoint'])
 			? $fieldDef['_previewImagePoint']

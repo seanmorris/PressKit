@@ -10,21 +10,102 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $context = []
 		, $model = null
 		, $models = []
+		, $routes = []
 		, $subRoutes = []
 		, $stopRoutes = []
-		, $modelRoute
 		, $listColumns = ['id', 'title']
 		, $columnClasses = []
 		, $hideTitle = []
 	;
 
 	protected static
-		$menusBuilt = []
+		$titleField = NULL
+		, $loadBy = NULL
+		, $listBy = 'byNull'
+		, $searchBy = 'bySearch'
+		, $menusBuilt = []
 		, $menus = []
+		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
+		, $actions = [
+			'Unpublish' => '_unpublishModels'
+			, 'Publish' => '_publishModels'
+		]
 		, $forms = [
 			'delete' => 'SeanMorris\PressKit\Form\ModelDeleteForm'
 		]
 	;
+
+	protected function foldProperty($property, $depth = -1)
+	{
+		$merge = function($a, $b, $depth = -1) use(&$merge)
+		{
+			$main = [];
+
+			foreach($a as $key => $value)
+			{
+				$main[$key] = $value;
+			}
+
+			foreach($b as $key => $value)
+			{
+				if(isset($main[$key]))
+				{
+					if($depth == 0 || !is_array($value))
+					{
+						continue;
+					}
+
+					$main[$key] = $merge($main[$key], $value, $depth > 0 ? $depth - 1 : $depth);
+
+					continue;
+				}
+
+				$main[$key] = $value;
+			}
+
+			$main = array_merge(
+				array_flip(array_keys($b))
+				, $main
+			);
+
+			return $main;
+		};
+
+		$propertyContents = [];
+		$class = get_called_class();
+		$classProperty = NULL;
+		$parentClassProperty = NULL;
+
+		while(true)
+		{
+			if(!$parentClass = get_parent_class($class))
+			{
+				break;
+			}
+
+			$classProperty = $class::$$property;
+			$parentClassProperty = $parentClass::$$property;
+
+			//var_dump($class, $property, $classProperty);
+			
+			if(!is_array($classProperty)
+				|| !is_array($parentClassProperty)
+			){
+				$propertyContents = $classProperty;
+			}
+			else
+			{
+				$propertyContents = (
+					$propertyContents
+					+ $merge($classProperty, $parentClassProperty, $depth)
+				);
+			}
+
+			$class = $parentClass;
+		}
+
+		return $propertyContents;
+	}
 
 	protected function _getForm($name)
 	{
@@ -154,50 +235,6 @@ class Controller implements \SeanMorris\Ids\Routable
 		$menuPath = $path->getSpentPath();
 		$menuPathString = $menuPath->pathString();
 
-		if(($this->model && (!$router->child() || !$router->child()->child())) && !$routable)
-		{
-			$modelPath = $this->model->publicId;
-
-			$contextMenu = [ 'Content' => [
-				'Context' => [
-					'_weight' => 100
-					, '_access'	=> isset($this->access['_contextMenu'])
-						? $this->access['_contextMenu']
-						: false
-					, 'View'=> [
-						'_link'		=> $modelPath . '/view'
-						, '_access'	=> isset($this->access['view'])
-							? $this->access['view']
-							: true
-					]
-					, 'Edit'=> [
-						'_link'		=> $modelPath . '/edit'
-						, '_access'	=> isset($this->access['edit'])
-							? $this->access['edit']
-							: false
-					]
-					, 'Delete'=> [
-						'_link'		=> $modelPath . '/delete'
-						, '_access'	=> isset($this->access['delete'])
-							? $this->access['delete']
-							: false
-					]
-				]
-			]];
-
-			$user = NULL;
-
-			if(isset($session['user']))
-			{
-				$user = $session['user'];
-			}
-			
-			$m = \SeanMorris\PressKit\Menu::get('main');
-			$m->add($contextMenu, $menuPathString, $user);
-
-			// return;
-		}
-
 		$menuViews = [];
 
 		$menus = static::$menus;
@@ -214,13 +251,29 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$menuViews = [];
 			$allSubroutes = [];
+			
+			$modelRoute = static::$modelRoute;
+			$modelSubRoutes = $modelRoute
+				? (new $modelRoute)->subRoutes
+				: [];
 
-			if(!$routable && $this->subRoutes)
+			foreach($this->subRoutes as $node => $routes)
 			{
-				$allSubroutes = array_flip(
-					array_merge(...array_values($this->subRoutes))
-				);
+				foreach($routes as $route)
+				{
+					$allSubroutes[] = $route;
+				}
 			}
+			
+			foreach($modelSubRoutes as $node => $routes)
+			{
+				foreach($routes as $route)
+				{
+					$allSubroutes[] = $route;
+				}
+			}
+
+			$allSubroutes = array_flip($allSubroutes);
 
 			$nextRoutes = NULL;
 
@@ -251,6 +304,8 @@ class Controller implements \SeanMorris\Ids\Routable
 						$submenuPath = $menuPath->append($routePath);
 						$submenuPath->consumeNode();
 						$submenuPath->consumeNode();
+
+						//var_dump(get_called_class(), $allSubroutes, $submenuPath->pathString());
 
 						if(!is_callable([$route, '_menu']) && $route && $route::$menus && !$routable)
 						{
@@ -289,9 +344,58 @@ class Controller implements \SeanMorris\Ids\Routable
 	{
 		$menu = null;
 		
-		if(!$router->parent() || $this->models)
+		//if(!$router->parent() || $this->models)
+		if(!$router->parent())
 		{
 			$menu = $this->_menu($router, $preroutePath);
+		}
+
+		if($this->model && count($this->models) === 1)
+		{
+			$modelPath = $this->model->publicId;
+
+			$contextMenu = [ 'Administrate' => [
+				'Context' => [
+					'_weight' => -100
+					, '_access'	=> isset($this->access['_contextMenu'])
+						? $this->access['_contextMenu']
+						: false
+					, 'View'=> [
+						'_link'		=> $modelPath . '/view'
+						, '_access'	=> isset($this->access['view'])
+							? $this->access['view']
+							: true
+					]
+					, 'Edit'=> [
+						'_link'		=> $modelPath . '/edit'
+						, '_access'	=> isset($this->access['edit'])
+							? $this->access['edit']
+							: false
+					]
+					, 'Delete'=> [
+						'_link'		=> $modelPath . '/delete'
+						, '_access'	=> isset($this->access['delete'])
+							? $this->access['delete']
+							: false
+					]
+				]
+			]];
+
+			$user = NULL;
+
+			$session = \SeanMorris\Ids\Meta::staticSession();
+
+			if(isset($session['user']))
+			{
+				$user = $session['user'];
+
+				$menuPath = $preroutePath->getSpentPath();
+
+				$menuPathString = $menuPath->pathString();
+			
+				$m = \SeanMorris\PressKit\Menu::get('main');
+				$m->add($contextMenu, $menuPathString, $user);
+			}
 		}
 
 		$routedTo = $router->routedTo();
@@ -444,7 +548,6 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 	}
-
 	public function index($router)
 	{
 		if(!$this->modelClass)
@@ -453,6 +556,39 @@ class Controller implements \SeanMorris\Ids\Routable
 		}
 
 		$modelClass = $this->modelClass;
+
+		$params = $router->request()->params();
+		$postParams = $router->request()->post();
+
+		if(isset($postParams['action'], static::$actions[$postParams['action']]))
+		{
+			$action = static::$actions[$postParams['action']];
+			$modelsProcessed = 0;
+			$messages = \SeanMorris\Message\MessageHandler::get();
+
+			if(isset($postParams['models'])
+				&& is_array($postParams['models'])
+				&& is_callable([get_called_class(), $action])
+			){
+				foreach ($postParams['models'] as $modelId)
+				{
+					$model = $modelClass::loadOneByPublicId($modelId);
+					static::$action($model);
+					$modelsProcessed++;
+				}
+			}
+
+			$messages->addFlash(
+				new \SeanMorris\Message\SuccessMessage(sprintf(
+					'%d records updated!'
+					, $modelsProcessed
+				))
+			);
+
+			throw new \SeanMorris\Ids\Http\Http303(
+				$router->path()->pathString() . '?' . http_build_query($_GET)
+			);
+		}
 
 		$formClass = $router->routes()->_getForm('search');
 
@@ -520,11 +656,26 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if($formValues)
 			{
-				$gen = $modelClass::generateBySearch(array_filter($formValues));
+				$gen = $modelClass::generateBySearch(array_filter(
+					$formValues
+					, function ($val)
+					{
+						return $val !== '';
+					}
+				));
 			}
 			else
 			{
-				$gen = $modelClass::generateByModerated();
+				$listBy = 'ByModerated';
+
+				if(static::$listBy)
+				{
+					$listBy = ucwords(static::$listBy);
+				}
+
+				$listBy = 'generate' . $listBy;
+
+				$gen = $modelClass::$listBy();
 			}
 
 			foreach($gen() as $object)
@@ -548,7 +699,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if(!$objects)
 		{
-			return;
+			return $formRendered;
 		}
 
 		if(!$router->subRouted() && !in_array($router->routedTo(), $this->hideTitle))
@@ -709,7 +860,18 @@ class Controller implements \SeanMorris\Ids\Routable
 			return false;
 		}
 
-		$gen = $modelClass::generateByPublicId($id);
+		if(static::$loadBy)
+		{
+			$loadBy = ucwords(static::$loadBy);
+		}
+		else
+		{
+			$loadBy = 'ByPublicId';
+		}
+
+		$loadBy ='generate' . $loadBy;
+
+		$gen = $modelClass::$loadBy($id);
 
 		foreach($gen() as $model)
 		{
@@ -721,14 +883,21 @@ class Controller implements \SeanMorris\Ids\Routable
 			$this->models[] = $model;
 		}
 
-		if(!$router->path()->done() && $this->models && $this->modelRoute)
+		if(!$router->path()->done() && $this->models && static::$modelRoute)
 		{
 			$model = current($this->models);
-			$modelRoute = new $this->modelRoute;
+			$modelRoute = new static::$modelRoute;
 
-			if($model->title)
+			$titleField = 'title';
+
+			if(static::$titleField)
 			{
-				$modelRoute->title = $model->title;
+				$titleField = static::$titleField;
+			}
+
+			if($model->{$titleField})
+			{
+				$modelRoute->title = $model->{$titleField};
 			}
 			
 
@@ -737,7 +906,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if(!$this->models)
 		{
-			if($router->parent()->routes() === $this)
+			if($router->parent() && $router->parent()->routes() === $this)
 			{
 				return false;
 			}
@@ -768,6 +937,20 @@ class Controller implements \SeanMorris\Ids\Routable
 		throw new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
 		return FALSE;
 		//return 404;
+	}
+
+	public function _publishModels($model)
+	{
+		$state = $model->getSubject('state');
+		$state->consume(['state' => 1]);
+		$state->save();
+	}
+
+	public function _unpublishModels($model)
+	{
+		$state = $model->getSubject('state');
+		$state->consume(['state' => 0]);
+		$state->save();
 	}
 
 	protected static function beforeCreate($instance, &$skeleton)

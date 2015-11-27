@@ -51,6 +51,11 @@ class Menu extends \SeanMorris\Theme\View
 					);
 				}
 
+				if(!$link && !$menuItem->children())
+				{
+					continue;
+				}
+
 				$subMenu = ( new static([
 					'subMenu' => $menuItem
 				]))->render();

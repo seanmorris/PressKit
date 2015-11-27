@@ -26,6 +26,38 @@ class Menu
 
 	public function add($children, $path = false, \SeanMorris\Access\User $user = null)
 	{
+		$sortChildren = function($a, $b)
+		{
+			$ak = $a;
+			$bk = $b;
+
+			$a = $this->children[$a];
+			$b = $this->children[$b];
+
+			$a = is_object($a) ? $a->weight : $ak;
+			$b = is_object($b) ? $b->weight : $bk;
+
+			if(!$a)
+			{
+				$a = $ak;
+			}
+
+			if(!$b)
+			{
+				$b = $bk;
+			}
+
+			if($a < $b)
+			{
+				return -1;
+			}
+			elseif($a > $b)
+			{
+				return 1;
+			}
+
+			return 0;
+		};
 		foreach($children as $childName => $childLink)
 		{
 			if(is_array($childLink))
@@ -89,53 +121,30 @@ class Menu
 
 				$newPiece->add($childLink, $path, $user);
 
+				$appendedExisting = FALSE;
+
 				foreach($this->children as $existingChild)
 				{
 					if(is_object($existingChild) && $childName == $existingChild->name)
 					{
 						$existingChild->append($newPiece);
+
+						uksort(
+							$existingChild->children
+							, $sortChildren->bindTo($existingChild)
+						);
 						
-						return;
+						$appendedExisting = TRUE;
+						break;
 					}
 				}
 
-				$this->children[] = $newPiece;
+				if(!$appendedExisting)
+				{
+					$this->children[] = $newPiece;
+				}
 
-				uksort(
-					$this->children
-					, function($a, $b)
-					{
-						$ak = $a;
-						$bk = $b;
-
-						$a = $this->children[$a];
-						$b = $this->children[$b];
-
-						$a = is_object($a) ? $a->weight : $ak;
-						$b = is_object($b) ? $b->weight : $bk;
-
-						if(!$a)
-						{
-							$a = $ak;
-						}
-
-						if(!$b)
-						{
-							$b = $bk;
-						}
-
-						if($a < $b)
-						{
-							return -1;
-						}
-						elseif($a > $b)
-						{
-							return 1;
-						}
-
-						return 0;
-					}
-				);
+				uksort($this->children, $sortChildren->bindTo($this));
 			}
 			else
 			{
@@ -146,7 +155,19 @@ class Menu
 
 	public function append($menu)
 	{
-		$this->children = array_merge($this->children, $menu->children);
+		$otherChildren = $menu->children;
+		foreach ($this->children as $child)
+		{
+			foreach ($otherChildren as $i => $otherChild)
+			{
+				if($child->name == $otherChild->name)
+				{
+					unset($otherChildren[$i]);
+					$child->append($otherChild);
+				}
+			}
+		}
+		$this->children = array_merge($this->children, $otherChildren);
 	}
 
 	public function hasChildren()

@@ -5,15 +5,17 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$title = 'Images'
 		, $modelClass = 'SeanMorris\PressKit\Image'
-		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
 		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
 		, $access = [
 			'create' => 'SeanMorris\Access\Role\Administrator'
 			, 'edit' => 'SeanMorris\Access\Role\Administrator'
 			, 'delete' => 'SeanMorris\Access\Role\Administrator'
 			, 'view' => TRUE
-			, 'index' => 'SeanMorris\Access\Role\Administrator'
+			, 'index' => TRUE
+			//, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
+			, '_publishImage' => 'SeanMorris\Access\Role\Administrator'
+			, '_unpublishImage' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
 	protected static 
@@ -27,12 +29,6 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 					'_access' => 'SeanMorris\Access\Role\Moderator'
 					, 'Images' => [
 						'_link'		=> ''
-						, 'List'	=> [
-							'_link' => ''
-						]
-						, 'Create'	=> [
-							'_link' => 'create'
-						]
 					]
 				]
 			]

@@ -77,10 +77,10 @@ class PostForm extends \SeanMorris\Form\Form
 			, 'value' => ''
 		];
 
-		$skeleton['state'] = [ 
+		/*$skeleton['state'] = [ 
 			'_title' => 'State'
 			, 'type' => 'text'
-		];
+		];*/
 
 		$skeleton['images'] = [
 			'_title' => 'Images'
@@ -134,6 +134,37 @@ class PostForm extends \SeanMorris\Form\Form
 		$skeleton['saveExit'] = [
 			'_title' => 'Save & Exit'
 			, 'type' => 'submit'
+		];
+
+		$stateFields = [];
+
+		$stateFields['id'] = [
+			'_title' => 'Id'
+			, 'value' => ''
+			, 'type' => 'text'
+		];
+
+		$stateFields['state'] = [
+			'_title' => 'State'
+			, 'value' => ''
+			, 'type' => 'text'
+		];
+
+		$skeleton['state'] = [
+			'_title' => 'State Fields'
+			, '_subtitle' => 'State'
+			, 'type' => 'modelReference'
+			, '_children' => $stateFields
+			, '_multi' => FALSE
+		];
+		
+		$skeleton['comments2'] = [
+			'_title' => 'Comments'
+			, '_subtitle' => 'Comment'
+			, 'type' => 'modelSearch'
+			, '_searchEndpoint' => '/comments'
+			, '_previewImagePoint' => 'url'
+			, '_titlePoint' => 'title'
 		];
 		
 		parent::__construct($skeleton);

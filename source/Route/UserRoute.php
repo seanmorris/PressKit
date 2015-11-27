@@ -7,8 +7,8 @@ class UserRoute extends \SeanMorris\PressKit\Controller
 			'roles' => 'SeanMorris\Access\Route\RoleRoute'
 		];
 	protected
-		$modelClass = 'SeanMorris\Access\User'
-		, $modelRoute = 'SeanMorris\PressKit\Route\UserSubRoute'
+		$title = 'Users'
+		, $modelClass = 'SeanMorris\Access\User'
 		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
 		, $listColumns = ['id', 'username', 'created']
 		, $columnClasses = ['id' => 'droppable', 'created' => 'droppable']
@@ -21,19 +21,18 @@ class UserRoute extends \SeanMorris\PressKit\Controller
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
-	protected static 
-		$forms = [
+	protected static
+		$titleField = 'username'
+		, $modelRoute = 'SeanMorris\PressKit\Route\UserSubRoute' 
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\UserForm'
 		]
 		, $menus = [
 			'main' => [
-				'Content' => [
+				'Administrate' => [
 					'_access' => 'SeanMorris\Access\Role\Moderator'
 					, 'Users' => [
 						'_link'		=> ''
-						, 'List'	=> [
-							'_link' => ''
-						]
 						, 'Create'	=> [
 							'_link' => 'create'
 						]

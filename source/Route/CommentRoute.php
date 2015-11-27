@@ -5,16 +5,16 @@ class CommentRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$title = 'Comments'
 		, $modelClass = 'SeanMorris\PressKit\Comment'
-		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
 		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
-		, $listColumns = ['id', 'body']
+		, $listColumns = [
+			'id'
+			, 'body'
+			, ''
+		]
 		, $access = [
-			'create' => 'SeanMorris\Access\Role\Administrator'
-			, 'edit' => 'SeanMorris\Access\Role\Administrator'
-			, 'delete' => 'SeanMorris\Access\Role\Administrator'
-			, 'view' => TRUE
+			'view' => TRUE
 			, 'index' => TRUE
-			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
+			, 'create' => 'SeanMorris\Access\Role\Moderator'
 		]
 	;
 	protected static 
@@ -28,17 +28,39 @@ class CommentRoute extends \SeanMorris\PressKit\Controller
 					'_access' => 'SeanMorris\Access\Role\Moderator'
 					, 'Comments' => [
 						'_link'		=> ''
-						, 'List'	=> [
-							'_link' => ''
-						]
-						, 'Create'	=> [
-							'_link' => 'new'
-						]
 					]
 				]
 			]
 		]
 	;
+
+	/*
+	public function moderate($router)
+	{
+		$class = $this->modelClass;
+
+		$comments = $class::getByState(['ssss' => 0]);
+		$theme = $this->_getTheme($router);
+
+		$view = new \SeanMorris\PressKit\Theme\Austere\ModelGrid([
+			'path' => $router->path()->pathString()
+			, 'content' => $comments
+			, 'columns' => [
+				'id'
+				, 'title'
+			]
+		]);
+
+		return $view;
+
+		foreach($comments as &$comment)
+		{
+			$comment = $theme::render($comment, ['path' => $router->path()->pathString()]);
+		}
+
+		return implode(PHP_EOL, $comments);
+	}
+	*/
 
 	protected static function beforeCreate($instance, &$skeleton)
 	{

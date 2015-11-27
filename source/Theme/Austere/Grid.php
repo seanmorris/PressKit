@@ -19,16 +19,23 @@ class Grid extends \SeanMorris\Theme\View
 			$this->vars['columns'] = array_keys((array)$row);
 		}
 
-
 		if(!isset($this->vars['buttons']))
 		{
 			$this->vars['buttons'] = null;
+		}
+
+		if(!isset($this->vars['actions']))
+		{
+			$this->vars['actions'] = null;
 		}
 	}
 }
 __halt_compiler();
 ?>
 <table class = "PressKitList">
+	<tr class = "buttons">
+		<td colspan="<?=count($columns);?>"><div class = "actions"><?=$actions;?></div></td>
+	<tr>
 	<tr class = "buttons">
 		<td colspan="<?=count($columns);?>"><div class = "buttons"><?=$buttons;?></div></td>
 	<tr>
@@ -60,8 +67,8 @@ __halt_compiler();
 				$key = $column;
 			}
 			echo is_object($row)
-			? $row->{$key}
-			: $row[$key];
+				? $row->{$key}
+				: $row[$key];
 			?>
 		</td>
 		<?php endforeach; ?>

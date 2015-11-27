@@ -6,7 +6,7 @@ class ImageSearchForm extends \SeanMorris\Form\Form
 	{
 		$skeleton = [];
 
-		$skeleton['_method'] = 'POST';
+		$skeleton['_method'] = 'GET';
 
 		$skeleton['search'] = [
 			'_title' => 'Search'

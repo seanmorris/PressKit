@@ -6,7 +6,7 @@ class CommentSearchForm extends \SeanMorris\Form\Form
 	{
 		$skeleton = [];
 
-		$skeleton['_method'] = 'POST';
+		$skeleton['_method'] = 'GET';
 
 		$skeleton['search'] = [
 			'_title' => 'Search'
@@ -20,6 +20,12 @@ class CommentSearchForm extends \SeanMorris\Form\Form
 
 		$skeleton['search']['_children']['id'] = [
 			'type' => 'hidden'
+		];
+
+		$skeleton['search']['_children']['state'] = [
+			'_title' => 'State'
+			, 'type' => 'text'
+			, 'value' => 0
 		];
 
 		$skeleton['submit'] = [

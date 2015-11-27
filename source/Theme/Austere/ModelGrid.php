@@ -16,8 +16,16 @@ class ModelGrid extends Grid
 		
 		// \SeanMorris\Ids\Log::debug($objects);
 
+		$this->vars['columns'] = ['select' => NULL]
+			+ $this->vars['columns'];
+
 		foreach ($objects as $object)
 		{
+			$rows[$object->id]['select'] = sprintf(
+				'<input name = "models[]" type = "checkbox" value = "%s" />'
+				, $object->publicId
+			);
+
 			foreach($this->vars['columns'] as $column)
 			{
 				$rows[$object->id][$column] = $object->{$column};
@@ -50,5 +58,13 @@ class ModelGrid extends Grid
 		{
 			$this->vars['buttons'] = null;
 		}
+
+		$this->vars['actions'] = '<select name = "action" class = "inline"><option>Publish</option><option>Unpublish</option></select>'
+			. '<input class = "inline" type = "submit" />';
+
+		$this->vars['grid'] = static::render([], 1);
 	}
 }
+__halt_compiler();
+?>
+<form method = "POST" class = "sublime"><?=$grid;?></form>
