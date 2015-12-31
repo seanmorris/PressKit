@@ -297,6 +297,11 @@ class Controller implements \SeanMorris\Ids\Routable
 						continue;
 					}
 
+					if(!class_exists($routeClass))
+					{
+						continue;
+					}
+
 					$route = new $routeClass();
 
 					if(is_callable([$route, '_menu']) || ($route && isset($route::$menus)))
