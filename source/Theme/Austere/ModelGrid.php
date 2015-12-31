@@ -67,4 +67,4 @@ class ModelGrid extends Grid
 }
 __halt_compiler();
 ?>
-<form method = "POST" class = "sublime"><?=$grid;?></form>
+<form method = "POST" action = "/<?=$path;?>" class = "sublime"><?=$grid;?></form>

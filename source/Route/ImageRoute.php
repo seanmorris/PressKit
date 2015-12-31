@@ -14,8 +14,6 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 			, 'index' => TRUE
 			//, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
-			, '_publishImage' => 'SeanMorris\Access\Role\Administrator'
-			, '_unpublishImage' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
 	protected static 

@@ -8,6 +8,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $title
 		, $access = []
 		, $context = []
+		, $formTheme = null
 		, $model = null
 		, $models = []
 		, $routes = []
@@ -133,7 +134,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		while($router)
 		{
-			if($controller->theme)
+			if(isset($controller->theme))
 			{
 				return $controller->theme;
 			}
@@ -542,7 +543,14 @@ class Controller implements \SeanMorris\Ids\Routable
 	{
 		while($router = $router->parent())
 		{
-			if($parentModels = $router->routes()->_models())
+			$routes = $router->routes();
+
+			if(!is_a($routes, get_class()))
+			{
+				continue;
+			}
+
+			if($parentModels = $routes->_models())
 			{
 				return $parentModels;
 			}
@@ -560,8 +568,9 @@ class Controller implements \SeanMorris\Ids\Routable
 		$params = $router->request()->params();
 		$postParams = $router->request()->post();
 
-		if(isset($postParams['action'], static::$actions[$postParams['action']]))
-		{
+		if(isset($postParams['action'], static::$actions[$postParams['action']])
+			&& $this->_access(static::$actions[$postParams['action']], $router) 
+		){
 			$action = static::$actions[$postParams['action']];
 			$modelsProcessed = 0;
 			$messages = \SeanMorris\Message\MessageHandler::get();
@@ -585,8 +594,19 @@ class Controller implements \SeanMorris\Ids\Routable
 				))
 			);
 
+			$queryString = http_build_query($_GET);
+			$pop = 0;
+			
+			if($this->getParentModels($router))
+			{
+				$pop = 1;
+			}
+
 			throw new \SeanMorris\Ids\Http\Http303(
-				$router->path()->pathString() . '?' . http_build_query($_GET)
+				$router->path()->pathString($pop) . ($queryString
+					? '?' . $queryString
+					: NULL
+				)
 			);
 		}
 
@@ -803,8 +823,20 @@ class Controller implements \SeanMorris\Ids\Routable
 						new \SeanMorris\Message\SuccessMessage('Update successful!')
 					);
 
+					$getParams = $router->request()->get();
+
+					$suffix = NULL;
+
+					if(isset($getParams['api']))
+					{
+						$suffix = '?api';
+					}
+
 					$redirect = new \SeanMorris\Ids\Http\Http303(
-						$router->path()->pathString(1) . '/' . $model->publicId
+						$router->path()->pathString(1)
+							. '/'
+							. $model->publicId
+							. $suffix
 					);
 
 					static::afterCreate($model, $skeleton);

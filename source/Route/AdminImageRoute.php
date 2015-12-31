@@ -10,6 +10,8 @@ class AdminImageRoute extends ImageRoute
 			, 'view' => TRUE
 			, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
+			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
+			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
 	protected static 

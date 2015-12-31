@@ -703,6 +703,22 @@
                     }
                 }
             }
+        },
+        "2": {
+            "PressKitPost": {
+                "fields": {
+                    "slugSize": {
+                        "Field": "slugSize",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            }
         }
     }
 }
