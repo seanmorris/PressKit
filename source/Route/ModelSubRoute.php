@@ -6,10 +6,18 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		$formTheme = 'SeanMorris\Form\Theme\Form\Theme'
 	;
 	public
-		$alias = [
+		$routes = []
+		, $subRoutes = []
+		, $alias = [
 			'index' => 'view'
 		]
 	;
+
+	protected function __construct(\SeanMorris\PressKit\Controller $controller)
+	{
+		$this->routes = $controller->modelRoutes;
+		$this->subRoutes = $controller->modelSubRoutes;
+	}
 
 	public function view($router)
 	{

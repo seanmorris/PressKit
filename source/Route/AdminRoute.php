@@ -4,6 +4,9 @@ class AdminRoute extends \SeanMorris\PressKit\Controller
 {
 	public
 		$title = 'Admin'
+		, $access = [
+			'index' => 'SeanMorris\Access\Role\Administrator'
+		]
 		, $routes = [
 			'posts' => 'SeanMorris\PressKit\Route\AdminPostRoute'
 			, 'images' => 'SeanMorris\PressKit\Route\AdminImageRoute'
@@ -24,9 +27,4 @@ class AdminRoute extends \SeanMorris\PressKit\Controller
 		]
 
 	;
-
-	public function index($router)
-	{
-		return 'admin';
-	}
 }

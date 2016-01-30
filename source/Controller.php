@@ -13,10 +13,13 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $models = []
 		, $routes = []
 		, $subRoutes = []
+		, $modelRoutes = []
+		, $modelSubRoutes = []
 		, $stopRoutes = []
 		, $listColumns = ['id', 'title']
 		, $columnClasses = []
 		, $hideTitle = []
+		, $alias = []
 	;
 
 	protected static
@@ -255,7 +258,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			
 			$modelRoute = static::$modelRoute;
 			$modelSubRoutes = $modelRoute
-				? (new $modelRoute)->subRoutes
+				? (new $modelRoute($this))->subRoutes
 				: [];
 
 			foreach($this->subRoutes as $node => $routes)
@@ -499,20 +502,33 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if($theme = $this->_getTheme($router))
 		{
-			$this->context['css'] = $this->context['js'] = [];
-			
 			foreach(['css','js'] as $contextElement)
 			{
-				$ctxEle = $theme::resolveList($contextElement, [], false);
-
-				if(!$this->context[$contextElement])
+				if(!isset($this->context[$contextElement]))
 				{
 					$this->context[$contextElement] = [];
 				}
+				
+				$context =& $router->getContext();
 
-				$this->context[$contextElement] = array_merge($this->context[$contextElement], $ctxEle);
+				$ctxEle = $theme::resolveList($contextElement, [], false);
 
-				$this->context[$contextElement] = array_unique($this->context[$contextElement]);
+				if(!$context[$contextElement])
+				{
+					$context[$contextElement] = [];
+				}
+
+				$context[$contextElement] = array_merge(
+					$context[$contextElement]
+					, $ctxEle
+				);
+
+				// var_dump($context[$contextElement]);
+
+				//$this->context[$contextElement] = array_unique($this->context[$contextElement]);
+
+				// var_dump($context, '==========');	
+
 			}
 
 			$stack = $theme::resolveFirst('stack');
@@ -565,7 +581,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	{
 		if(!$this->modelClass)
 		{
-			return;
+			return FALSE;
 		}
 
 		$modelClass = $this->modelClass;
@@ -769,6 +785,8 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	public function create($router)
 	{
+		$session = \SeanMorris\Ids\Meta::staticSession();
+
 		$formClass = $this->_getForm('edit');
 		
 		if(!$formClass)
@@ -795,6 +813,31 @@ class Controller implements \SeanMorris\Ids\Routable
 				$model = new $modelClass;
 				$skeleton = $form->getValues();
 
+				if($stateClass = $model->canHaveOne('state'))
+				{
+					if(is_a('SeanMorris\PressKit\State', $stateClass, true))
+					{
+						\SeanMorris\Ids\Log::debug(sprintf(
+							'Assigning state to Model %s (%s)'
+							, $modelClass
+							, $stateClass
+						));
+
+						$owner = 0;
+
+						if(isset($session['user']))
+						{
+							$owner = $session['user'];
+						}
+
+						$skeleton['state'] = [
+							'class' => $stateClass
+							, 'owner' => $owner
+							, 'state' => 0
+						];
+					}
+				}
+
 				if(static::beforeCreate($model, $skeleton) === FALSE
 					|| static::beforeWrite($model, $skeleton) === FALSE
 				){
@@ -812,6 +855,7 @@ class Controller implements \SeanMorris\Ids\Routable
 						$parent = array_shift($parents);
 						$property = $router->path()->getNode(-1);
 						
+						// @TODO: Add case for singular children
 						if(get_class($model) == $parent->canHaveMany($property))
 						{
 							\SeanMorris\Ids\Log::debug($parent);
@@ -923,7 +967,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		if(!$router->path()->done() && $this->models && static::$modelRoute)
 		{
 			$model = current($this->models);
-			$modelRoute = new static::$modelRoute;
+			$modelRoute = new static::$modelRoute($this);
 
 			$titleField = 'title';
 
@@ -992,7 +1036,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	protected static function beforeCreate($instance, &$skeleton)
 	{
-
+		// @TODO: Assign state?
 	}
 
 	protected static function afterCreate($instance, &$skeleton)
@@ -1038,5 +1082,10 @@ class Controller implements \SeanMorris\Ids\Routable
 	protected static function afterDelete($instance)
 	{
 
+	}
+
+	public function __get($name)
+	{
+		return $this->$name;
 	}
 }

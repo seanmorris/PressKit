@@ -2,13 +2,19 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
-	protected static function beforeConsume($instance, &$skeleton)
+	/*
+	protected static function beforeCreate($instance, &$skeleton)
 	{
 		foreach($instance::$hasOne as $column => $class)
 		{
 			if($column == 'state' && !$instance->state)
 			{
-				var_dump($column, $class);
+				$owner = 0;
+
+				if(isset($skeleton['state']['owner']))
+				{
+					$owner = $skeleton['state']['owner'];
+				}
 
 				$state = new $class;
 				$state->consume([
@@ -18,10 +24,9 @@ class Model extends \SeanMorris\Ids\Model
 
 				$state->save();
 
-				var_dump($state);
-
 				$instance->{$column} = $state->id;
 			}
 		}
 	}
+	*/
 }

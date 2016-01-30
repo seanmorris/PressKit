@@ -5,7 +5,14 @@ class UserRoute extends \SeanMorris\PressKit\Controller
 	public
 		$routes = [
 			'roles' => 'SeanMorris\Access\Route\RoleRoute'
-		];
+		]
+		, $modelRoutes = [
+			'roles' => 'SeanMorris\PressKit\Route\RoleRoute'
+		]
+		, $modelSubRoutes = [
+			'view' => ['roles']
+		]
+	;
 	protected
 		$title = 'Users'
 		, $modelClass = 'SeanMorris\Access\User'

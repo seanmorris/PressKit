@@ -70,6 +70,9 @@ class State extends \SeanMorris\Ids\Model
 				['state' => '?', '=', '%s', 'state', FALSE]
 			]
 		]
+		, $hasOne = [
+			'owner' => 'SeanMorris\Access\User'
+		]
 	;
 
 	public function can($user, $point, $action = 'read')

@@ -7,8 +7,8 @@ class AdminPostRoute extends PostRoute
 			'create' => 'SeanMorris\Access\Role\Administrator'
 			, 'edit' => 'SeanMorris\Access\Role\Administrator'
 			, 'delete' => 'SeanMorris\Access\Role\Administrator'
-			, 'view' => TRUE
-			, 'index' => TRUE
+			, 'view' => 'SeanMorris\Access\Role\Administrator'
+			, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;

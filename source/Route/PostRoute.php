@@ -4,12 +4,19 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 {
 	protected
 		$title = 'Posts'
-		// , $modelClass = 'SeanMorris\PressKit\Post'
-		, $modelClass = 'SeanMorris\Portfolio\SuperPost'
+		, $modelClass = 'SeanMorris\PressKit\Post'
 		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
-		, $routes = [
-			'images' => 'SeanMorris\PressKit\Route\ImageRoute'
-			, 'comments' => 'SeanMorris\PressKit\Route\CommentRoute'
+		, $modelRoutes = [
+			'images' => '\SeanMorris\PressKit\Route\ImageRoute'
+			, 'comments' => '\SeanMorris\PressKit\Route\CommentRoute'
+			, 'comments2' => '\SeanMorris\PressKit\Route\CommentRoute'
+		]
+		, $modelSubRoutes = [
+			'view' => [
+				'comments', 'comments/create'
+				, 'comments2', 'comments2/create'
+				, 'images'
+			]
 		]
 		, $access = [
 			'view' => TRUE
@@ -21,7 +28,6 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 	;
 	protected static
 		$listBy = 'byModerated' 
-		, $modelRoute = 'SeanMorris\PressKit\Route\PostSubRoute' 
 		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\PostForm'
 		]

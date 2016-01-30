@@ -23,7 +23,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 					$state = new \SeanMorris\PressKit\State;
 					$state->consume([
 						'state' => 0
-						, 'owner' => 'c3bcc29cc29908c2aec2916b37c3a732c3a763c3'
+						, 'owner' => 0
 					]);
 
 					$state->save();
@@ -36,7 +36,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 					printf(
 						'Generated state for %s #%d'
-						, $classa
+						, $class
 						, $model->id
 					);
 					print PHP_EOL;
