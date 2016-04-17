@@ -566,12 +566,12 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if(isset($context['js']) && $context['js'])
 			{
-				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
+				//$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
 			}
 
 			if(isset($context['css']) && $context['css'])
 			{
-				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
+				//$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 			}
 
 			$stack = $theme::resolveFirst('stack');
