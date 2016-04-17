@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit;
-class Post extends \SeanMorris\Ids\Model
+class Post extends \SeanMorris\PressKit\Model
 {
 	protected
 		$publicId
@@ -18,7 +18,7 @@ class Post extends \SeanMorris\Ids\Model
 		, $state
 		, $images
 		, $comments
-		, $comments2
+		//, $comments2
 	;
 
 	protected static 
@@ -35,11 +35,12 @@ class Post extends \SeanMorris\Ids\Model
 			, 'edited' => 'UNIX_TIMESTAMP()'
 		]
 		, $hasOne = [
-			'state' => 'SeanMorris\PressKit\State'
+			'author' => 'SeanMorris\Access\User'
+			, 'state' => 'SeanMorris\PressKit\State\PostState'
 		]
 		, $hasMany = [
 			'comments' => 'SeanMorris\PressKit\Comment'
-			, 'comments2' => 'SeanMorris\PressKit\Comment'
+			//, 'comments2' => 'SeanMorris\PressKit\Comment'
 			, 'images' => 'SeanMorris\PressKit\Image'
 		]
 		, $byPublicId = [

@@ -4,6 +4,8 @@ class ModelGrid extends Grid
 {
 	protected function preprocess(&$vars)
 	{
+		parent::preprocess($vars);
+
 		$objects =& $this->vars['content'];
 		$extraColumns =& $this->vars['extraColumns'];
 		$path = $this->vars['path'];
@@ -18,6 +20,15 @@ class ModelGrid extends Grid
 
 		$this->vars['columns'] = ['select' => NULL]
 			+ $this->vars['columns'];
+
+		$vars['createLink'] = NULL;
+
+		$vars['createLink'] = sprintf(
+			'<a href = "/%s/create">Create</a>'
+			, $path
+		);
+
+		$rows = [];
 
 		foreach ($objects as $object)
 		{
@@ -37,17 +48,27 @@ class ModelGrid extends Grid
 				, $object->publicId
 			);
 
-			$rows[$object->id]['edit'] = sprintf(
-				'<a href = "/%s/%s/edit">Edit</a>'
-				, $path
-				, $object->publicId
-			);
+			$rows[$object->id]['edit'] = NULL;
 
-			$rows[$object->id]['delete'] = sprintf(
-				'<a href = "/%s/%s/delete">Delete</a>'
-				, $path
-				, $object->publicId
-			);
+			if($object->can('update'))
+			{
+				$rows[$object->id]['edit'] = sprintf(
+					'<a href = "/%s/%s/edit">Edit</a>'
+					, $path
+					, $object->publicId
+				);
+			}
+
+			$rows[$object->id]['delete'] = NULL;
+
+			if($object->can('delete'))
+			{
+				$rows[$object->id]['delete'] = sprintf(
+					'<a href = "/%s/%s/delete">Delete</a>'
+					, $path
+					, $object->publicId
+				);
+			}
 		}
 
 		$this->vars['columns']['view'] = NULL;
@@ -59,12 +80,24 @@ class ModelGrid extends Grid
 			$this->vars['buttons'] = null;
 		}
 
-		$this->vars['actions'] = '<select name = "action" class = "inline"><option>Publish</option><option>Unpublish</option></select>'
-			. '<input class = "inline" type = "submit" />';
+		$controller = $vars['_controller'];
+
+		$this->vars['actions'] = '<select name = "action" class = "inline">';
+
+		foreach($controller->_actions($vars['_router']) as $action => $function)
+		{
+			$this->vars['actions'] .= sprintf('<option>%s</option>', $action);
+		}
+
+		$this->vars['actions'] .= '</select><input class = "inline" type = "submit" />';
+
+		//
+		//'<option>Publish</option>'
+		//	. ;
 
 		$this->vars['grid'] = static::render([], 1);
 	}
 }
 __halt_compiler();
 ?>
-<form method = "POST" action = "/<?=$path;?>" class = "sublime"><?=$grid;?></form>
+<form method = "POST" action = "/<?=$path;?>" class = "sublime"><?=$grid;?><br /><?=$createLink;?></form>

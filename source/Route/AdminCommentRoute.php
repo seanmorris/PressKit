@@ -7,12 +7,17 @@ class AdminCommentRoute extends CommentRoute
 			'edit' => 'SeanMorris\Access\Role\Administrator'
 			, 'delete' => 'SeanMorris\Access\Role\Administrator'
 			, 'view' => 'SeanMorris\Access\Role\Administrator'
+			, 'owners' => 'SeanMorris\Access\Role\Administrator'
 			, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
+			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
+			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
+			, '_deleteModels' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
 	protected static
-		$forms = [
+		$listBy = 'byNull'
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\CommentForm',
 			'search' => 'SeanMorris\PressKit\Form\CommentSearchForm',
 		]

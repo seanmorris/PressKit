@@ -10,10 +10,13 @@ class AdminPostRoute extends PostRoute
 			, 'view' => 'SeanMorris\Access\Role\Administrator'
 			, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
+			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
+			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
 		]
 	;
 	protected static 
-		$forms = [
+		$listBy = 'byNull' 
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\PostForm'
 			, 'search' => 'SeanMorris\PressKit\Form\CommentSearchForm'
 		]

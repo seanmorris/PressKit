@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit\Form;
-class ModelDeleteForm extends \SeanMorris\Form\Form
+class ModelDeleteForm extends \SeanMorris\PressKit\Form\Form
 {
 	public function __construct()
 	{

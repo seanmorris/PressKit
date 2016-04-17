@@ -3,7 +3,7 @@ namespace SeanMorris\PressKit\Route;
 class ModelSubRoute extends \SeanMorris\PressKit\Controller
 {
 	protected
-		$formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		$formTheme = 'SeanMorris\Form\Theme\Theme'
 	;
 	public
 		$routes = []
@@ -22,14 +22,22 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 	public function view($router)
 	{
 		$body = null;
-		$model = $this->getModel($router);
+		$this->model = $model = $this->getModel($router);
 		$parentController = $router->parent()->routes();
 
 		$params = $router->request()->params();
 
 		if(isset($params['api']))
 		{
+			//var_dump($parentController->modelSubRoutes);
+			//*/
+			$resource = new \SeanMorris\PressKit\Api\Resource(
+				$router
+			);
+			echo $resource->toJson();
+			/*/
 			echo json_encode($model->unconsume(1));
+			/*/
 			die;
 		}
 
@@ -105,7 +113,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			return false;
 		}
 
-		$form = new $formClass;
+		$form = new $formClass([
+			'_router' => $router
+			, '_controller' => $this
+		]);
 
 		if($params = $router->request->post())
 		{
@@ -136,19 +147,30 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 				$messages = \SeanMorris\Message\MessageHandler::get();
 
-				if($model->save())
-				{
-					$messages->addFlash(
-						new \SeanMorris\Message\SuccessMessage('Update successful!')
-					);
+				$modelSaveStatus = FALSE;
 
-					$parentController::afterUpdate($model, $skeleton);
-					$parentController::afterWrite($model, $skeleton);
+				try
+				{
+					if($model = $model->save())
+					{
+						$messages->addFlash(
+							new \SeanMorris\Message\SuccessMessage('Update successful!')
+						);
+
+						$parentController::afterUpdate($model, $skeleton);
+						$parentController::afterWrite($model, $skeleton);
+					}
+					else
+					{
+						$messages->addFlash(
+							new \SeanMorris\Message\ErrorMessage('Unexpected error!')
+						);
+					}
 				}
-				else
+				catch(\SeanMorris\PressKit\Exception\ModelAccessException $e)
 				{
 					$messages->addFlash(
-						new \SeanMorris\Message\ErrorMessage('Unexpected error!')
+						new \SeanMorris\Message\ErrorMessage($e->getMessage())
 					);
 				}
 
@@ -253,6 +275,13 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		$this->context['title'] = 'Delete ' . $model->title;
 
 		return $return;
+	}
+
+	public function owners($router)
+	{
+		$model = $this->getModel($router);
+
+		var_dump($model->getOwners());
 	}
 
 	public function api($router)

@@ -5,7 +5,7 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$title = 'Images'
 		, $modelClass = 'SeanMorris\PressKit\Image'
-		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		, $formTheme = 'SeanMorris\Form\Theme\Theme'
 		, $access = [
 			'create' => 'SeanMorris\Access\Role\Administrator'
 			, 'edit' => 'SeanMorris\Access\Role\Administrator'

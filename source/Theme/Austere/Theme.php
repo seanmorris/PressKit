@@ -15,7 +15,7 @@ class Theme extends \SeanMorris\Theme\Theme
 			//'SeanMorris\Ids\Model' => 'SeanMorris\PressKit\Theme\Austere\Grid',
 		]
 		, $themes = [
-			'SeanMorris\Form\Theme\Form\Theme'
+			'SeanMorris\Form\Theme\Theme'
 		]
 	;
 }

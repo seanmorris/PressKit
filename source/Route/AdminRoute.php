@@ -25,6 +25,16 @@ class AdminRoute extends \SeanMorris\PressKit\Controller
 				]
 			]
 		]
-
 	;
+
+	public function index($router)
+	{
+		$output = [];
+		foreach($this->routes as $path => $route)
+		{
+			$output[] = sprintf('<a href = "/admin/%s">%s</a>', $path, $path);
+		}
+
+		return implode('<br />', $output);
+	}
 }

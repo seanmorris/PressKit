@@ -472,6 +472,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 				, 'dataType': 'json'
 				, 'success': function(results)
 				{
+					results = results.body;
 					var linkTag = _this.renderSearchResults(results.shift());
 					_this.setIndicator(linkTag, true);
 				}
@@ -563,6 +564,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 					, 'dataType': 'json'
 					, 'success': function(results)
 					{
+						results = results.body;
 						if(!_this.searchResults)
 						{
 							var top = subWidget.tag.offset().top

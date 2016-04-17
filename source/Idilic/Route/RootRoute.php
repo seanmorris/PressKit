@@ -5,9 +5,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 	public function stateCleanUp()
 	{
 		$models = [
-			'SeanMorris\PressKit\Post'
-			, 'SeanMorris\PressKit\Image'
-			, 'SeanMorris\PressKit\Comment'
+			'SeanMorris\Access\User'
 		];
 
 		foreach($models as $class)

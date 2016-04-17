@@ -1,11 +1,9 @@
 <?php
 namespace SeanMorris\PressKit\Form;
-class PostForm extends \SeanMorris\Form\Form
+class PostForm extends \SeanMorris\PressKit\Form\Form
 {
-	public function __construct()
+	public function __construct(array $skeleton = [])
 	{
-		$skeleton = [];
-
 		$skeleton['_method'] = 'POST';
 
 		$skeleton['id'] = [
@@ -35,34 +33,22 @@ class PostForm extends \SeanMorris\Form\Form
 			, 'rows' => 5
 		];
 
-		$skeleton['written'] = [
-			'_title' => 'Written'
-			, 'type' => 'text'
-		];
-
-		$skeleton['edited'] =[
-			'_title' => 'Edited'
-			, 'type' => 'text'
-		];
-
 		$skeleton['weight'] = [
 			'_title' => 'Weight'
 			, 'type' => 'text'
-		];
-
-		$skeleton['author'] = [
-			'_title' => 'Author'
-			, 'type' => 'text'
+			, '_access' => [
+				'read' => [FALSE  => '']
+				, 'write' => [FALSE => '']
+			]
 		];
 
 		$skeleton['category'] =[ 
 			'_title' => 'Category'
 			, 'type' => 'text'
-		];
-
-		$skeleton['slugsize'] = [
-			'_title' => 'Slugsize'
-			, 'type' => 'text'
+			, '_access' => [
+				'read' => [FALSE  => '']
+				, 'write' => [FALSE => '']
+			]
 		];
 
 		$skeleton['ctaLink'] = [
@@ -75,6 +61,11 @@ class PostForm extends \SeanMorris\Form\Form
 			'_title' => 'CtaLinkText'
 			, 'type' => 'text'
 			, 'value' => ''
+		];
+
+		$skeleton['slugsize'] = [
+			'_title' => 'Slugsize'
+			, 'type' => 'text'
 		];
 
 		/*$skeleton['state'] = [ 
@@ -90,7 +81,7 @@ class PostForm extends \SeanMorris\Form\Form
 			, '_previewImagePoint' => 'url'
 			, '_titlePoint' => 'title'
 		];
-
+		/*
 		$skeleton['comments'] = [
 			'_title' => 'Comments'
 			, '_subtitle' => 'Comment'
@@ -99,28 +90,8 @@ class PostForm extends \SeanMorris\Form\Form
 			, '_previewImagePoint' => 'url'
 			, '_titlePoint' => 'title'
 		];
+		*/
 
-		$skeleton['comments2'] = [
-			'_title' => 'Comments'
-			, '_subtitle' => 'Comment'
-			, 'type' => 'modelSearch'
-			, '_searchEndpoint' => '/comments'
-			, '_previewImagePoint' => 'url'
-			, '_titlePoint' => 'title'
-		];
-
-		$skeleton['formatter'] = [
-			'_title' => 'Formatter'
-			, 'value' => ''
-			, 'type' => 'text'
-		];
-
-		$skeleton['test'] = [
-			'_title' => 'Test Field'
-			, 'value' => ''
-			, 'type' => 'text'
-		];
-		
 		$skeleton['saveContinue'] = [
 			'_title' => 'Save & Continue'
 			, 'type' => 'submit'
@@ -135,7 +106,7 @@ class PostForm extends \SeanMorris\Form\Form
 			'_title' => 'Save & Exit'
 			, 'type' => 'submit'
 		];
-
+		/*
 		$stateFields = [];
 
 		$stateFields['id'] = [
@@ -149,7 +120,40 @@ class PostForm extends \SeanMorris\Form\Form
 			, 'value' => ''
 			, 'type' => 'text'
 		];
+		*/
 
+		$skeleton['written'] = [
+			'_title' => 'Written'
+			, 'type' => 'text'
+			, '_access' => [
+				'read' => [TRUE  => '']
+				, 'write' => [FALSE => ['disabled' => 'disabled']]
+			]
+		];
+
+		$skeleton['edited'] =[
+			'_title' => 'Edited'
+			, 'type' => 'text'
+			, '_access' => [
+				'read' => [TRUE  => '']
+				, 'write' => [FALSE => ['disabled' => 'disabled']]
+			]
+		];
+
+		/*
+
+		$skeleton['author'] = [
+			'_title' => 'Author'
+			, 'type' => 'text'
+			, '_access' => [
+				'read' => [TRUE  => '']
+				, 'write' => [FALSE => ['disabled' => 'disabled']]
+			]
+		];
+		*/
+
+		
+		/*
 		$skeleton['state'] = [
 			'_title' => 'State Fields'
 			, '_subtitle' => 'State'
@@ -157,16 +161,13 @@ class PostForm extends \SeanMorris\Form\Form
 			, '_children' => $stateFields
 			, '_multi' => FALSE
 		];
-		
-		$skeleton['comments2'] = [
-			'_title' => 'Comments'
-			, '_subtitle' => 'Comment'
-			, 'type' => 'modelSearch'
-			, '_searchEndpoint' => '/comments'
-			, '_previewImagePoint' => 'url'
-			, '_titlePoint' => 'title'
+
+		$skeleton['checked'] = [
+			'_title' => 'Checked'
+			, 'type' => 'checkbox'
 		];
-		
+		*/
+
 		parent::__construct($skeleton);
 	}
 }

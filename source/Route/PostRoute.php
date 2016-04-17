@@ -5,21 +5,22 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$title = 'Posts'
 		, $modelClass = 'SeanMorris\PressKit\Post'
-		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		, $formTheme = 'SeanMorris\Form\Theme\Theme'
 		, $modelRoutes = [
 			'images' => '\SeanMorris\PressKit\Route\ImageRoute'
 			, 'comments' => '\SeanMorris\PressKit\Route\CommentRoute'
-			, 'comments2' => '\SeanMorris\PressKit\Route\CommentRoute'
 		]
 		, $modelSubRoutes = [
 			'view' => [
 				'comments', 'comments/create'
-				, 'comments2', 'comments2/create'
-				, 'images'
+				 , 'images'
 			]
 		]
 		, $access = [
 			'view' => TRUE
+			, 'edit' => '\SeanMorris\Access\Role\Administrator'
+			, 'create' => '\SeanMorris\Access\Role\Administrator'
+			, 'delete' => '\SeanMorris\Access\Role\Administrator'
 			, 'index' => TRUE
 		]
 		, $hideTitle = [
@@ -27,7 +28,9 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 		]
 	;
 	protected static
-		$listBy = 'byModerated' 
+		$listBy = 'byModerated'
+		, $pageSize = 16
+		, $pageSpread = 2
 		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\PostForm'
 		]

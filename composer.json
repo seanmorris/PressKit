@@ -6,15 +6,6 @@
             "email": "sean@sean-morris.com"
         }
     ],
-    "require": {
-        "seanmorris/rhino": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "/home/sean/packages/SeanMorris/Rhino"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "SeanMorris\\PressKit\\Test\\": "test/",

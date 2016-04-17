@@ -15,7 +15,12 @@ div.messageContainer{
 	margin-bottom:20px;
 }
 
-fieldset {
+div.messageContainer:empty {
+	margin: 0px;
+	height: 0px;
+}
+
+fieldset, form {
 	padding-left:10px;
 	padding-right:10px;
 	padding-bottom:10px;
@@ -96,7 +101,7 @@ fieldset legend {
 	top:-5px;
 }
 
-input[type="text"], input[type=""], textarea {
+input[type="text"], input[type="password"], input[type=""], textarea {
 	box-sizing: border-box;
 	width: 100%;
 	font-size: 13pt;
@@ -203,7 +208,8 @@ table.packageInfo td {
 }
 
 table.PressKitList{
-	width:100%;
+	table-layout:fixed;
+	width: 100%;
 }
 
 table.PressKitList tr:nth-child(2n+1){
@@ -224,10 +230,9 @@ table.PressKitList tr.buttons div.actions{
 	text-align: left;
 }
 
-table.PressKitList tr:nth-child(2){
+table.PressKitList  tr:nth-child(1){
 	background:rgba(100, 100, 100, 0.8);
 	color:#CCC;
-	font-size:1.7em;
 }
 
 table.PressKitList tr.buttons{
@@ -240,21 +245,22 @@ table.PressKitList tr.buttons td{
 	padding:0px;
 }
 
-table.PressKitList tr.buttons:nth-child(2n) div.buttons{
+table.PressKitList tbody:nth-child(2) tr.buttons:nth-child(2n) div.buttons{
 	background:rgba(100, 100, 100, 0.2);
 }
 
-table.PressKitList tr.buttons:nth-child(2n+1) div.buttons{
+table.PressKitList tbody:nth-child(2) tr.buttons:nth-child(2n+1) div.buttons{
 	background:rgba(100, 100, 100, 0.2);
 }
 
-table.PressKitList tr.buttons div.buttons{
+table.PressKitList tbody:nth-child(2) tr.buttons div.buttons{
 	text-align:right;
 }
 
 table.PressKitList tr td{
 	padding:5px;
 	text-align: center;
+	width:auto;
 }
 
 table.PressKitList tr:not(.buttons) td:nth-child(1){
@@ -267,30 +273,37 @@ table.PressKitList tr:not(.buttons) td a{
 	clear:both;
 }
 
-.PressKitList td.id {
+.PressKitList col.id {
 	max-width:4em;
 }
 
-.PressKitList td.view,
-.PressKitList td.edit,
-.PressKitList td.delete {
-	max-width:8em;
+.PressKitList td {
+	word-wrap: break-word;
+	width:auto;
+}
+
+.PressKitList .select,
+.PressKitList .id,
+.PressKitList .view,
+.PressKitList .edit,
+.PressKitList .delete {
+	width:5em;
 }
 
 table.PressKitList tr td:nth-child(2n){
 	background:rgba(100, 100, 100, 0.2);
 }
 
+div.main {
+	/*width:100%;*/
+}
+/*
 @media (min-width: 1200px){
 	hr{
 		margin: 10px;
 	}
-
-	div.main {
-		width:1200px;
-	}
 }
-@media (max-width: 1199px) and (min-width: 511px){
+@media (max-width:1199 px) and (min-width: 511px){
 	hr{
 		margin: 7px;
 	}
@@ -300,7 +313,7 @@ table.PressKitList tr td:nth-child(2n){
 		margin: 4px;
 	}
 }
-
+*/
 @media (max-width: 800px){
 	table.PressKitList tr td:nth-child(3n){
 		background:rgba(100, 100, 100, 0.4);
@@ -361,4 +374,18 @@ table.PressKitList tr:hover:not(.buttons){
 table.PressKitList tr:not(.buttons) td:hover{
 	color:#000;
 	background:rgba(255, 255, 255, 0.15)!important;
+}
+
+hr{
+	margin: 5px 0;
+}
+
+div.PressKitComment div.body {
+	word-wrap: break-word;
+}
+
+div.header
+, div.body{
+	padding-left:9px;
+	padding-right:9px;
 }

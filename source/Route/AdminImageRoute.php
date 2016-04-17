@@ -7,7 +7,7 @@ class AdminImageRoute extends ImageRoute
 			'create' => 'SeanMorris\Access\Role\Administrator'
 			, 'edit' => 'SeanMorris\Access\Role\Administrator'
 			, 'delete' => 'SeanMorris\Access\Role\Administrator'
-			, 'view' => TRUE
+			, 'view' => 'SeanMorris\Access\Role\Administrator'
 			, 'index' => 'SeanMorris\Access\Role\Administrator'
 			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
 			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
@@ -15,7 +15,10 @@ class AdminImageRoute extends ImageRoute
 		]
 	;
 	protected static 
-		$forms = [
+		$listBy = 'byNull'
+		, $pageSize = 3
+		, $pageSpread = 2
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\ImageForm',
 			'search' => 'SeanMorris\PressKit\Form\ImageSearchForm',
 		]

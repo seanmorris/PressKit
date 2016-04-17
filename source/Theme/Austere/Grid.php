@@ -28,20 +28,70 @@ class Grid extends \SeanMorris\Theme\View
 		{
 			$this->vars['actions'] = null;
 		}
+
+		$vars['pagerLinks'] = [];
+
+		if(isset($vars['pager']) && is_array($vars['pager']))
+		{
+			$query = $vars['query'];
+
+			foreach($vars['pager'] as $label => $page)
+			{
+				$query['page'] = $page;
+
+				if($label === $vars['page'])
+				{
+					$vars['pagerLinks'][] = $label + 1;
+					continue;
+				}
+
+				$path = $vars['currentPath'];
+				$vars['pagerLinks'][] = sprintf(
+					'<a href = "/%s">%s</a>'
+					, $path . '?' . http_build_query($query)
+					, is_numeric($label) ? ($label+1) : $label
+				);
+			}
+		}
+
+		if(count($vars['pagerLinks']) <= 1)
+		{
+			$vars['pagerLinks'] = [];
+		}
 	}
 }
 __halt_compiler();
 ?>
 <table class = "PressKitList">
-	<tr class = "buttons">
-		<td colspan="<?=count($columns);?>"><div class = "actions"><?=$actions;?></div></td>
-	<tr>
-	<tr class = "buttons">
-		<td colspan="<?=count($columns);?>"><div class = "buttons"><?=$buttons;?></div></td>
+	<tbody>
+		<tr class = "buttons">
+			<td colspan="<?=count($columns);?>">
+				<div class = "actions"><?=$actions;?></div>
+			</td>
+		</tr>
+		<tr class = "buttons">
+			<td colspan="<?=count($columns);?>">
+				<div class = "buttons"><?=$buttons;?></div>
+			</td>
+		</tr>
+		<colgroup>
+		<?php foreach($columns as $key => $column): ?>
+			<col span="1" class = "<?php
+			echo $column ? $column : $key ;
+			if(isset($columnClasses[$column]))
+			{
+				echo " ";
+				echo $columnClasses[$column];
+			}
+			?>" />
+		<?php endforeach; ?>
+		</colgroup>
+	</tbody>
+	<tbody>
 	<tr>
 		<?php foreach($columns as $key => $column): ?>
 		<td class = "<?php
-		echo is_numeric($key) ? NULL : $key;
+		echo $column ? $column : $key ;
 		if(isset($columnClasses[$column]))
 		{
 			echo " ";
@@ -73,8 +123,11 @@ __halt_compiler();
 		</td>
 		<?php endforeach; ?>
 	</tr>
-<?php endforeach; ?>
+	<?php endforeach; ?>
+	</tbody>
 	<tr class = "buttons">
-	<td colspan="<?=count($columns);?>"><div class = "buttons"><?=$buttons;?></div></td>
+	<td colspan="<?=count($columns);?>">
+		<div class = "buttons"><?php echo implode(' ', $pagerLinks); ?><br /><?=$buttons;?></div>
+	</td>
 	</tr>
 </table>

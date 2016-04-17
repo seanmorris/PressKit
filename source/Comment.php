@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit;
-class Comment extends \SeanMorris\Ids\Model
+class Comment extends \SeanMorris\PressKit\Model
 {
 	protected
 		$id
@@ -26,7 +26,7 @@ class Comment extends \SeanMorris\Ids\Model
 			, 'edited' => 'UNIX_TIMESTAMP()'
 		]
 		, $hasOne = [
-			'state' => 'SeanMorris\PressKit\State'
+			'state' => 'SeanMorris\PressKit\State\CommentState'
 			, 'author' => 'SeanMorris\Access\User'
 		]
 		, $byPublicId = [
@@ -59,6 +59,7 @@ class Comment extends \SeanMorris\Ids\Model
 				]
 			]
 		]
+		, $byNull = ['order' => ['id' => 'DESC']]
 		, $byState = [
 			'named' => TRUE
 			, 'join' => [
@@ -70,4 +71,21 @@ class Comment extends \SeanMorris\Ids\Model
 			]
 		]
 	;
+
+	protected static function beforeCreate($instance, &$skeleton)
+	{
+		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
+
+		var_dump($skeleton);
+		
+
+		if($user)
+		{
+			$skeleton['author'] = $user->id;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

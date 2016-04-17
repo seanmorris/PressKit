@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit\Form;
-class ImageSearchForm extends \SeanMorris\Form\Form
+class ImageSearchForm extends \SeanMorris\PressKit\Form\Form
 {
 	public function __construct()
 	{

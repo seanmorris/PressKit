@@ -4,7 +4,7 @@ class State extends \SeanMorris\Ids\Model
 {
 	protected
 		$id
-		, $state
+		, $state = 0
 		, $owner
 	;
 
@@ -12,33 +12,9 @@ class State extends \SeanMorris\Ids\Model
 		$states	= [
 			0 => [
 				'create'	=> 'SeanMorris\Access\Administrator'
-				, 'read'	 => 0
-				, 'update'	 => [0, -1]
-				, 'delete'	 => -1
-
-				, '$title'	=> [
-					'write'  => -1
-					, 'read' => 0
-				]
-				, '$publicId'	=> [
-					'write'  => -1
-					, 'read' => 0
-				]
-				, '$written'	=> [
-					'write'  => -1
-					, 'read' => 0
-				]
-				, '$edited'		=> [
-					'write'  => -1
-					, 'read' => 0
-				]
-			]
-			, 1 => [
-				'read'	 => ['SeanMorris\Access\Administrator',0]
-				, '$title'	=> [
-					'write'  => 0
-					, 'read' => 0
-				]
+				, 'read'	 => TRUE
+				, 'update'	 => [TRUE, FALSE]
+				, 'delete'	 => FALSE
 			]
 		]
 		, $transitions	= [
@@ -49,20 +25,21 @@ class State extends \SeanMorris\Ids\Model
 				0 => -1
 			]
 		]
+
+		, $hasOne = [
+			'owner' => 'SeanMorris\Access\User'
+		]
 		
-		,$table = 'StateFlowState'
+		, $table = 'StateFlowState'
 		, $byId = [
 			'where' => [['id' => '?']]
-		]
-		, $readColumns = [
-			'owner' => 'HEX(%s)'
-		]
-		, $updateColumns = [
-			'owner' => 'UNHEX(%s)'
 		]
 		, $byModerated = [
 			'where' => ['AND' => [['state' => 0, '>']]]
 			// Also good: 'where' => [['state' => '0', '>']]
+		]
+		, $byOwner = [
+			'where' => [['owner' => '?']]
 		]
 		, $byStateNamed = [
 			'named' => TRUE
@@ -70,16 +47,13 @@ class State extends \SeanMorris\Ids\Model
 				['state' => '?', '=', '%s', 'state', FALSE]
 			]
 		]
-		, $hasOne = [
-			'owner' => 'SeanMorris\Access\User'
-		]
 	;
 
 	public function can($user, $point, $action = 'read')
 	{
 		$result = $this->_can($user, $point, $action);
 
-		//\SeanMorris\Ids\Log::debug([get_called_class() . '::can', $point, $action, $result]);
+		\SeanMorris\Ids\Log::debug([get_called_class() . '::can', $point, $action, $result]);
 
 		if($action == 'write')
 		{
@@ -93,17 +67,18 @@ class State extends \SeanMorris\Ids\Model
 	// Properties are defined by $point =~ /^\$/
 	protected function _can($user, $point, $action = 'read')
 	{
-		$pointCheck = substr($point, 0, 1) == '$';
 
+		$pointCheck = substr($point, 0, 1) == '$';
+		
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if %s can %s%s during state %s'
-			, $user->username
+			'Checking if user can %s%s %s during state %s'
 			, $action
 			,  ($pointCheck
 				? sprintf(' (on %s)', $point)
 				: NULL)
+			, get_class($this)
 			, $this->state
-		));
+		), $user);
 
 		if(!isset(static::$states[$this->state][$point])
 			&& $parent = static::getParent($this)
@@ -114,14 +89,24 @@ class State extends \SeanMorris\Ids\Model
 				return $super;
 			}
 
-			return false;
+			return FALSE;
 		}
 		elseif(!isset(static::$states[$this->state][$point]))
 		{
-			return false;
+			if($pointCheck && $action === 'read')
+			{
+				return TRUE;
+			}
+
+			return FALSE;
 		}
 
 		$role = static::$states[$this->state][$point];
+
+		\SeanMorris\Ids\Log::debug(
+			sprintf('Role needed for %s %s:', $action, $point)
+			, $role
+		);
 
 		if($pointCheck)
 		{
@@ -135,9 +120,11 @@ class State extends \SeanMorris\Ids\Model
 				return false;
 			}
 
-			\SeanMorris\Ids\Log::debug('Checking ' . $this->owner . ' and ' . $user->publicId);
+			$owner = $this->getSubject('owner');
 
-			if($this->owner == $user->publicId)
+			$owner && \SeanMorris\Ids\Log::debug('Checking if user is owner... ' . $owner->isSame($user));
+
+			if($owner && $owner->isSame($user))
 			{
 				$role = $role[0];
 			}
@@ -147,20 +134,21 @@ class State extends \SeanMorris\Ids\Model
 			}
 		}
 
-		\SeanMorris\Ids\Log::debug('Checking for ' . $role);
+		if(is_numeric($role) || is_bool($role))
+		{
+			if($role == 1)
+			{
+				return TRUE;
+			}
+			else if($role == 0)
+			{
+				return FALSE;
+			}
 
-		if($role === 0)
-		{
-			return true;
-		}
-		else if($role === -1)
-		{
-			return false;
-		}
-
-		if($role < 0)
-		{
-			return false;
+			if($role < 0)
+			{
+				return FALSE;
+			}
 		}
 
 		if(!isset($user))
@@ -168,7 +156,12 @@ class State extends \SeanMorris\Ids\Model
 			return false;
 		}
 
-		\SeanMorris\Ids\Log::debug('Has role? ' . (int)$user->hasRole($role));
+		\SeanMorris\Ids\Log::debug(
+			'Checking for role '
+			. $role
+			. '... '
+			. (int)$user->hasRole($role)
+		);
 
 		if($user->hasRole($role))
 		{
@@ -191,7 +184,7 @@ class State extends \SeanMorris\Ids\Model
 
 	public function canChange($to)
 	{
-		$user = $_SESSION['user'];
+		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
 		if(!isset(static::$transitions[$this->state][$to])
 			&& $parent = static::getParent($this)
@@ -255,5 +248,29 @@ class State extends \SeanMorris\Ids\Model
 		}
 
 		return false;
+	}
+
+	public function consume($skeleton, $override = false)
+	{
+		if(isset($skeleton['state']))
+		{
+			$this->change($skeleton['state']);
+		}
+
+		unset($skeleton['state']);
+
+		parent::consume($skeleton, $override);
+	}
+
+	public function __set($name, $value)
+	{
+		if($name == 'state')
+		{
+			$this->change($skeleton['state']);
+		}
+		else
+		{
+			parent::__set($name, $value);
+		}
 	}
 }

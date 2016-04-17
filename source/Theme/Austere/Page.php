@@ -51,8 +51,10 @@ __halt_compiler();
 			</div>
 			<div class = "main container">
 				<div class = "postBoardWrapper">
-					<div class = "breadcrumbs"><?=$breadcrumbs?></div>
-					<?php if(isset($title) && $title){?> <h1><?=$title;?></h1><?php } ?>
+					<div class = "header">
+						<div class = "breadcrumbs"><?=$breadcrumbs?></div>
+						<?php if(isset($title) && $title){?> <h1><?=$title;?></h1><?php } ?>
+					</div>
 					<div class = "body">
 						<?=$messages?>
 						<?php foreach($body as $segment){ echo $segment; echo PHP_EOL; } ?>
@@ -69,6 +71,7 @@ __halt_compiler();
 			</div>
 		</div>
 		<script>
+		<?php /*
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -77,6 +80,7 @@ __halt_compiler();
 		ga('create', 'UA-41157199-1', 'sean-morris.com');
 		ga('send', 'pageview');
 		</script>
+		*/ ?>
 	</body>
 </html>
 <?php if(isset($comment)): ?>

@@ -5,9 +5,9 @@ class RoleRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$modelClass = 'SeanMorris\Access\Role'
 		//, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
-		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		, $formTheme = 'SeanMorris\Form\Theme\Theme'
 		, $listColumns = ['id', 'class']
-		, $columnClasses = ['id' => 'droppable']
+		//, $columnClasses = ['id' => 'droppable']
 	;
 	protected static 
 		$menus = [

@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit;
-class Image extends \SeanMorris\Ids\Model
+class Image extends \SeanMorris\PressKit\Model
 {
 	protected
 		$id
@@ -24,7 +24,7 @@ class Image extends \SeanMorris\Ids\Model
 			'publicId'			=> 'UNHEX(%s)'
 		]
 		, $hasOne				= [
-			'state'				=> 'SeanMorris\PressKit\State'
+			'state'				=> 'SeanMorris\PressKit\State\ImageState'
 		]
 		, $byId = [
 			'where' => [['id' => '?']]

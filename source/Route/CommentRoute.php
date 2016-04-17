@@ -5,20 +5,24 @@ class CommentRoute extends \SeanMorris\PressKit\Controller
 	protected
 		$title = 'Comments'
 		, $modelClass = 'SeanMorris\PressKit\Comment'
-		, $formTheme = 'SeanMorris\Form\Theme\Form\Theme'
+		, $formTheme = 'SeanMorris\Form\Theme\Theme'
 		, $listColumns = [
 			'id'
+			, 'title'
 			, 'body'
-			, ''
 		]
 		, $access = [
-			'view' => TRUE
-			, 'index' => TRUE
-			, 'create' => 'SeanMorris\Access\Role\Moderator'
+			'view'     => TRUE
+			, 'index'  => TRUE
+			, 'create' => TRUE
+			, 'edit'   => 'SeanMorris\Access\Role\User'
+			, 'delete' => 'SeanMorris\Access\Role\User'
 		]
 	;
-	protected static 
-		$forms = [
+	
+	protected static
+		$listBy = 'byModerated'  
+		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\CommentForm',
 			'search' => 'SeanMorris\PressKit\Form\CommentSearchForm',
 		]
@@ -34,47 +38,26 @@ class CommentRoute extends \SeanMorris\PressKit\Controller
 		]
 	;
 
-	/*
-	public function moderate($router)
+	protected static function afterCreate($instance, &$skeleton)
 	{
-		$class = $this->modelClass;
+		$messages = \SeanMorris\Message\MessageHandler::get();
 
-		$comments = $class::getByState(['ssss' => 0]);
-		$theme = $this->_getTheme($router);
-
-		$view = new \SeanMorris\PressKit\Theme\Austere\ModelGrid([
-			'path' => $router->path()->pathString()
-			, 'content' => $comments
-			, 'columns' => [
-				'id'
-				, 'title'
-			]
-		]);
-
-		return $view;
-
-		foreach($comments as &$comment)
+		if($instance->id)
 		{
-			$comment = $theme::render($comment, ['path' => $router->path()->pathString()]);
-		}
+			$state = $instance->getSubject('state');
 
-		return implode(PHP_EOL, $comments);
-	}
-	*/
-
-	protected static function beforeCreate($instance, &$skeleton)
-	{
-		$session = \SeanMorris\Ids\Meta::staticSession(1);
-
-		\SeanMorris\Ids\Log::debug($session);
-
-		if(isset($session['user']) && $session['user'])
-		{
-			$instance->addSubject('author', $session['user']);
-		}
-		else
-		{
-			return false;
+			if($state->state)
+			{
+				$messages->addFlash(new \SeanMorris\Message\SuccessMessage(
+					'Comment submitted.'
+				));	
+			}
+			else
+			{
+				$messages->addFlash(new \SeanMorris\Message\SuccessMessage(
+					'Comment submitted for moderation. It will appear after review.'
+				));	
+			}
 		}
 	}
 }

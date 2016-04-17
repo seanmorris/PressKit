@@ -1,6 +1,6 @@
 <?php
 namespace SeanMorris\PressKit\Form;
-class UserForm extends \SeanMorris\Form\Form
+class UserForm extends \SeanMorris\PressKit\Form\Form
 {
 	public function __construct()
 	{
@@ -20,6 +20,11 @@ class UserForm extends \SeanMorris\Form\Form
 
 		$skeleton['username'] = [
 			'_title' => 'Username'
+			, 'type' => 'text'
+		];
+
+		$skeleton['email'] = [
+			'_title' => 'Email'
 			, 'type' => 'text'
 		];
 
