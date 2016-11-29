@@ -24,11 +24,15 @@ class CommentSearchForm extends \SeanMorris\PressKit\Form\Form
 
 		$skeleton['search']['_children']['state'] = [
 			'_title' => 'State'
-			, 'type' => 'text'
-			, 'value' => 0
+			, 'value' => ''
+			, 'type' => 'select'
+			, '_options' => [
+				NULL => NULL
+				, 0  => 'Unpublished'
+				, 1  => 'Published'
+			]
 		];
-
-		$skeleton['submit'] = [
+		$skeleton['search']['_children']['submit'] = [
 			'_title' => 'Submit'
 			, 'type' => 'submit'
 		];

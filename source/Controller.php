@@ -33,11 +33,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $menusBuilt = []
 		, $menus = []
 		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
-		, $actions = [
-			'Unpublish' => '_unpublishModels'
-			, 'Publish' => '_publishModels'
-			, 'Delete' => '_deleteModels'
-		]
+		, $actions = []
 		, $forms = [
 			'delete' => 'SeanMorris\PressKit\Form\ModelDeleteForm'
 		]
@@ -206,7 +202,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			\SeanMorris\Ids\Log::debug('Access Denied.');
 
 			return false;
-		}		
+		}
 
 		return false;
 	}
@@ -226,7 +222,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function _menu(\SeanMorris\Ids\Router $router, $path, \SeanMorris\Ids\Routable $routable = NULL)
 	{
 		$session = \SeanMorris\Ids\Meta::staticSession();
-		
+
 		$user = null;
 
 		if(isset($session['user']))
@@ -252,7 +248,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if($routable && isset($routable::$menus))
 		{
-			$menus = $routable::$menus;		
+			$menus = $routable::$menus;
 		}
 
 		foreach($menus as $menuName => $menu)
@@ -262,7 +258,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$menuViews = [];
 			$allSubroutes = [];
-			
+
 			$modelRoute = static::$modelRoute;
 			$modelSubRoutes = $modelRoute
 				? (new $modelRoute($this))->subRoutes
@@ -276,7 +272,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					$allSubroutes[] = $route;
 				}
 			}
-			
+
 			foreach($modelSubRoutes as $node => $routes)
 			{
 				foreach($routes as $route)
@@ -358,7 +354,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function _postRoute($router, $body, $preroutePath)
 	{
 		$menu = null;
-		
+
 		if(!$router->parent())
 		{
 			$menu = $this->_menu($router, $preroutePath);
@@ -395,18 +391,14 @@ class Controller implements \SeanMorris\Ids\Routable
 				]
 			]];
 
-			$user = NULL;
+			$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
-			$session = \SeanMorris\Ids\Meta::staticSession();
-
-			if(isset($session['user']))
+			if($user && $user->id)
 			{
-				$user = $session['user'];
-
 				$menuPath = $preroutePath->getSpentPath();
 
 				$menuPathString = $menuPath->pathString();
-			
+
 				$m = \SeanMorris\PressKit\Menu::get('main');
 				$m->add($contextMenu, $menuPathString, $user);
 			}
@@ -520,7 +512,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 				$this->context['breadcrumbs'][] = [
 					'text' => $title
-					, 'url' => $crumbUrl ? $crumbUrl : '/' 
+					, 'url' => $crumbUrl ? $crumbUrl : '/'
 				];
 
 				$crumbUrl .= '/' . $parentRouter->match();
@@ -548,7 +540,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				{
 					$this->context[$contextElement] = [];
 				}
-				
+
 				$context =& $router->getContext();
 
 				$ctxEle = $theme::resolveList($contextElement, [], false);
@@ -566,12 +558,16 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if(isset($context['js']) && $context['js'])
 			{
-				//$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
+				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
+
+				\SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
 			}
 
 			if(isset($context['css']) && $context['css'])
 			{
-				//$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
+				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
+
+				\SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
 			}
 
 			$stack = $theme::resolveFirst('stack');
@@ -634,7 +630,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		$postParams = $router->request()->post();
 
 		if(isset($postParams['action'], static::$actions[$postParams['action']])
-			&& $this->_access(static::$actions[$postParams['action']], $router) 
+			&& $this->_access(static::$actions[$postParams['action']], $router)
 		){
 			$action = static::$actions[$postParams['action']];
 			$modelsProcessed = 0;
@@ -662,7 +658,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$queryString = http_build_query($_GET);
 			$pop = 0;
-			
+
 			if($this->getParentModels($router))
 			{
 				$pop = 1;
@@ -702,7 +698,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			if(count($parentModels) == 1)
 			{
 				$parentModel = current($parentModels);
-				
+
 				$node = $router->path()->getNode(-1);
 
 				$objectClass = $parentModel::getSubjectClass($node);
@@ -733,7 +729,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		else
 		{
 			$params = $router->request()->params();
-			
+
 			if($formClass)
 			{
 				$form = new $formClass([
@@ -748,7 +744,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					$form->setValues($params);
 					$formValues = $form->getValues();
 				}
-				
+
 				$formRendered = $form->render($formTheme);
 			}
 
@@ -756,11 +752,14 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if(array_filter($formValues))
 			{
-				$listBy = 'generateBySearch';
+				$listBy = 'BySearch';
+				
 				if(static::$pageSize)
 				{
 					$listBy = 'Page' . $listBy;
 				}
+
+				$listBy = 'generate' . $listBy;
 
 				if(isset($params['page']))
 				{
@@ -850,7 +849,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 					$firstPage = $pageNumber - static::$pageSpread;
 					$firstPage = $firstPage >= 0 ? $firstPage : 0;
-					
+
 					if($lastPage < $lastPageSpread)
 					{
 						$lastPageSpread = $lastPage;
@@ -859,7 +858,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					if($pageNumber <= $lastPageSpread)
 					{
 						$pager = $firstPage;
-						
+
 						while($pager <= $lastPageSpread)
 						{
 							if($pager >= $lastPage)
@@ -984,7 +983,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				, 'pager'         => $pagerLinks
 				, 'query'         => $_GET
 			] + $this->context);
-		}		
+		}
 
 		return $formRendered . $list;
 	}
@@ -994,7 +993,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		$session = \SeanMorris\Ids\Meta::staticSession();
 
 		$formClass = $this->_getForm('edit');
-		
+
 		if(!$formClass)
 		{
 			\SeanMorris\Ids\Log::error(sprintf(
@@ -1056,9 +1055,9 @@ class Controller implements \SeanMorris\Ids\Routable
 
 				try
 				{
-					if($newModel = $model->save())
+					if($newModel = $model->create())
 					{
-						$model = $newModel;
+						$this->model = $model = $newModel;
 
 						$parents = $this->getParentModels($router);
 
@@ -1066,7 +1065,7 @@ class Controller implements \SeanMorris\Ids\Routable
 						{
 							$parent = array_shift($parents);
 							$property = $router->path()->getNode(-1);
-							
+
 							// @TODO: Add case for singular children
 							if(get_class($model) == $parent->canHaveMany($property))
 							{
@@ -1147,8 +1146,8 @@ class Controller implements \SeanMorris\Ids\Routable
 		if(!$router->subRouted())
 		{
 			$this->context['title'] = 'Creating ' . array_pop($classParts);
-		}		
-		
+		}
+
 		$formTheme = $this->formTheme;
 
 		return $form->render($formTheme);
@@ -1214,10 +1213,10 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$modelRoute->title = $model->{$titleField};
 			}
-			
+
 
 			return $router->resumeRouting($modelRoute);
-		}	
+		}
 
 		if(!$this->models)
 		{
@@ -1257,7 +1256,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function _publishModels($model)
 	{
 		$state = $model->getSubject('state');
-		$state->consume(['state' => 1]);
+		$state->change(1);
 		$state->save();
 	}
 
@@ -1297,7 +1296,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	protected static function beforeRead($instance)
 	{
-		
+
 	}
 
 	protected static function afterRead($instance)
@@ -1375,7 +1374,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			else if(is_subclass_of($class, 'SeanMorris\PressKit\Model'))
 			{
 				$route = new $route;
-				
+
 				if($model === $route->modelClass || is_subclass_of($model, $route->modelClass))
 				{
 					return [$prefix . '/' . $node => $route];
@@ -1397,7 +1396,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 
-		return FALSE;	
+		return FALSE;
 	}
 
 	public function _dynamicId($model)

@@ -6,7 +6,7 @@ class PostState extends \SeanMorris\PressKit\State
 		$states	= [
 			0 => [
 				'create'	=> 'SeanMorris\Access\Role\Administrator'
-				, 'read'	 => 0
+				, 'read'	 => 'SeanMorris\Access\Role\Administrator'
 				, 'update'	 => [1, 'SeanMorris\Access\Role\Administrator']
 				, 'delete'	 => ['SeanMorris\Access\Role\Administrator', 'SeanMorris\Access\Role\Administrator']
 
@@ -28,8 +28,8 @@ class PostState extends \SeanMorris\PressKit\State
 				]
 				, '$slugSize'	=> [
 					'write'  => [1, 'SeanMorris\Access\Role\Administrator']
-					, 'read' => 
-1				]
+					, 'read' => 1
+				]
 				, '$ctaLink'	=> [
 					'write'  => [1, 'SeanMorris\Access\Role\Administrator']
 					, 'read' => 1
@@ -42,13 +42,17 @@ class PostState extends \SeanMorris\PressKit\State
 					'write'  => [1, 'SeanMorris\Access\Role\Administrator']
 					, 'read' => 1
 				]
+				, '$state'   => [
+					'write'  => 'SeanMorris\Access\Role\Administrator'
+					, 'read' => TRUE
+				]
 			]
 			, 1 => [
 				'create'	=> 'SeanMorris\Access\Role\Administrator'
 				, 'read'	 => 1
 				, 'update'	 => [1, 'SeanMorris\Access\Role\Administrator']
 				, 'delete'	 => ['SeanMorris\Access\Role\Administrator', 'SeanMorris\Access\Role\Administrator']
-				
+
 				, '$title'	=> [
 					'write'  => [1, 'SeanMorris\Access\Role\Administrator']
 					, 'read' => 1
@@ -81,20 +85,22 @@ class PostState extends \SeanMorris\PressKit\State
 					'write'  => [1, 'SeanMorris\Access\Role\Administrator']
 					, 'read' => 1
 				]
+				, '$state'   => [
+					'write'  => 'SeanMorris\Access\Role\Administrator'
+					, 'read' => TRUE
+				]
 				, '$comments'	=> [
 					'add' => 'SeanMorris\Access\Role\User'
 					, 'read' => 1
 				]
 			]
 		]
-		/*
 		, $transitions	= [
 			0 => [
-				1 => 32
+				1 => 'SeanMorris\Access\Role\Administrator'
 			]
 			, 1 => [
-				0 => -1
+				0 => 'SeanMorris\Access\Role\Administrator'
 			]
-		]
-		*/;
+		];
 }

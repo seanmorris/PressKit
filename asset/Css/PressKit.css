@@ -27,29 +27,31 @@ fieldset, form {
 	margin-bottom:10px;
 }
 
-fieldset, form{
-	background-color:rgba(150,150,150,0.25);
-	transition: background-color 1s;
+fieldset legend, fieldset{
+	background-color:rgba(0,0,0,0.1);
+}
+
+form{
+	background-color:rgba(0,0,0,0.2);
 }
 
 fieldset:hover, form:hover
 , fieldset:focus, form:focus{
-	background-color:rgba(150,150,150,0.4);
-	border: 1px #666 solid !important;
+	/* background-color:rgba(150,150,150,0.4);
+	/* border: 1px #666 solid !important;
+	*/
 }
 
-
-input:hover{
-	border: 1px #666 solid !important;
-	color:#000;
-}
-
-fieldset, form, input, textarea {
+input, textarea, select {
 	border: 1px #777 solid !important;
 	border-radius:4px;
 }
 
-label, button, input[type="submit"], input[type="button"] {
+form {
+	border-radius:4px;
+}
+
+label, button, input[type="submit"], input[type="button"], legend {
 	font-size: 12.5pt;
 	margin-top:10px;
 }
@@ -72,8 +74,8 @@ button, input[type="submit"], input[type="button"] {
 }
 
 button.inline, input.inline, select.inline {
-	margin-bottom: 0px;
-	margin-top: 0px;
+	/*margin-bottom: 0px;
+	margin-top: 0px;*/
 }
 
 button, input[type="submit"], input[type="button"], a{
@@ -89,25 +91,31 @@ button:active, input[type="submit"]:active, input[type="button"]:active, a:activ
 
 fieldset legend {
 	margin-left:-10px;
-	margin-top:5px;
-	padding-left:2px;
-	padding-right:10px;
-	padding-bottom:10px;
 	margin-bottom:-20px;
-	background: transparent; 
 	border:none;
 	width:auto;
 	position: relative;
-	top:-5px;
+	top:-15px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-radius:4px 4px 0px 0px;
+	line-height: 30px;
+	font-weight: bold;
 }
 
-input[type="text"], input[type="password"], input[type=""], textarea {
+fieldset {
+	margin-top: 30px;
+	border-radius:0px 4px 4px 4px;
+}
+
+input[type="text"], input[type="password"], input[type=""], textarea, select {
 	box-sizing: border-box;
 	width: 100%;
 	font-size: 13pt;
 	min-height: 21pt;
 	position:relative;
 	z-index:1;
+	margin: 0px;
 }
 
 fieldset[name*="\[-"] {
@@ -116,7 +124,7 @@ fieldset[name*="\[-"] {
 
 .PressKitAjaxSearchResults{
 	position: relative;
-	top: -12px;
+	top: -2px;
 	background: #ccc;
 	/*
 	height:0px;
@@ -156,14 +164,11 @@ fieldset[data-presskit-field="indicator"] .PressKitAjaxSearchResult:last-child{
 	border-top-right-radius:4px;
 }
 
-fieldset.selectedModel > legend{
-	font-size: 12pt;
-}
-
 fieldset.selectedModel{
 	padding:0px;
 	border:none !important;
 	background: transparent;
+	margin-top: 20px;
 }
 
 .PressKitAjaxSearchResult:nth-child(2n){
@@ -223,7 +228,7 @@ table.PressKitList tr:nth-child(2n){
 table.PressKitList tr:nth-child(1) td
 , table.PressKitList tr.buttons div.buttons
 , table.PressKitList tr.buttons div.actions{
-	padding:10px;
+	padding:2px;
 }
 
 table.PressKitList tr.buttons div.actions{
@@ -263,7 +268,7 @@ table.PressKitList tr td{
 	width:auto;
 }
 
-table.PressKitList tr:not(.buttons) td:nth-child(1){
+table.PressKitList tr:not(.buttons) td:nth-child(1):not(.select){
 	padding-left:10px;
 }
 
@@ -282,7 +287,10 @@ table.PressKitList tr:not(.buttons) td a{
 	width:auto;
 }
 
-.PressKitList .select,
+.PressKitList .select{
+	width:2em;
+}
+
 .PressKitList .id,
 .PressKitList .view,
 .PressKitList .edit,
@@ -295,7 +303,7 @@ table.PressKitList tr td:nth-child(2n){
 }
 
 div.main {
-	/*width:100%;*/
+	width:100%;
 }
 /*
 @media (min-width: 1200px){

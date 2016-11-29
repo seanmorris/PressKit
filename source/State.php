@@ -29,7 +29,7 @@ class State extends \SeanMorris\Ids\Model
 		, $hasOne = [
 			'owner' => 'SeanMorris\Access\User'
 		]
-		
+
 		, $table = 'StateFlowState'
 		, $byId = [
 			'where' => [['id' => '?']]
@@ -53,7 +53,13 @@ class State extends \SeanMorris\Ids\Model
 	{
 		$result = $this->_can($user, $point, $action);
 
-		\SeanMorris\Ids\Log::debug([get_called_class() . '::can', $point, $action, $result]);
+		\SeanMorris\Ids\Log::debug([
+			'subclass' => get_called_class() . '::can',
+			'$this' => $this,
+			'$point' => $point,
+			'$action' => $action,
+			'$result' => $result
+		]);
 
 		if($action == 'write')
 		{
@@ -67,9 +73,9 @@ class State extends \SeanMorris\Ids\Model
 	// Properties are defined by $point =~ /^\$/
 	protected function _can($user, $point, $action = 'read')
 	{
-
 		$pointCheck = substr($point, 0, 1) == '$';
 		
+		/*
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if user can %s%s %s during state %s'
 			, $action
@@ -79,6 +85,7 @@ class State extends \SeanMorris\Ids\Model
 			, get_class($this)
 			, $this->state
 		), $user);
+		*/
 
 		if(!isset(static::$states[$this->state][$point])
 			&& $parent = static::getParent($this)
@@ -89,15 +96,18 @@ class State extends \SeanMorris\Ids\Model
 				return $super;
 			}
 
+			\SeanMorris\Ids\Log::debug('Cannot.');
 			return FALSE;
 		}
 		elseif(!isset(static::$states[$this->state][$point]))
 		{
 			if($pointCheck && $action === 'read')
 			{
+				\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 
+			\SeanMorris\Ids\Log::debug('Cannot.');
 			return FALSE;
 		}
 
@@ -106,6 +116,7 @@ class State extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Role needed for %s %s:', $action, $point)
 			, $role
+			, $this
 		);
 
 		if($pointCheck)
@@ -117,6 +128,7 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if(!isset($role[0], $role[1]))
 			{
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return false;
 			}
 
@@ -171,9 +183,9 @@ class State extends \SeanMorris\Ids\Model
 		return false;
 	}
 
-	public function change($to)
+	public function change($to, $force = FALSE)
 	{
-		if($this->canChange($to))
+		if($force || $this->canChange($to))
 		{
 			$this->state = $to;
 			return true;
@@ -184,6 +196,13 @@ class State extends \SeanMorris\Ids\Model
 
 	public function canChange($to)
 	{
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Trying to change %s from %s to %d.'
+			, get_called_class()
+			, $this->state
+			, $to
+		));
+
 		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
 		if(!isset(static::$transitions[$this->state][$to])
@@ -220,6 +239,14 @@ class State extends \SeanMorris\Ids\Model
 			}
 		}
 
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Role needed to change %s from %s to %d: %s.'
+			, get_called_class()
+			, $this->state
+			, $to
+			, $role
+		));
+
 		if($role < 0)
 		{
 			return false;
@@ -236,7 +263,7 @@ class State extends \SeanMorris\Ids\Model
 	protected static function getParent($state)
 	{
 		$parentClass = get_parent_class($state);
-		
+
 		if(is_a(get_parent_class($state), 'PressKit\\State', true))
 		{
 			$parent			= new $parentClass;

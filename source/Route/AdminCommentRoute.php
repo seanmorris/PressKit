@@ -4,15 +4,18 @@ class AdminCommentRoute extends CommentRoute
 {
 	protected
 		$access = [
-			'edit' => 'SeanMorris\Access\Role\Administrator'
-			, 'delete' => 'SeanMorris\Access\Role\Administrator'
-			, 'view' => 'SeanMorris\Access\Role\Administrator'
-			, 'owners' => 'SeanMorris\Access\Role\Administrator'
-			, 'index' => 'SeanMorris\Access\Role\Administrator'
-			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
-			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
-			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
-			, '_deleteModels' => 'SeanMorris\Access\Role\Administrator'
+			'edit' => 'SeanMorris\Access\Role\Moderator'
+			, 'delete' => 'SeanMorris\Access\Role\Moderator'
+			, 'view' => 'SeanMorris\Access\Role\Moderator'
+			, 'owners' => 'SeanMorris\Access\Role\Moderator'
+			, 'index' => 'SeanMorris\Access\Role\Moderator'
+			, '_contextMenu' => 'SeanMorris\Access\Role\Moderator'
+			, '_publishModels' => 'SeanMorris\Access\Role\Moderator'
+			, '_unpublishModels' => 'SeanMorris\Access\Role\Moderator'
+			, '_deleteModels' => 'SeanMorris\Access\Role\Moderator'
+		]
+		, $listColumns = [
+			'title'
 		]
 	;
 	protected static
@@ -20,6 +23,13 @@ class AdminCommentRoute extends CommentRoute
 		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\CommentForm',
 			'search' => 'SeanMorris\PressKit\Form\CommentSearchForm',
+		]
+		, $pageSize = 10
+		, $pageSpread = 5
+		, $actions = [
+			'Unpublish' => '_unpublishModels'
+			, 'Publish' => '_publishModels'
+			, 'Delete' => '_deleteModels'
 		]
 		, $menus = [
 			'main' => [

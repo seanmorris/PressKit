@@ -25,21 +25,19 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 			'type' => 'file',
 		];
 
-		/*
-
-		$skeleton['preview'] = [
-			'_title' => 'Preview',
-			'type' => 'html',
-			'html' => 'LO-FUCKING-L'
+		$skeleton['state'] = [
+			'_title' => 'State'
+			, '_subtitle' => 'State'
+			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
+			, '_multi' => FALSE
 		];
-
-		*/
 
 		$skeleton['submit'] = [
 			'_title' => 'Submit',
 			'type' => 'submit',
 		];
-		
+
+
 		parent::__construct($skeleton);
 	}
 }

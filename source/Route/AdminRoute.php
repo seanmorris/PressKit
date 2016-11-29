@@ -14,7 +14,7 @@ class AdminRoute extends \SeanMorris\PressKit\Controller
 		]
 	;
 
-	protected $theme = 'SeanMorris\PressKit\Theme\Austere\Theme';
+	// protected $theme = 'SeanMorris\PressKit\Theme\Austere\Theme';
 
 	protected static
 		$menus = [

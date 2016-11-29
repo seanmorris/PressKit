@@ -18,7 +18,7 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 
 		$skeleton['title'] = [
 			'_title' => 'Title'
-			, 'type' => 'text' 
+			, 'type' => 'text'
 		];
 
 		$skeleton['body'] = [
@@ -27,7 +27,7 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			, 'rows' => 15
 		];
 
-		$skeleton['summary'] = [ 
+		$skeleton['summary'] = [
 			'_title' => 'Summary'
 			, 'type' => 'textarea'
 			, 'rows' => 5
@@ -42,7 +42,7 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			]
 		];
 
-		$skeleton['category'] =[ 
+		$skeleton['category'] =[
 			'_title' => 'Category'
 			, 'type' => 'text'
 			, '_access' => [
@@ -63,15 +63,10 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			, 'value' => ''
 		];
 
-		$skeleton['slugsize'] = [
+		$skeleton['slugSize'] = [
 			'_title' => 'Slugsize'
 			, 'type' => 'text'
 		];
-
-		/*$skeleton['state'] = [ 
-			'_title' => 'State'
-			, 'type' => 'text'
-		];*/
 
 		$skeleton['images'] = [
 			'_title' => 'Images'
@@ -81,16 +76,13 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			, '_previewImagePoint' => 'url'
 			, '_titlePoint' => 'title'
 		];
-		/*
-		$skeleton['comments'] = [
-			'_title' => 'Comments'
-			, '_subtitle' => 'Comment'
-			, 'type' => 'modelSearch'
-			, '_searchEndpoint' => '/comments'
-			, '_previewImagePoint' => 'url'
-			, '_titlePoint' => 'title'
+
+		$skeleton['state'] = [
+			'_title' => 'State'
+			, '_subtitle' => 'State'
+			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
+			, '_multi' => FALSE
 		];
-		*/
 
 		$skeleton['saveContinue'] = [
 			'_title' => 'Save & Continue'
@@ -106,67 +98,6 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			'_title' => 'Save & Exit'
 			, 'type' => 'submit'
 		];
-		/*
-		$stateFields = [];
-
-		$stateFields['id'] = [
-			'_title' => 'Id'
-			, 'value' => ''
-			, 'type' => 'text'
-		];
-
-		$stateFields['state'] = [
-			'_title' => 'State'
-			, 'value' => ''
-			, 'type' => 'text'
-		];
-		*/
-
-		$skeleton['written'] = [
-			'_title' => 'Written'
-			, 'type' => 'text'
-			, '_access' => [
-				'read' => [TRUE  => '']
-				, 'write' => [FALSE => ['disabled' => 'disabled']]
-			]
-		];
-
-		$skeleton['edited'] =[
-			'_title' => 'Edited'
-			, 'type' => 'text'
-			, '_access' => [
-				'read' => [TRUE  => '']
-				, 'write' => [FALSE => ['disabled' => 'disabled']]
-			]
-		];
-
-		/*
-
-		$skeleton['author'] = [
-			'_title' => 'Author'
-			, 'type' => 'text'
-			, '_access' => [
-				'read' => [TRUE  => '']
-				, 'write' => [FALSE => ['disabled' => 'disabled']]
-			]
-		];
-		*/
-
-		
-		/*
-		$skeleton['state'] = [
-			'_title' => 'State Fields'
-			, '_subtitle' => 'State'
-			, 'type' => 'modelReference'
-			, '_children' => $stateFields
-			, '_multi' => FALSE
-		];
-
-		$skeleton['checked'] = [
-			'_title' => 'Checked'
-			, 'type' => 'checkbox'
-		];
-		*/
 
 		parent::__construct($skeleton);
 	}

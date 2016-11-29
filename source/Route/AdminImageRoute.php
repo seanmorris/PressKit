@@ -13,14 +13,22 @@ class AdminImageRoute extends ImageRoute
 			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
 			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
 		]
+		, $listColumns = [
+			'title'
+		]
 	;
 	protected static 
 		$listBy = 'byNull'
-		, $pageSize = 3
-		, $pageSpread = 2
+		, $pageSize = 10
+		, $pageSpread = 5
 		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\ImageForm',
 			'search' => 'SeanMorris\PressKit\Form\ImageSearchForm',
+		]
+		, $actions = [
+			'Unpublish' => '_unpublishModels'
+			, 'Publish' => '_publishModels'
+			, 'Delete' => '_deleteModels'
 		]
 		, $menus = [
 			'main' => [

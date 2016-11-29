@@ -7,14 +7,12 @@ class CommentRoute extends \SeanMorris\PressKit\Controller
 		, $modelClass = 'SeanMorris\PressKit\Comment'
 		, $formTheme = 'SeanMorris\Form\Theme\Theme'
 		, $listColumns = [
-			'id'
-			, 'title'
-			, 'body'
+			'title'
 		]
 		, $access = [
 			'view'     => TRUE
 			, 'index'  => TRUE
-			, 'create' => TRUE
+			, 'create' => 'SeanMorris\Access\Role\User'
 			, 'edit'   => 'SeanMorris\Access\Role\User'
 			, 'delete' => 'SeanMorris\Access\Role\User'
 		]

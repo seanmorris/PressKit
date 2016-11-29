@@ -6,6 +6,8 @@ class ModelGrid extends Grid
 	{
 		parent::preprocess($vars);
 
+		$controller = $vars['_controller'];
+		$actionFunctions = $controller->_actions($vars['_router']);
 		$objects =& $this->vars['content'];
 		$extraColumns =& $this->vars['extraColumns'];
 		$path = $this->vars['path'];
@@ -18,8 +20,11 @@ class ModelGrid extends Grid
 		
 		// \SeanMorris\Ids\Log::debug($objects);
 
-		$this->vars['columns'] = ['select' => NULL]
-			+ $this->vars['columns'];
+		if($actionFunctions)
+		{
+			$this->vars['columns'] = ['select' => NULL]
+				+ $this->vars['columns'];
+		}
 
 		$vars['createLink'] = NULL;
 
@@ -29,13 +34,16 @@ class ModelGrid extends Grid
 		);
 
 		$rows = [];
-
-		foreach ($objects as $object)
+		
+		foreach($objects as $object)
 		{
-			$rows[$object->id]['select'] = sprintf(
-				'<input name = "models[]" type = "checkbox" value = "%s" />'
-				, $object->publicId
-			);
+			if($actionFunctions)
+			{
+				$rows[$object->id]['select'] = sprintf(
+					'<input name = "models[]" type = "checkbox" value = "%s" />'
+					, $object->publicId
+				);
+			}
 
 			foreach($this->vars['columns'] as $column)
 			{
@@ -80,20 +88,19 @@ class ModelGrid extends Grid
 			$this->vars['buttons'] = null;
 		}
 
-		$controller = $vars['_controller'];
+		$this->vars['actions'] = NULL;
 
-		$this->vars['actions'] = '<select name = "action" class = "inline">';
-
-		foreach($controller->_actions($vars['_router']) as $action => $function)
+		if($actionFunctions)
 		{
-			$this->vars['actions'] .= sprintf('<option>%s</option>', $action);
+			$this->vars['actions'] = '<label>Actions<select name = "action" class = "inline"></label>';
+
+			foreach($actionFunctions as $action => $function)
+			{
+				$this->vars['actions'] .= sprintf('<option>%s</option>', $action);
+			}
+
+			$this->vars['actions'] .= '</select><input class = "inline" type = "submit" />';
 		}
-
-		$this->vars['actions'] .= '</select><input class = "inline" type = "submit" />';
-
-		//
-		//'<option>Publish</option>'
-		//	. ;
 
 		$this->vars['grid'] = static::render([], 1);
 	}

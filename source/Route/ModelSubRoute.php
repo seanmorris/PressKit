@@ -87,8 +87,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			));
 
 			$body .= ' ' . $theme::render($model, [
-				'path' => $router->path()->pathString()
-				, 'hideTitle' => in_array($router->routedTo(), $this->hideTitle)
+				'path'          => $router->path()->pathString()
+				, 'hideTitle'   => in_array($router->routedTo(), $this->hideTitle)
+				, '_controller' => $this
+				, '_router'     => $router
 			] + $this->context, 'single');
 		}
 

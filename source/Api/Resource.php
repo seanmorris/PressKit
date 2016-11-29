@@ -18,7 +18,11 @@ class Resource
 
 		$objectIds = [];
 
-		if($models = $controller->_models())
+		if(isset($more['body']))
+		{
+			$this->body = $more['body'];
+		}
+		else if($models = $controller->_models())
 		{
 			$this->body = $this->processObjects($models);
 
@@ -37,7 +41,7 @@ class Resource
 
 		$realPath = $router->path()->getAliasedPath()->pathString();
 		$currentPath = $router->path()->pathString();
-		
+
 		if($router->parent())
 		{
 			$this->navigation['.'] = '/' . $currentPath;
@@ -66,9 +70,9 @@ class Resource
 			foreach($controller->subRoutes as $path => $class)
 			{
 				$this->navigation[$path] = sprintf('/%s/%s', $currentPath, $path);
-			} 
+			}
 		}
-		
+
 		foreach($objectIds as $value)
 		{
 			$this->navigation[$value] = sprintf('/%s/%s', $realPath, $value);
@@ -108,7 +112,7 @@ class Resource
 				$value = $object->unconsume(1);
 				break;
 		}
-		
+
 		return $value;
 	}
 
@@ -125,7 +129,7 @@ class Resource
 
 	public function toJson()
 	{
-		return json_encode($this->toStructure());
+		return json_encode($this->toStructure(), JSON_PRETTY_PRINT);
 	}
 
 	public function toXml()

@@ -11,11 +11,11 @@ class Image extends \SeanMorris\PressKit\Model
 		, $state
 	;
 
-	protected static 
+	protected static
 		$table = 'PressKitImage'
 		, $createColumns		= [
 			'publicId'			=> 'UNHEX(REPLACE(UUID(), "-", ""))'
-			, 'created' => 'UNIX_TIMESTAMP()'
+			, 'created' 		=> 'UNIX_TIMESTAMP()'
 		]
 		, $readColumns			= [
 			'publicId'			=> 'HEX(%s)'
@@ -57,55 +57,62 @@ class Image extends \SeanMorris\PressKit\Model
 
 	protected static function beforeConsume($instance, &$skeleton)
 	{
-		$skeleton['url'] = $instance->url;
+		//$skeleton['url'] = $instance->url;
 
-		//var_dump($instance, $skeleton);
-
-		foreach(static::$files as $fileField)
+		$request = new \SeanMorris\Ids\Request;
+		foreach($request->files() as $fileField => $tmpFile)
 		{
-			if(isset($skeleton[$fileField])
-				&& $skeleton[$fileField] instanceof \SeanMorris\Ids\Storage\Disk\File
-			){
-				$tmpFile = $skeleton[$fileField];
-
-				$originalName = $tmpFile->originalName();
-
-				preg_match(
-					'/\.(gif|png|jpe?g)$/'
-					, $originalName
-					, $m
-				);
-
-				if(!$m)
-				{
-					return FALSE;
-				}
-
-				$microtime = explode(' ', microtime());
-
-				$newName = sprintf(
-					'%s%s.%s.%03d.%s'
-					, IDS_PUBLIC_DYNAMIC
-					, $microtime[1] 
-					, substr($microtime[0], 2)
-					, rand(0,999)
-					, $m[1]
-				);
-
-				$newUrl = '/' . $newName;
-				$newFileName = IDS_PUBLIC_ROOT . $newName;
-
-				$newFile = $tmpFile->copy($newFileName);
-
-				if(!$newFile->check())
-				{
-					return FALSE;
-				}
-
-				$skeleton['url'] = $newUrl;
-
-				// var_dump($instance, $skeleton, $newFile);
+			if(!array_key_exists($fileField, $skeleton))
+			{
+				continue;
 			}
+
+			if(!($tmpFile instanceof \SeanMorris\Ids\Disk\File))
+			{
+				continue;
+			}
+
+			$originalName = $tmpFile->originalName();
+
+			preg_match(
+				'/\.(gif|png|jpe?g)$/'
+				, $originalName
+				, $m
+			);
+
+			if(!$m)
+			{
+				\SeanMorris\Ids\Log::debug('Not an image.');
+				return FALSE;
+			}
+
+			$microtime = explode(' ', microtime());
+
+			$publicDir = \SeanMorris\Ids\Settings::read('public');
+
+			$newName = sprintf(
+				'%s%s.%s.%03d.%s'
+				, 'Static/Dynamic/'
+				, $microtime[1]
+				, substr($microtime[0], 2)
+				, rand(0,999)
+				, $m[1]
+			);
+
+			$newUrl = '/' . $newName;
+			$newFileName = $publicDir . $newName;
+
+			$newFile = $tmpFile->copy($newFileName);
+
+			var_dump($fileField, $tmpFile, $newFileName);
+
+			if(!$newFile->check())
+			{
+				\SeanMorris\Ids\Log::error('Failed to copy.', $newFileName);
+				return FALSE;
+			}
+
+			$skeleton['url'] = $newUrl;
 		}
 	}
 

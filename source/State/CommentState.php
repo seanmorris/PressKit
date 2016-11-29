@@ -19,7 +19,7 @@ class CommentState extends \SeanMorris\PressKit\State
 					, 'read' => 1
 				]
 				, '$state'	=> [
-					'write'  => 'SeanMorris\Access\Role\Administrator'
+					'write'  => 'SeanMorris\Access\Role\Moderator'
 					, 'read' => 'SeanMorris\Access\Role\Moderator'
 				]
 				, '$class'   => FALSE
@@ -38,10 +38,18 @@ class CommentState extends \SeanMorris\PressKit\State
 					, 'read' => 1
 				]
 				, '$state'	=> [
-					'write'  =>'SeanMorris\Access\Role\Administrator'
+					'write'  =>'SeanMorris\Access\Role\Moderator'
 					, 'read' => 'SeanMorris\Access\Role\Moderator'
 				]
 				, '$class'   => FALSE
+			]
+		]
+		, $transitions	= [
+			0 => [
+				1 => 'SeanMorris\Access\Role\Moderator'
+			]
+			, 1 => [
+				0 => 'SeanMorris\Access\Role\Moderator'
 			]
 		];
 }

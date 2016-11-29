@@ -13,12 +13,20 @@ class AdminPostRoute extends PostRoute
 			, '_publishModels' => 'SeanMorris\Access\Role\Administrator'
 			, '_unpublishModels' => 'SeanMorris\Access\Role\Administrator'
 		]
+		, $listColumns = [
+			'title'
+		]
 	;
 	protected static 
-		$listBy = 'byNull' 
+		$listBy = 'byNull'
 		, $forms = [
 			'edit' => 'SeanMorris\PressKit\Form\PostForm'
 			, 'search' => 'SeanMorris\PressKit\Form\CommentSearchForm'
+		]
+		, $actions = [
+			'Unpublish' => '_unpublishModels'
+			, 'Publish' => '_publishModels'
+			, 'Delete' => '_deleteModels'
 		]
 		, $menus = [
 			'main' => [

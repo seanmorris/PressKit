@@ -13,14 +13,15 @@ class PostRoute extends \SeanMorris\PressKit\Controller
 		, $modelSubRoutes = [
 			'view' => [
 				'comments', 'comments/create'
-				 , 'images'
+				//, 'images'
 			]
 		]
 		, $access = [
 			'view' => TRUE
-			, 'edit' => '\SeanMorris\Access\Role\Administrator'
-			, 'create' => '\SeanMorris\Access\Role\Administrator'
-			, 'delete' => '\SeanMorris\Access\Role\Administrator'
+			, 'edit' => 'SeanMorris\Access\Role\Administrator'
+			, 'create' => 'SeanMorris\Access\Role\Administrator'
+			, 'delete' => 'SeanMorris\Access\Role\Administrator'
+			, '_contextMenu' => 'SeanMorris\Access\Role\Administrator'
 			, 'index' => TRUE
 		]
 		, $hideTitle = [

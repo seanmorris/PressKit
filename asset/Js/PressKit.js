@@ -64,7 +64,7 @@ PressKit.Registry = PressKit.Class.extend({
 		{
 			var classObj = classes[selector];
 			var handlers = classes[selector].prototype.events;
-			
+
 			this.selectorClasses[selector] = classObj;
 
 			var _this = this;
@@ -72,11 +72,11 @@ PressKit.Registry = PressKit.Class.extend({
 			for(var eventName in handlers)
 			{
 				$(document).on(eventName, selector, {}, (function(eventName)
-				{	
+				{
 					return function(event)
 					{
 						var tag = $(this);
-						
+
 						if(widgetObj = _this.getObjectForTag(tag, event))
 						{
 							var handler = widgetObj.events[eventName];
@@ -105,7 +105,7 @@ PressKit.getRegistry = function()
 {
 	if(!PressKit._registry)
 	{
-		PressKit._registry = new PressKit.Registry();	
+		PressKit._registry = new PressKit.Registry();
 	}
 
 	return PressKit._registry;
@@ -159,13 +159,13 @@ PressKit.WidgetModel = PressKit.Class.extend({
 				this.subWidgets[widgetName] = [];
 			}
 		}
-		
+
 		this.tag = tag;
 		var _this = this;
 		this.events = this.mergeEvents(this);
 
 		var parentTag = tag;
-		
+
 		while(parentTag.prop("tagName"))
 		{
 			parentTag = parentTag.parent();
@@ -399,7 +399,7 @@ PressKit.LinkWidgetModel = PressKit.WidgetModel.extend({
 		console.log('MouseEnter on ' + this.name + ' #' + this.objectId);
 	}
 	, mouseleaveHandler: function() {
-		console.log('MouseLeave on ' + this.name + ' #' + this.objectId);	
+		console.log('MouseLeave on ' + this.name + ' #' + this.objectId);
 	}
 });
 
@@ -450,7 +450,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 		this.searchEndpoint = this.tag.attr('data-PressKit-Search-Endpoint');
 		this.titlePoint = this.tag.attr('data-PressKit-Title-Point');
 		this.previewImagePoint = this.tag.attr('data-PressKit-Preview-Image-Point');
-		
+
 		if(subWidgetName == 'id')
 		{
 			var modelId = subWidget.value();
@@ -488,7 +488,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 		var idWidget = this.getSubwidget('id');
 		var classWidget = this.getSubwidget('class');
 		var searchWidget = this.getSubwidget('search');
-		
+
 		var modelId = linkWidget.tag.attr('data-PressKit-id');
 		var modelClass = linkWidget.tag.attr('data-PressKit-class');
 
@@ -535,7 +535,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 		var _this = this;
 
 		console.log('lel ' + subWidget.value());
-		
+
 		clearTimeout(this.timers['search']);
 
 		this.timers['search'] = setTimeout(
@@ -617,7 +617,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 		}
 
 		option.attr('data-PressKit-class', result.class);
-		
+
 		if(result[this.previewImagePoint])
 		{
 			option.append($('<img>')
@@ -664,7 +664,7 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 		{
 			console.log('Add Button for #'+this.objectId);
 
-			this.removeAddButton();	
+			this.removeAddButton();
 			this.appendAddButton();
 		}
 	}
@@ -782,7 +782,7 @@ PressKit.Registry = PressKit.Class.extend({
 	, bindingAttr: 'data-PressKit-Object'
 	, init: function()
 	{
-		
+
 	}
 	, register: function(object, tag)
 	{
@@ -858,7 +858,7 @@ PressKit.Registry = PressKit.Class.extend({
 						{
 							selector = _selector;
 						}
-						
+
 						if(!insertedTag.is(selector))
 						{
 							return;
@@ -902,7 +902,7 @@ PressKit.Registry = PressKit.Class.extend({
 				})(selector, classes, _this));
 
 				console.log(selector);
-				
+
 				$(selector).map(function()
 				{
 					console.log(selector);
@@ -927,7 +927,7 @@ PressKit.getRegistry = function()
 {
 	if(!PressKit._registry)
 	{
-		PressKit._registry = new PressKit.Registry();	
+		PressKit._registry = new PressKit.Registry();
 	}
 
 	return PressKit._registry;
@@ -1041,7 +1041,7 @@ PressKit.Widget = PressKit.Class.extend({
 
 		return mergedEvents;
 	}
-	
+
 	, subWidgetInit: function(subWidget, event)
 	{
 		var _this = this;
@@ -1388,7 +1388,7 @@ PressKit.ModelSearchWidget = PressKit.Widget.extend({
 		this.searchEndpoint = this.tag.attr('data-PressKit-Search-Endpoint');
 		this.titlePoint = this.tag.attr('data-PressKit-Title-Point');
 		this.previewImagePoint = this.tag.attr('data-PressKit-Preview-Image-Point');
-		
+
 		if(subWidgetName == 'id')
 		{
 			var modelId = subWidget.value();
@@ -1423,7 +1423,7 @@ PressKit.ModelSearchWidget = PressKit.Widget.extend({
 		var idWidget = this.subWidgets.id;
 		var classWidget = this.subWidgets.class;
 		var searchWidget = this.subWidgets.search;
-		
+
 		var modelId = linkWidget.tag.attr('data-PressKit-id');
 		var modelClass = linkWidget.tag.attr('data-PressKit-class');
 
@@ -1470,7 +1470,7 @@ PressKit.ModelSearchWidget = PressKit.Widget.extend({
 		var _this = this;
 
 		console.log('lel ' + subWidget.value());
-		
+
 		clearTimeout(this.timers['search']);
 
 		this.timers['search'] = setTimeout(
@@ -1551,7 +1551,7 @@ PressKit.ModelSearchWidget = PressKit.Widget.extend({
 		}
 
 		option.attr('data-PressKit-class', result.class);
-		
+
 		if(result[this.previewImagePoint])
 		{
 			option.append($('<img>')

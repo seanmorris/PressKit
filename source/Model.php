@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
-	//private $state;
+	protected $_selected;
 
 	protected static
 		$byOwner = [
@@ -13,16 +13,24 @@ class Model extends \SeanMorris\Ids\Model
 					, 'type' => 'INNER'
 				]
 			]
-		];
+		]
+	;
 
 	public function create()
 	{
+		\SeanMorris\Ids\Log::debug(sprintf('Trying to create %s.', get_called_class()));
+
 		$this->ensureState();
-		
+
 		if($this->can('create'))
 		{
+			\SeanMorris\Ids\Log::debug(sprintf('Can create %s.', get_called_class()));
+
 			return parent::create();
 		}
+
+		\SeanMorris\Ids\Log::debug(sprintf('Cannot create %s.', get_called_class()));
+
 
 		throw new \SeanMorris\PressKit\Exception\ModelAccessException(
 			'Access denied - Cannot create model.'
@@ -32,6 +40,8 @@ class Model extends \SeanMorris\Ids\Model
 	protected static function instantiate($skeleton, $args = [], $rawArgs = [])
 	{
 		$instance = parent::instantiate($skeleton, $args, $rawArgs);
+
+		$instance->_selected = time();
 
 		\SeanMorris\Ids\Log::debug([$instance->can('read'), !isset($instance->state)]);
 
@@ -88,21 +98,37 @@ class Model extends \SeanMorris\Ids\Model
 
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
+
 		/*
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Checking %s(%d) has a state... ', get_called_class(), $this->id)
-			, $state ? 1 : 0			
+			, $state ? 1 : 0
 		);
 		*/
 
 		if(!$state)
 		{
-			$state = $this->getSubject('state');
+			\SeanMorris\Ids\Log::debug(
+				sprintf('Creating state for %s(%d). ', get_called_class(), $this->id)
+				, $state ? 1 : 0
+			);
+
+			$state = $this->ensureState();
 
 			if(!$state)
 			{
+				\SeanMorris\Ids\Log::error(sprintf('Cannot load state for %s(%d).', get_called_class(), $this->id));
 				return FALSE;
 			}
+		}
+		else
+		{
+			/*
+			\SeanMorris\Ids\Log::debug(
+				sprintf('%s(%d) has a state... ', get_called_class(), $this->id)
+				, $state ? 1 : 0
+			);
+			*/
 		}
 
 		if($point)
@@ -114,7 +140,7 @@ class Model extends \SeanMorris\Ids\Model
 			$allowed = $state->can($user, $action);
 
 		}
-		
+
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if user "%s" can %s, %s'
 				, $user->username
@@ -126,7 +152,7 @@ class Model extends \SeanMorris\Ids\Model
 	}
 
 	public static function canStatic($action)
-	{	
+	{
 		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
 		\SeanMorris\Ids\Log::debug(sprintf(
@@ -166,7 +192,7 @@ class Model extends \SeanMorris\Ids\Model
 				return FALSE;
 			}
 		}
-		
+
 		return parent::getSubject($column);
 	}
 
@@ -180,16 +206,31 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function consume($skeleton, $override = false)
 	{
+		\SeanMorris\Ids\Log::debug(sprintf(
+				'Consuming skeleton for model of type %s'
+				, get_called_class()
+			)
+			, $skeleton
+		);
+
 		if(!$override)
 		{
 			$remove = [];
 			foreach ($skeleton as $column => &$value)
 			{
+				\SeanMorris\Ids\Log::debug('COLUMN:' . $column, $this->can('write', $column) ? 1:0);
 				if(!$this->can('write', $column))
 				{
 					$remove[] = $column;
 				}
 			}
+
+			\SeanMorris\Ids\Log::debug(sprintf(
+					'Stripping disallowed columns for model of type %s'
+					, get_called_class()
+				)
+				, implode(', ', $remove)
+			);
 
 			foreach ($remove as $key) {
 				unset($skeleton[$key]);
@@ -208,6 +249,7 @@ class Model extends \SeanMorris\Ids\Model
 		$skeleton = parent::unconsume($children);
 
 		$remove = [];
+
 		foreach ($skeleton as $column => &$value)
 		{
 			if(!$this->can('read', $column))
@@ -246,7 +288,7 @@ class Model extends \SeanMorris\Ids\Model
 			$this->id && $this->forceSave();
 
 			return $state;
-		}	
+		}
 
 		return $this->state;
 	}
@@ -266,7 +308,7 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			return;
 		}
-		
+
 		return parent::__get($name);
 	}
 

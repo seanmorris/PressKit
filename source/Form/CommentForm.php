@@ -82,12 +82,11 @@ class CommentForm extends \SeanMorris\PressKit\Form\Form
 		$skeleton['state'] = [
 			'_title' => 'Moderate'
 			, '_subtitle' => 'State'
-			, 'type' => 'modelReference'
-			, '_children' => $stateFields
+			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
 			, '_multi' => FALSE
 			, '_access' => [
-				'write' => ['SeanMorris\Access\Role\Administrator' => NULL]
-				, 'read' => ['SeanMorris\Access\Role\Administrator' => NULL]
+				'write' => ['SeanMorris\Access\Role\Moderator' => NULL]
+				, 'read' => ['SeanMorris\Access\Role\Moderator' => NULL]
 			]
 		];
 		

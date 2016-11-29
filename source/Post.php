@@ -12,7 +12,7 @@ class Post extends \SeanMorris\PressKit\Model
 		, $author
 		, $category
 		, $summary
-		, $slugsize
+		, $slugSize
 		, $ctaLink
 		, $ctaLinkText
 		, $state
@@ -21,7 +21,7 @@ class Post extends \SeanMorris\PressKit\Model
 		//, $comments2
 	;
 
-	protected static 
+	protected static
 		$table = 'PressKitPost'
 		, $createColumns = [
 			'publicId' => 'UNHEX(REPLACE(UUID(), "-", ""))'
@@ -73,4 +73,9 @@ class Post extends \SeanMorris\PressKit\Model
 			]
 		]
 	;
+
+	protected static function beforeCreate($instance, &$skeleton)
+	{
+		$skeleton['author'] = \SeanMorris\Access\Route\AccessRoute::_currentUser()->id;
+	}
 }
