@@ -781,6 +781,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				if(static::$listBy)
 				{
 					$listBy = ucwords(static::$listBy);
+					$countBy = 'count' . $listBy;
 				}
 
 				$listParams = [];
@@ -826,7 +827,6 @@ class Controller implements \SeanMorris\Ids\Routable
 					$listParams[] = $pageNumber;
 					$listParams[] = static::$pageSize;
 
-					$countBy = 'count' . $listBy;
 					$count = $modelClass::$countBy(...$listParams);
 
 					$lastPageSpread = $pageNumber + static::$pageSpread;
