@@ -1,0 +1,195 @@
+div.list {
+	width:200px;
+	float:right;
+}
+
+div.list li{
+	list-style: circle;
+}
+
+div.menu {
+	position: relative;
+	font-size: 10pt !important;
+	display: inline-block;
+	white-space:nowrap;
+}
+
+div.menu.rightAlign{
+	float:right;
+}
+
+div.menu:hover {
+
+}
+
+div.menu ul.menu ul{
+	position:relative;
+	width:0px;
+	height:0px;
+	overflow:visible;
+	opacity:0;
+	pointer-events:none;
+	transition:.0.5s;
+}
+
+/*Allow clicking on first submenu*/
+div.menu ul.menu li.show > ul{
+	pointer-events:auto;
+	transition:0.5s;
+}
+
+div.menu ul.menu{
+	position: relative;
+	z-index: 4999;
+}
+
+/*Allow clicking on n+1 submenu*/
+div.menu ul.menu li li.show > ul{
+	pointer-events:auto;
+}
+
+/*Show first submenu*/
+div.menu ul.menu li:hover > ul{
+	opacity:1;
+	pointer-events:auto;
+}
+
+/*Show n+1 submenu*/
+div.menu ul.menu li li:hover > ul{
+	opacity:1;
+	pointer-events:auto;
+}
+
+/*Place first submenu*/
+div.menu ul.menu li > ul{
+	left:-1px;
+	top:1px;
+}
+
+/*Place n+1 submenu*/
+div.menu ul.menu li li > ul{
+	left:140px;
+	top:-41px;
+}
+
+/*Place first submenu*/
+div.menu.rightAlign ul.menu li > ul{
+	left:-141px;
+	top:1px;
+}
+
+/*Place n+1 submenu*/
+div.menu.rightAlign ul.menu li li > ul{
+	left:-282px;
+	top:-41px;
+}
+
+div.menu ul.menu
+, div.menu ul.menu ul{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+
+div.menu ul.menu{
+	margin:3px;
+	float:left;
+	position:relative;
+	height:40px;
+	line-height:40px;
+}
+
+div.menu.rightAlign ul.menu{
+	float:right;
+}
+
+div.menu ul.menu li{
+	float:left;
+	position:relative;
+	margin-right:-1px;
+	border:1px solid rgba(0,0,0,0.85);
+	background:rgba(60,60,60,0.85);
+	text-shadow:1px 1px 3px #000;
+	min-height:41px;
+}
+
+div.menu ul.menu ul li:not(:last-child){
+	border-bottom:none;
+}
+
+div.menu ul.menu ul{
+	padding-bottom:1px;
+}
+
+div.menu ul.menu a{
+	display:table-cell;
+	vertical-align:middle;
+	margin:auto;
+	text-decoration:none;
+	min-height:40px;
+}
+
+div.menu ul.menu .inner a{
+	padding-left:15px;
+	padding-right:15px;
+	display:table-cell;
+	height:40px;
+	text-align:center;
+	color:#0BE;
+	font-weight:bold;
+}
+
+div.menu ul.menu .inner{
+	width:100%;
+	display:table;
+}
+
+div.menu ul.menu ul .inner a{
+	min-width:110px;
+	text-align:left;
+	display:table-cell;
+}
+
+div.menu.rightAlign ul.menu ul .inner a{
+	min-width:110px;
+	text-align:right;
+	display:table-cell;
+}
+
+div.menu ul.menu li:hover > a{
+	color:#08C;
+	text-decoration:underline;
+}
+
+div.menu ul.menu ul li{
+	float:none;
+}
+
+div.menu ul.menu > li{
+	min-width:68px;
+}
+
+div.menu ul.menu ul li{
+	min-width:140px;
+}
+
+div.menu ul.menu li:hover{
+	background:rgba(240,240,240,0.95);
+	transition: 0.1s;
+	text-shadow:1px 1px 3px #FFF;
+}
+
+div.menu ul.menu li li ul+a{
+	background:#DDD;
+}
+
+/* 2D Menu */
+
+div.menu.grid{
+	clear:left;
+}
+
+div.menu.grid ul.menu{
+	margin:0px;
+	clear:left;
+}

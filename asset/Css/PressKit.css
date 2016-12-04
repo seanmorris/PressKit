@@ -4,13 +4,6 @@
 }
 */
 
-form{
-	padding-left:10px;
-	padding-right:10px;
-	padding-bottom:10px;
-	padding-top:10px;
-}
-
 div.messageContainer{
 	margin-bottom:20px;
 }
@@ -18,108 +11,6 @@ div.messageContainer{
 div.messageContainer:empty {
 	margin: 0px;
 	height: 0px;
-}
-
-fieldset, form {
-	padding-left:10px;
-	padding-right:10px;
-	padding-bottom:10px;
-	margin-bottom:10px;
-}
-
-fieldset legend, fieldset{
-	background-color:rgba(0,0,0,0.1);
-}
-
-form{
-	background-color:rgba(0,0,0,0.2);
-}
-
-fieldset:hover, form:hover
-, fieldset:focus, form:focus{
-	/* background-color:rgba(150,150,150,0.4);
-	/* border: 1px #666 solid !important;
-	*/
-}
-
-input, textarea, select {
-	border: 1px #777 solid !important;
-	border-radius:4px;
-}
-
-form {
-	border-radius:4px;
-}
-
-label, button, input[type="submit"], input[type="button"], legend {
-	font-size: 12.5pt;
-	margin-top:10px;
-}
-
-button:hover, input[type="submit"]:hover, input[type="button"]:hover {
-	background-color:rgba(255,255,255,0.85);
-	transition:background-color 1s ease-in;	
-}
-
-button, input[type="submit"], input[type="button"] {
-	background-color:rgba(255,255,255,0.5);
-	transition:background-color 1s ease-out;	
-}
-
-button, input[type="submit"], input[type="button"] {
-	padding:10px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	min-width: 90px;
-}
-
-button.inline, input.inline, select.inline {
-	/*margin-bottom: 0px;
-	margin-top: 0px;*/
-}
-
-button, input[type="submit"], input[type="button"], a{
-	filter: auto;
-	-webkit-filter: auto;
-}
-
-button:active, input[type="submit"]:active, input[type="button"]:active, a:active{
-	filter: invert(10%) hue-rotate(180deg);
-	-webkit-filter: invert(10%) hue-rotate(180deg);
-	transition: background-color 10ms;
-}
-
-fieldset legend {
-	margin-left:-10px;
-	margin-bottom:-20px;
-	border:none;
-	width:auto;
-	position: relative;
-	top:-15px;
-	padding-left: 10px;
-	padding-right: 10px;
-	border-radius:4px 4px 0px 0px;
-	line-height: 30px;
-	font-weight: bold;
-}
-
-fieldset {
-	margin-top: 30px;
-	border-radius:0px 4px 4px 4px;
-}
-
-input[type="text"], input[type="password"], input[type=""], textarea, select {
-	box-sizing: border-box;
-	width: 100%;
-	font-size: 13pt;
-	min-height: 21pt;
-	position:relative;
-	z-index:1;
-	margin: 0px;
-}
-
-fieldset[name*="\[-"] {
-	display: none;
 }
 
 .PressKitAjaxSearchResults{
@@ -147,28 +38,6 @@ fieldset[name*="\[-"] {
 
 div.container{
 	margin-top:10px;
-}
-
-fieldset[data-presskit-field="indicator"]{
-	display: none;
-	margin-top:8px;
-}
-
-fieldset[data-presskit-field="indicator"] div.selection {
-	/*margin-top:5px;*/
-}
-
-fieldset[data-presskit-field="indicator"] .PressKitAjaxSearchResult:last-child{
-	border-top:1px #999 solid;
-	border-top-left-radius:4px;
-	border-top-right-radius:4px;
-}
-
-fieldset.selectedModel{
-	padding:0px;
-	border:none !important;
-	background: transparent;
-	margin-top: 20px;
 }
 
 .PressKitAjaxSearchResult:nth-child(2n){

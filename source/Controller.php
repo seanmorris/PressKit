@@ -330,9 +330,20 @@ class Controller implements \SeanMorris\Ids\Routable
 				}
 			}
 
-			$menuViews[] = new \SeanMorris\PressKit\View\Menu([
-				'menu' => $m
-			]);
+			$theme = $this->_getTheme($router);
+
+			$menuViewClass = '\SeanMorris\PressKit\View\Menu';
+
+			if($theme)
+			{
+				$themeMenuViewClass = $theme::resolveFirst('menu', NULL, 'list');
+
+				$menuViewClass = $themeMenuViewClass
+					? $themeMenuViewClass
+					: $menuViewClass;
+			}
+
+			$menuViews[] = new $menuViewClass(['menu' => $m]);
 		}
 
 		if($routable)
@@ -358,6 +369,17 @@ class Controller implements \SeanMorris\Ids\Routable
 		if(!$router->parent())
 		{
 			$menu = $this->_menu($router, $preroutePath);
+		}
+
+		if(is_object($body))
+		{
+			$theme = $this->_getTheme($router);
+			$viewClass = $theme::resolveFirst(get_class($body));
+
+			if($viewClass)
+			{
+				$body = new $viewClass(['object'=>$body]);
+			}
 		}
 
 		if($this->model && count($this->models) === 1)
@@ -642,7 +664,18 @@ class Controller implements \SeanMorris\Ids\Routable
 			){
 				foreach ($postParams['models'] as $modelId)
 				{
-					$model = $modelClass::loadOneByPublicId($modelId);
+					if(static::$loadBy)
+					{
+						$loadBy = ucwords(static::$loadBy);
+					}
+					else
+					{
+						$loadBy = 'ByPublicId';
+					}
+
+					$loadBy = 'loadOne' . $loadBy;
+
+					$model = $modelClass::$loadBy($modelId);
 					static::$action($model);
 					$modelsProcessed++;
 				}
@@ -1183,6 +1216,10 @@ class Controller implements \SeanMorris\Ids\Routable
 			$loadBy = 'ByPublicId';
 		}
 
+		\SeanMorris\Ids\Log::debug(
+			'Loading model by ' . $loadBy
+		);
+
 		$loadBy ='generate' . $loadBy;
 
 		$gen = $modelClass::$loadBy($id);
@@ -1248,7 +1285,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function _notFound($router)
 	{
 		\SeanMorris\Ids\Log::trace();
-		throw new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
+		return new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
 		return FALSE;
 		//return 404;
 	}

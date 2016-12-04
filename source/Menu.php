@@ -11,12 +11,13 @@ class Menu
 		, $children = []
 	;
 
-	protected function __construct($name, $path, $link, $weight, $children = [])
+	protected function __construct($name, $path, $link, $weight, $classes = [], $children = [])
 	{
-		$this->name = $name;
-		$this->path = $path;
-		$this->link = $link;
-		$this->weight = $weight;
+		$this->name    = $name;
+		$this->path    = $path;
+		$this->link    = $link;
+		$this->classes = $classes;
+		$this->weight  = $weight;
 
 		if($children)
 		{
@@ -87,6 +88,14 @@ class Menu
 					unset($childLink['_weight']);
 				}
 
+				$cClasses = [];
+
+				if(isset($childLink['_classes']))
+				{
+					$cClasses = $childLink['_classes'];
+					unset($childLink['_classes']);
+				}
+
 				if(isset($childLink['_access']))
 				{
 					if($childLink['_access'])
@@ -116,6 +125,7 @@ class Menu
 					$cTitle
 					, $path !== false ? $path : $this->path
 					, $cLink
+					, $cClasses
 					, $cWeight
 				);
 
@@ -203,6 +213,11 @@ class Menu
 	public function children()
 	{
 		return $this->children;
+	}
+
+	public function classes()
+	{
+		return $this->classes;
 	}
 
 	public static function reset($name = false)

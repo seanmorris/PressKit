@@ -49,21 +49,25 @@ class ModelGrid extends Grid
 			{
 				$rows[$object->id][$column] = $object->{$column};
 			}
+			
+			$id = $object->publicId
+				? $object->publicId
+				: $object->id;
 
 			$rows[$object->id]['view'] = sprintf(
 				'<a href = "/%s/%s">View</a>'
 				, $path
-				, $object->publicId
+				, $id
 			);
 
 			$rows[$object->id]['edit'] = NULL;
-
+			
 			if($object->can('update'))
 			{
 				$rows[$object->id]['edit'] = sprintf(
 					'<a href = "/%s/%s/edit">Edit</a>'
 					, $path
-					, $object->publicId
+					, $id
 				);
 			}
 
@@ -74,7 +78,7 @@ class ModelGrid extends Grid
 				$rows[$object->id]['delete'] = sprintf(
 					'<a href = "/%s/%s/delete">Delete</a>'
 					, $path
-					, $object->publicId
+					, $id
 				);
 			}
 		}
