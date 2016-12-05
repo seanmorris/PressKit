@@ -43,7 +43,12 @@ class Model extends \SeanMorris\Ids\Model
 
 		$instance->_selected = time();
 
-		\SeanMorris\Ids\Log::debug([$instance->can('read'), !isset($instance->state)]);
+		/*
+		\SeanMorris\Ids\Log::debug([
+			$instance->can('read')
+			, !isset($instance->state)
+		]);
+		*/
 
 		if($instance->can('read') || !isset($instance->state))
 		{
@@ -218,7 +223,9 @@ class Model extends \SeanMorris\Ids\Model
 			$remove = [];
 			foreach ($skeleton as $column => &$value)
 			{
+				/*
 				\SeanMorris\Ids\Log::debug('COLUMN:' . $column, $this->can('write', $column) ? 1:0);
+				*/
 				if(!$this->can('write', $column))
 				{
 					$remove[] = $column;
@@ -237,7 +244,10 @@ class Model extends \SeanMorris\Ids\Model
 			}
 		}
 
-		\SeanMorris\Ids\Log::debug($skeleton, $override, '!!!!!!!!!!!!!!!!!!');
+		\SeanMorris\Ids\Log::debug(
+			'Skeleton', $skeleton
+			, 'Override', (int) $override
+		);
 
 		parent::consume($skeleton, $override);
 

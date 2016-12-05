@@ -52,7 +52,7 @@ class State extends \SeanMorris\Ids\Model
 	public function can($user, $point, $action = 'read')
 	{
 		$result = $this->_can($user, $point, $action);
-
+		/*
 		\SeanMorris\Ids\Log::debug([
 			'subclass' => get_called_class() . '::can',
 			'$this' => $this,
@@ -60,6 +60,7 @@ class State extends \SeanMorris\Ids\Model
 			'$action' => $action,
 			'$result' => $result
 		]);
+		*/
 
 		if($action == 'write')
 		{
@@ -103,21 +104,23 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if($pointCheck && $action === 'read')
 			{
-				\SeanMorris\Ids\Log::debug('Can.');
+				//\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 
-			\SeanMorris\Ids\Log::debug('Cannot.');
+			//\SeanMorris\Ids\Log::debug('Cannot.');
 			return FALSE;
 		}
 
 		$role = static::$states[$this->state][$point];
-
+		/*
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Role needed for %s %s:', $action, $point)
 			, $role
+			, 'Current State'
 			, $this
 		);
+		*/
 
 		if($pointCheck)
 		{
@@ -134,7 +137,11 @@ class State extends \SeanMorris\Ids\Model
 
 			$owner = $this->getSubject('owner');
 
-			$owner && \SeanMorris\Ids\Log::debug('Checking if user is owner... ' . $owner->isSame($user));
+			$owner && \SeanMorris\Ids\Log::debug(sprintf(
+				'Checking if user "%s" is owner...'
+				, $user->username
+				, $owner->isSame($user)
+			));
 
 			if($owner && $owner->isSame($user))
 			{

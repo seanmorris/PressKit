@@ -72,10 +72,14 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		{
 			$this->title = $model->{$titleField};
 		}
+		else
+		{
+			$this->title = 'View';
+		}
 
 		if(!$router->subRouted())
 		{
-			$this->context['title'] = $model->title;
+			$this->context['title'] = $this->title;
 		}
 		
 		if($theme = $this->_getTheme($router))
@@ -113,6 +117,24 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 				, $router->parent()->routes()->_modelClass()
 			));
 			return false;
+		}
+
+		$titleField = 'title';
+		$this->title  = 'Edit';
+
+		if(static::$titleField)
+		{
+			$titleField = static::$titleField;
+		}
+
+		if($model->{$titleField})
+		{
+			$this->title .= ' ' . $model->{$titleField};
+		}
+
+		if(!$router->subRouted())
+		{
+			$this->context['title'] = $this->title;
 		}
 
 		$form = new $formClass([

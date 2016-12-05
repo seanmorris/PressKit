@@ -343,7 +343,10 @@ class Controller implements \SeanMorris\Ids\Routable
 					: $menuViewClass;
 			}
 
-			$menuViews[] = new $menuViewClass(['menu' => $m]);
+			$menuViews[] = new $menuViewClass([
+				'menu'      => $m
+				, '__debug' => \SeanMorris\Ids\Settings::read('devmode')
+			]);
 		}
 
 		if($routable)
@@ -378,7 +381,10 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if($viewClass)
 			{
-				$body = new $viewClass(['object'=>$body]);
+				$body = new $viewClass([
+					'object'    => $body
+					, '__debug' => \SeanMorris\Ids\Settings::read('devmode')
+				]);
 			}
 		}
 
@@ -582,14 +588,14 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
 
-				\SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
+				// \SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
 			}
 
 			if(isset($context['css']) && $context['css'])
 			{
 				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 
-				\SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
+				// \SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
 			}
 
 			$stack = $theme::resolveFirst('stack');
@@ -604,6 +610,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				$stack = new $stack(
 					[
 						'menu' => $menu
+						, '__debug' => \SeanMorris\Ids\Settings::read('devmode')
 						//, 'messages' => \SeanMorris\Message\MessageHandler::get()->render()
 						, 'body' => $panels
 					] + $this->context
@@ -860,7 +867,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					$listParams[] = $pageNumber;
 					$listParams[] = static::$pageSize;
 
-					$count = $modelClass::$countBy(...$listParams);
+					$count = $modelClass::$countBy(...$unpagedlistParams);
 
 					$lastPageSpread = $pageNumber + static::$pageSpread;
 					$lastPage = (int) ceil($count / static::$pageSize);
@@ -997,6 +1004,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					, 'page'          => $pageNumber
 					, 'pager'         => $pagerLinks
 					, 'query'         => $_GET
+					, '__debug'       => TRUE
 				] + $this->context
 			);
 		}
@@ -1015,6 +1023,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				, 'page'          => $pageNumber
 				, 'pager'         => $pagerLinks
 				, 'query'         => $_GET
+				, '__debug'       => TRUE
 			] + $this->context);
 		}
 

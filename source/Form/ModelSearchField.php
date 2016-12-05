@@ -26,14 +26,17 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 			: []
 		;
 
-		$fieldDef['_array'] = TRUE;
+		$fieldDef['_array'] = isset($fieldDef['_array'])
+			? $fieldDef['_array']
+			: []
+		;
 
 		$children =& $fieldDef['_children'];
 
 		$fieldDef['_children'] = [
 			'_title' => $fieldDef['_subtitle']
 			, 'type' => 'fieldset'
-			, '_array' => TRUE
+			, '_array' => $fieldDef['_array']
 			, '-PressKit-Widget' => 'ModelSearch'
 			, '-PressKit-Search-Endpoint' => $fieldDef['_searchEndpoint']
 			, '-PressKit-Title-Point' => $fieldDef['_titlePoint']
@@ -61,13 +64,22 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		];
 
 		*/
+
+		$keywordFieldName = 'keyword';
+
+		if(!$fieldDef['_multi'])
+		{
+			$keywordFieldName = $fieldDef['name'];
+		}
 		
-		$children['_children']['keyword'] = [
+		$children['_children'][$keywordFieldName] = [
 			'_title' => 'Search'
 			, 'type' => 'text'
 			, '-PressKit-Field' => 'search'
 			, 'autocomplete' => 'off'
 		];
+
+		$fieldDef['_children']['-PressKit-Keyword-Field'] = $keywordFieldName;
 
 		$children['_children']['id'] = [
 			'_title' => 'id'
@@ -93,6 +105,10 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 				, 'type' => 'button'
 				, '-button' => 'PressKit.FieldSetWidget.remove'		
 			];
+		}
+		else
+		{
+			$children = [$children];
 		}
 
 		parent::__construct($fieldDef, $form);
