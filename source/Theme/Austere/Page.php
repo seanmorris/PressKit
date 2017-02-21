@@ -31,7 +31,7 @@ __halt_compiler();
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-		<title><?php if(isset($title) && $title){?><?=$title;?> - <?php } ?>NewNinja.dev</title>
+		<title><?php if(isset($title) && $title){?><?=$title;?> - <?php } ?>seanmorr.is</title>
 <?php foreach($js as $j): ?>
 		<script type = "text/javascript" src = "<?=$j?>"></script>
 <?php endforeach; ?>
@@ -44,7 +44,7 @@ __halt_compiler();
 		<div class = wrap>
 			<div class="navbar navbar-inverse navbar-fixed-top">
 				<div class="navbar-inner">
-					<a class="brand" href="/">NewNinja.dev</a>
+					<a class="brand" href="/">seanmorr.is</a>
 					<div class = "menu rightAlign">
 						<?php echo $menu; ?>
 					</div>
