@@ -434,11 +434,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 	, previewImagePoint: null
 	, subWidgetHandlers: {
 		search: {
-			click: function(event)
-			{
-				console.log('HEY!');
-			}
-			, keyup: 'searchSubWidgetKeyupHandler'
+			keyup: 'searchSubWidgetKeyupHandler'
 		}
 		, results: {
 			click: 'searchResultSubWidgetClickHandler'
@@ -627,6 +623,10 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 	}
 	, renderSearchResults: function(result)
 	{
+		if(!result)
+		{
+			return;
+		}
 		var option = $('<a class = "PressKitAjaxSearchResult">')
 			.attr('href', this.searchEndpoint + '/' + result.publicId)
 			.css({'display':'block'})

@@ -40,6 +40,8 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			, 'type' => 'modelSearch'
 			, '_searchEndpoint' => '/users/roles'
 			, '_titlePoint' => 'class'
+			, '_array' => TRUE
+			, '_multi' => TRUE
 		];
 
 		$skeleton['submit'] = [

@@ -75,6 +75,8 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			, '_searchEndpoint' => '/images'
 			, '_previewImagePoint' => 'url'
 			, '_titlePoint' => 'title'
+			, '_array' => TRUE
+			, '_multi' => TRUE
 		];
 
 		$skeleton['state'] = [

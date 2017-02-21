@@ -38,6 +38,7 @@ __halt_compiler();
 <?php foreach($css as $c):?>
 		<link href="<?=$c?>" rel="stylesheet">
 <?php endforeach; ?>
+	<link rel="icon" type="image/png" href="/favicon.png" />
 	</head>
 	<body>
 		<div class = wrap>

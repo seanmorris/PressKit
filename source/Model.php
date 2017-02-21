@@ -212,7 +212,7 @@ class Model extends \SeanMorris\Ids\Model
 	public function consume($skeleton, $override = false)
 	{
 		\SeanMorris\Ids\Log::debug(sprintf(
-				'Consuming skeleton for model of type %s'
+				'Consuming skeleton for model of type %s' . ($override ? ' OVERRIDE PERMISSIONS!' : NULL)
 				, get_called_class()
 			)
 			, $skeleton
@@ -223,9 +223,7 @@ class Model extends \SeanMorris\Ids\Model
 			$remove = [];
 			foreach ($skeleton as $column => &$value)
 			{
-				/*
-				\SeanMorris\Ids\Log::debug('COLUMN:' . $column, $this->can('write', $column) ? 1:0);
-				*/
+				//\SeanMorris\Ids\Log::debug('COLUMN:' . $column, $this->can('write', $column) ? 1:0);
 				if(!$this->can('write', $column))
 				{
 					$remove[] = $column;
@@ -236,7 +234,7 @@ class Model extends \SeanMorris\Ids\Model
 					'Stripping disallowed columns for model of type %s'
 					, get_called_class()
 				)
-				, implode(', ', $remove)
+				, $remove
 			);
 
 			foreach ($remove as $key) {
@@ -280,7 +278,6 @@ class Model extends \SeanMorris\Ids\Model
 		if(isset(static::$hasOne['state'])
 			&& static::$hasOne['state']
 			&& !$this->state
-			&& $owner = \SeanMorris\Access\Route\AccessRoute::_currentUser()
 		){
 			\SeanMorris\Ids\Log::debug(
 				'Creating new state '
@@ -290,8 +287,9 @@ class Model extends \SeanMorris\Ids\Model
 			);
 			$stateClass = static::$hasOne['state'];
 			$state = new $stateClass;
+			$owner = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 			$state->consume([
-				'owner' => $owner->id
+				'owner' => $owner ? $owner->id : NULL
 			]);
 			$state->save();
 			$this->state = $state->id;

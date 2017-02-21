@@ -91,15 +91,14 @@ class Image extends \SeanMorris\PressKit\Model
 			$publicDir = \SeanMorris\Ids\Settings::read('public');
 
 			$newName = sprintf(
-				'%s%s.%s.%03d.%s'
-				, 'Static/Dynamic/'
+				'/Static/Dynamic/%s.%s.%03d.%s'
 				, $microtime[1]
 				, substr($microtime[0], 2)
 				, rand(0,999)
 				, $m[1]
 			);
 
-			$newUrl = '/' . $newName;
+			$newUrl = $newName;
 			$newFileName = $publicDir . $newName;
 
 			$newFile = $tmpFile->copy($newFileName);

@@ -579,19 +579,19 @@ class Controller implements \SeanMorris\Ids\Routable
 				}
 
 				$context[$contextElement] = array_merge(
+					$ctxEle,
 					$context[$contextElement]
-					, $ctxEle
 				);
 			}
 
-			if(isset($context['js']) && $context['js'])
+			if(isset($context['js']) && $context['js'] && !$router->parent())
 			{
 				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
 
 				// \SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
 			}
 
-			if(isset($context['css']) && $context['css'])
+			if(isset($context['css']) && $context['css'] && !$router->parent())
 			{
 				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 
@@ -953,6 +953,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				$router
 				, ['navigation' => $pagerLinks]
 			);
+			header('Content-Type: application/json');
 			echo $resource->toJson();
 			/*/
 			echo json_encode(array_map(

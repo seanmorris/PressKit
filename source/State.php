@@ -4,6 +4,7 @@ class State extends \SeanMorris\Ids\Model
 {
 	protected
 		$id
+		, $publicId
 		, $state = 0
 		, $owner
 	;
@@ -31,6 +32,16 @@ class State extends \SeanMorris\Ids\Model
 		]
 
 		, $table = 'StateFlowState'
+		, $createColumns = [
+			'publicId' => 'UNHEX(REPLACE(UUID(), "-", ""))'
+		]
+		, $readColumns = [
+			'publicId' => 'HEX(%s)'
+		]
+		, $updateColumns = [
+			'publicId' => 'UNHEX(%s)'
+		]
+
 		, $byId = [
 			'where' => [['id' => '?']]
 		]
