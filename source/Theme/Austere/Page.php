@@ -38,7 +38,7 @@ __halt_compiler();
 <?php foreach($css as $c):?>
 		<link href="<?=$c?>" rel="stylesheet">
 <?php endforeach; ?>
-	<link rel="icon" type="image/png" href="/favicon.png" />
+	<link rel="icon" type="image/png" href="/favicon.ico" />
 	</head>
 	<body>
 		<div class = wrap>
@@ -68,7 +68,7 @@ __halt_compiler();
 				</div>
 			</div>
 			<div class = "smFooter footer">
-			  <p>&copy; 2016 Sean Morris</p>
+			  <p>&copy; 2016-<?=date('y');?> Sean Morris</p>
 			</div>
 		</div>
 		<?php /*

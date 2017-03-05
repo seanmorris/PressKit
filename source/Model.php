@@ -147,9 +147,9 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if user "%s" can %s, %s'
+			'Checking if user "%s" can %s on %s'
 				, $user->username
-				, $action . ' ' . $point
+				, $action . ($point ? (' property $' . $point) : NULL)
 				, get_called_class()
 		), $allowed ? 1:0);
 

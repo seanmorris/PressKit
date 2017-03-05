@@ -24,6 +24,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	protected static
 		$titleField = NULL
+		, $titleFunction = NULL
 		, $list = []
 		, $pageSize = NULL
 		, $pageSpread = NULL
@@ -1251,16 +1252,24 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$titleField = 'title';
 
-			if(static::$titleField)
+			if(static::$titleFunction)
+			{
+				$titleFunction = static::$titleFunction;
+				
+				if(1||is_callable([$this, $titleFunction]))
+				{
+					$modelRoute->title = $this->$titleFunction;	
+				}
+			}
+			else if(static::$titleField)
 			{
 				$titleField = static::$titleField;
-			}
 
-			if($model && $model->{$titleField})
-			{
-				$modelRoute->title = $model->{$titleField};
+				if($model && $model->{$titleField})
+				{
+					$modelRoute->title = $model->{$titleField};
+				}
 			}
-
 
 			return $router->resumeRouting($modelRoute);
 		}

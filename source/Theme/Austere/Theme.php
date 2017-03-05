@@ -10,6 +10,7 @@ class Theme extends \SeanMorris\Theme\Theme
 				'list' => 'SeanMorris\PressKit\Theme\Austere\ModelGrid',
 			],
 			//'SeanMorris\PressKit\Post' => 'SeanMorris\PressKit\Theme\Austere\Model',
+			'SeanMorris\Ids\Http\Http404' => 'SeanMorris\PressKit\Theme\Austere\Error'
 		]
 		, $list = [
 			//'SeanMorris\Ids\Model' => 'SeanMorris\PressKit\Theme\Austere\Grid',
