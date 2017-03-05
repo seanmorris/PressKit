@@ -24,7 +24,6 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	protected static
 		$titleField = NULL
-		, $titleFunction = NULL
 		, $list = []
 		, $pageSize = NULL
 		, $pageSpread = NULL
@@ -479,7 +478,6 @@ class Controller implements \SeanMorris\Ids\Routable
 						);
 
 						$panels[$subRouteSubNodes] = $panel;
-
 					}
 					catch(\SeanMorris\Ids\Http\HttpException $e)
 					{
@@ -1252,24 +1250,16 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$titleField = 'title';
 
-			if(static::$titleFunction)
-			{
-				$titleFunction = static::$titleFunction;
-				
-				if(1||is_callable([$this, $titleFunction]))
-				{
-					$modelRoute->title = $this->$titleFunction;	
-				}
-			}
-			else if(static::$titleField)
+			if(static::$titleField)
 			{
 				$titleField = static::$titleField;
-
-				if($model && $model->{$titleField})
-				{
-					$modelRoute->title = $model->{$titleField};
-				}
 			}
+
+			if($model && $model->{$titleField})
+			{
+				$modelRoute->title = $model->{$titleField};
+			}
+
 
 			return $router->resumeRouting($modelRoute);
 		}
@@ -1303,6 +1293,10 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	public function _notFound($router)
 	{
+		if($router->subRouted())
+		{
+			return;
+		}
 		\SeanMorris\Ids\Log::trace();
 		return new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
 		return FALSE;
