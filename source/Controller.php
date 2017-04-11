@@ -392,8 +392,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		{
 			$modelPath = $this->model->publicId;
 
-			$contextMenu = [ 'Administrate' => [
-				'Context' => [
+			$contextMenu = [ '✯' => [
 					'_weight' => -100
 					, '_access'	=> isset($this->access['_contextMenu'])
 						? $this->access['_contextMenu']
@@ -416,7 +415,6 @@ class Controller implements \SeanMorris\Ids\Routable
 							? $this->access['delete']
 							: false
 					]
-				]
 			]];
 
 			$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
@@ -988,25 +986,26 @@ class Controller implements \SeanMorris\Ids\Routable
 				, $theme
 			));
 
-			$listViewClass = $theme::resolveFirst($objectClass, NULL, 'list');
-
-			$list = new $listViewClass(
-				[
-					'columns'         => $this->listColumns
-					, 'content'       => $objects
-					, 'path'          => $path->getAliasedPath()->pathString()
-					, 'currentPath'   => $path->pathString()
-					, 'columnClasses' => $this->columnClasses
-					, 'subRouted'     => $router->subRouted()
-					, '_controller'   => $this
-					, '_router'       => $router
-					, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
-					, 'page'          => $pageNumber
-					, 'pager'         => $pagerLinks
-					, 'query'         => $_GET
-					, '__debug'       => TRUE
-				] + $this->context
-			);
+			if($listViewClass = $theme::resolveFirst($objectClass, NULL, 'list'))
+			{
+				$list = new $listViewClass(
+					[
+						'columns'         => $this->listColumns
+						, 'content'       => $objects
+						, 'path'          => $path->getAliasedPath()->pathString()
+						, 'currentPath'   => $path->pathString()
+						, 'columnClasses' => $this->columnClasses
+						, 'subRouted'     => $router->subRouted()
+						, '_controller'   => $this
+						, '_router'       => $router
+						, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
+						, 'page'          => $pageNumber
+						, 'pager'         => $pagerLinks
+						, 'query'         => $_GET
+						, '__debug'       => TRUE
+					] + $this->context
+				);
+			}
 		}
 		else
 		{

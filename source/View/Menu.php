@@ -35,6 +35,7 @@ class Menu extends \SeanMorris\Theme\View
 					'single' => true
 					, 'text' => $text
 					, 'link' => $link
+					, 'attrs' => $menuItem->attrs()
 				];
 			}
 			else
@@ -65,6 +66,7 @@ class Menu extends \SeanMorris\Theme\View
 					, 'subMenu' => trim($subMenu)
 					, 'link' => $link
 					, 'text' => $text
+					, 'attrs' => $menuItem->attrs()
 				];
 			}
 		}

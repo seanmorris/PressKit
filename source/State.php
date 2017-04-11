@@ -63,15 +63,14 @@ class State extends \SeanMorris\Ids\Model
 	public function can($user, $point, $action = 'read')
 	{
 		$result = $this->_can($user, $point, $action);
-		/*
 		\SeanMorris\Ids\Log::debug([
 			'subclass' => get_called_class() . '::can',
-			'$this' => $this,
-			'$point' => $point,
+			'$this'   => $this,
+			'$point'  => $point,
 			'$action' => $action,
-			'$result' => $result
+			'$result' => $result,
+			'$user'   => $user
 		]);
-		*/
 
 		if($action == 'write')
 		{

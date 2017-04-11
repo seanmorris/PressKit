@@ -7,17 +7,19 @@ class Menu
 		$name
 		, $link
 		, $path
-		, $weight = 0
+		, $weight   = 0
+		, $attrs    = []
 		, $children = []
 	;
 
-	protected function __construct($name, $path, $link, $weight, $classes = [], $children = [])
+	protected function __construct($name, $path, $link, $weight, $classes = [], $children = [], $attrs = [])
 	{
 		$this->name    = $name;
 		$this->path    = $path;
 		$this->link    = $link;
 		$this->classes = $classes;
 		$this->weight  = $weight;
+		$this->attrs   = $attrs;
 
 		if($children)
 		{
@@ -88,6 +90,14 @@ class Menu
 					unset($childLink['_weight']);
 				}
 
+				$cAttrs = [];
+
+				if(isset($childLink['_attrs']))
+				{
+					$cAttrs = $childLink['_attrs'];
+					unset($childLink['_attrs']);
+				}
+
 				$cClasses = [];
 
 				if(isset($childLink['_classes']))
@@ -125,8 +135,10 @@ class Menu
 					$cTitle
 					, $path !== false ? $path : $this->path
 					, $cLink
-					, $cClasses
 					, $cWeight
+					, $cClasses
+					, []
+					, $cAttrs
 				);
 
 				$newPiece->add($childLink, $path, $user);
@@ -218,6 +230,11 @@ class Menu
 	public function classes()
 	{
 		return $this->classes;
+	}
+
+	public function attrs()
+	{
+		return $this->attrs;
 	}
 
 	public static function reset($name = false)

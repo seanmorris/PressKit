@@ -23,6 +23,10 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			, 'type' => 'text'
 		];
 
+		$skeleton['fbid'] = [
+			'type' => 'hidden'
+		];
+
 		$skeleton['email'] = [
 			'_title' => 'Email'
 			, 'type' => 'text'

@@ -18,7 +18,7 @@ class Page extends \SeanMorris\Theme\View
 			}
 		}
 
-		$this->vars['breadcrumbs'] = implode(' &raquo; ', $renderedBreadcrumbs);
+		$this->vars['breadcrumbs'] = $renderedBreadcrumbs;
 
 		$body =& $this->vars['body'];
 
@@ -53,7 +53,7 @@ __halt_compiler();
 			<div class = "main container">
 				<div class = "postBoardWrapper">
 					<div class = "header">
-						<div class = "breadcrumbs"><?=$breadcrumbs?></div>
+						<div class = "breadcrumbs"><?=implode(' &raquo; ', $breadcrumbs)?></div>
 						<?php if(isset($title) && $title){?> <h1><?=$title;?></h1><?php } ?>
 					</div>
 					<div class = "body">
