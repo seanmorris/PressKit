@@ -6,23 +6,33 @@ class Scaffold extends Model
 	 *	TODO: Forms, relationships, truncations and dropping.
 	 */
 
-	protected static $config = [], $ignore = ['class'], $registry = [];
+	protected static $config = [], $ignore = ['class', 'config'], $registry = [], $classRegistry;
 
 	final public function __construct($config = [])
 	{
 		$this->class = get_called_class();
 
-		if(!static::$config && $config)
+		if($config)
 		{
 			static::$config = $config;
 
 			if($config['name'])
 			{
-				if(isset(self::$registry[$config['name']]))
+				if(isset(self::$registry[$config['name']]) && $config != self::$registry[$config['name']]['config'])
 				{
-					throw new \Exception('Cannot register the same Scaffold name twice.');
+					throw new \Exception(
+						'Cannot register the same Scaffold name twice: '
+						. $config['name']
+					);
 				}
-				self::$registry[$config['name']] = $this->class;
+
+				self::$registry[$config['name']] = [
+					'name'   => $config['name'],
+					'class'  => $this->class,
+					'config' => $config,
+				];
+
+				self::$classRegistry[$this->class] =& self::$registry[$config['name']];
 			}
 		}
 
@@ -37,9 +47,12 @@ class Scaffold extends Model
 				$this->{$property} = $value[0];
 			}
 		}
+
+		$this->createTable();
+		$this->updateTable();
 	}
 
-	public static function updateTable()
+	public function updateTable()
 	{
 		$database = static::database();
 
@@ -74,6 +87,8 @@ class Scaffold extends Model
 						, static::table()
 						, $column->Field
 					));
+
+					$addressedColumns[] = $column->Field;
 				}
 				else if(static::$config['schema'][$column->Field][1] !== $columnString)
 				{
@@ -84,6 +99,10 @@ class Scaffold extends Model
 						, static::$config['schema'][$column->Field][1]
 					));
 
+					$addressedColumns[] = $column->Field;
+				}
+				else if(static::$config['schema'][$column->Field][1] == $columnString)
+				{
 					$addressedColumns[] = $column->Field;
 				}
 			}
@@ -110,7 +129,7 @@ class Scaffold extends Model
 		}
 	}
 
-	public static function createTable()
+	public function createTable()
 	{
 		$columns = [];
 		$keys    = [];
@@ -149,6 +168,33 @@ class Scaffold extends Model
 		));
 	}
 
+	public static function produceScaffold($config)
+	{
+		static $classes = [];
+
+		$namespace = 'SeanMorris\PressKit\Scaffold';
+
+		if(!isset($config['name']))
+		{
+			$config['name'] = sha1(print_r($config, 1));
+		}
+
+		$fullClass = $namespace . '\\' . $config['name'];
+
+		if(!isset($classes[$fullClass]))
+		{
+			eval(sprintf(
+				'namespace %s; class %s extends \SeanMorris\PressKit\Scaffold {}'
+				, $namespace
+				, $config['name']
+			));
+
+			$classes[$fullClass] = TRUE;
+		}
+
+		return new $fullClass($config);
+	}
+
 	protected static function database($database = 'main')
 	{
 		return \SeanMorris\Ids\Database::get($database);
@@ -156,9 +202,14 @@ class Scaffold extends Model
 
 	protected static function table()
 	{
-		if(isset(static::$config['table']))
-		{
-			return static::$config['table'];
+		$class = get_called_class();
+
+		if(isset(
+			self::$classRegistry[$class]
+			, self::$classRegistry[$class]['config']
+			, self::$classRegistry[$class]['config']['table']
+		)){
+			return self::$classRegistry[$class]['config']['table'];
 		}
 	}
 

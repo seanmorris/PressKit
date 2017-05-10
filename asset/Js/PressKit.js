@@ -782,7 +782,70 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 	}
 });
 /* /Multi Field */
+/*
+PressKit.TerminalWidget = PressKit.WidgetModel.extend({
+	name: 'Terminal'
+	, terminalTag: null
+	, terminalTagInner: null
+	, init: function(tag, event)
+	{
+		this._super(tag, event);
+		this.terminalTag = $('<div class = "pressKit-terminal"></div>');
+		this.terminalTagInner = $('<div class ="pressKit-terminal-inner"></div>');
 
+		this.terminalTag.append(this.terminalTagInner);
+		tag.append(this.terminalTag);
+
+		this.terminalTag.css({
+			position: 'absolute',
+			top: '0px',
+			left: '0px',
+			width: '100%',
+			height: '100%',
+			"z-index": 999999999,
+			color: '#FFF',
+			background: 'rgba(0,0,0,0.5)',
+			"font-family": 'monospace',
+		});
+
+		this.terminalTagInner.css({
+			'word-wrap': 'break-word'
+		});
+
+		console.log( this.getTerminalWidth() );
+
+		$(window).resize(function(){
+			console.log( this.getTerminalWidth() );
+		});
+	}
+	, events: {
+		click: 'clickHandler'
+	}
+	, getTerminalWidth: function()
+	{
+		this.terminalTagInner.html(this.terminalTagInner.html() + '!');
+
+		var height = this.terminalTagInner.height();
+		this.terminalTagInner.html('');
+
+		var newHeight;
+		var i = 0;
+		while(++i < 80*1000)
+		{
+			this.terminalTagInner.html(this.terminalTagInner.html() + '!');
+			newHeight = this.terminalTagInner.height();
+
+			if(newHeight !== height)
+			{
+				return i;
+			}
+		}
+	}
+	, clickHandler: function(event)
+	{
+	}
+});
+*/
 $(function()
 {
 	PressKit.register({
@@ -790,5 +853,6 @@ $(function()
 		, 'input': PressKit.InputWidgetModel
 		, '[data-presskit-widget="ModelSearch"]': PressKit.ModelSearchWidget
 		, 'fieldset': PressKit.FieldSetWidget
+		, 'body': PressKit.TerminalWidget
 	});
 });
