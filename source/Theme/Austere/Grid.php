@@ -16,7 +16,18 @@ class Grid extends \SeanMorris\Theme\View
 		if(!isset($this->vars['columns']))
 		{
 			$row = current($this->vars['rows']);
-			$this->vars['columns'] = array_keys((array)$row);
+			$this->vars['columns'] = array_keys((array)$row->unconsume());
+		}
+
+		if(isset($this->vars['skipColumns']))
+		{
+			foreach($this->vars['skipColumns'] as $skipColumn)
+			{
+				if(FALSE !== ($index = array_search($skipColumn, $this->vars['columns'])))
+				{
+					unset($this->vars['columns'][$index]);
+				}
+			}
 		}
 
 		if(!isset($this->vars['buttons']))
@@ -116,9 +127,10 @@ __halt_compiler();
 			{
 				$key = $column;
 			}
-			echo is_object($row)
+			$val = is_object($row)
 				? $row->{$key}
 				: $row[$key];
+			echo is_scalar($val) && !is_null($val) ? $val : sprintf('<span title = "%s">[]</span>', print_r($val, 1));
 			?>
 		</td>
 		<?php endforeach; ?>

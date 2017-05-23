@@ -374,9 +374,10 @@ class Controller implements \SeanMorris\Ids\Routable
 			$menu = $this->_menu($router, $preroutePath);
 		}
 
+		$theme = $this->_getTheme($router);
+
 		if(is_object($body))
 		{
-			$theme = $this->_getTheme($router);
 			$viewClass = $theme::resolveFirst(get_class($body));
 
 			if($viewClass)
@@ -384,6 +385,21 @@ class Controller implements \SeanMorris\Ids\Routable
 				$body = new $viewClass([
 					'object'    => $body
 					, '__debug' => \SeanMorris\Ids\Settings::read('devmode')
+				]);
+			}
+		}
+		else if(is_array($body) && is_object(current($body)))
+		{
+			$viewClass = $theme::resolveFirst(current($body), NULL, 'list');
+
+			if($viewClass)
+			{
+				$body = new $viewClass([
+					'content'       => $body
+					, '__debug'     => \SeanMorris\Ids\Settings::read('devmode')
+					, '_controller' => $this
+					, '_router'     => $router
+					, 'path'        => $router->path()->pathString()
 				]);
 			}
 		}

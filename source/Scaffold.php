@@ -18,14 +18,6 @@ class Scaffold extends Model
 
 			if($config['name'])
 			{
-				if(isset(self::$registry[$config['name']]) && $config != self::$registry[$config['name']]['config'])
-				{
-					throw new \Exception(
-						'Cannot register the same Scaffold name twice: '
-						. $config['name']
-					);
-				}
-
 				self::$registry[$config['name']] = [
 					'name'   => $config['name'],
 					'class'  => $this->class,
@@ -50,6 +42,74 @@ class Scaffold extends Model
 
 		$this->createTable();
 		$this->updateTable();
+	}
+
+	public function createTable()
+	{
+		$columns = [];
+		$keys    = [];
+		
+		if(isset(static::$config['schema']))
+		{
+			foreach(static::$config['schema'] as $property => $value)
+			{
+				$columns[] = sprintf('`%s` %s', $property, $value[1]);
+			}
+		}
+
+		if(isset(static::$config['keys']))
+		{
+			if(isset(static::$config['keys']['primary']))
+			{
+				$keys[] = sprintf(
+					'PRIMARY KEY (`%s`)'
+					, implode('`, `', static::$config['keys']['primary'])
+				);	
+			}
+
+			if(isset(static::$config['keys']['unique']))
+			{
+				foreach(static::$config['keys']['unique'] as $keyName => $keyCols)
+				{
+					$keys[] = sprintf(
+						'UNIQUE KEY `%s` (`%s`)'
+						, $keyName
+						, implode('`, `', $keyCols)
+					);	
+				}
+			}
+
+			if(isset(static::$config['keys']['index']))
+			{
+				foreach(static::$config['keys']['index'] as $keyName => $keyCols)
+				{
+					$keys[] = sprintf(
+						'KEY `%s` (`%s`)'
+						, $keyName
+						, implode('`, `', $keyCols)
+					);	
+				}
+			}
+		}
+
+		$engine = 'InnoDB';
+
+		if(isset(static::$config['engine']))
+		{
+			$engine = static::$config['engine'];
+		}
+
+		$database = static::database();
+
+		$query = sprintf(
+			"CREATE TABLE IF NOT EXISTS `%s` (\n%s\n%s\n) ENGINE = %s"
+			, static::$config['table']
+			, implode("\n, ", $columns)
+			, $keys ? (', ' . implode("\n, ", $keys)) : NULL
+		, $engine
+		);
+
+		return $database->query($query);
 	}
 
 	public function updateTable()
@@ -92,12 +152,22 @@ class Scaffold extends Model
 				}
 				else if(static::$config['schema'][$column->Field][1] !== $columnString)
 				{
-					$database->query(sprintf(
-						'ALTER TABLE `%s` MODIFY COLUMN `%s` %s'
-						, static::table()
-						, $column->Field
-						, static::$config['schema'][$column->Field][1]
-					));
+					try
+					{
+						$database->query(sprintf(
+							'ALTER TABLE `%s` MODIFY COLUMN `%s` %s'
+							, static::table()
+							, $column->Field
+							, static::$config['schema'][$column->Field][1]
+						));
+					}
+					catch(\PDOException $exception)
+					{
+						if($exception->getCode() != 22001)
+						{
+							throw $exception;
+						}
+					}
 
 					$addressedColumns[] = $column->Field;
 				}
@@ -129,50 +199,19 @@ class Scaffold extends Model
 		}
 	}
 
-	public function createTable()
-	{
-		$columns = [];
-		$keys    = [];
-		
-		if(isset(static::$config['schema']))
-		{
-			foreach(static::$config['schema'] as $property => $value)
-			{
-				$columns[] = sprintf('`%s` %s', $property, $value[1]);
-			}
-		}
-
-		if(isset(static::$config['keys']))
-		{
-			if(isset(static::$config['keys']['primary']))
-			{
-				$keys[] = sprintf('PRIMARY KEY (`%s`)', implode('`, `', static::$config['keys']['primary']));	
-			}
-		}
-
-		$engine = 'InnoDB';
-
-		if(isset(static::$config['engine']))
-		{
-			$engine = static::$config['engine'];
-		}
-
-		$database = static::database();
-
-		return $database->query(sprintf(
-			"CREATE TABLE IF NOT EXISTS `%s` (\n%s\n%s\n) ENGINE = %s"
-			, static::$config['table']
-			, implode("\n, ", $columns)
-			, $keys ? (', ' . implode("\n, ", $keys)) : NULL
-		, $engine
-		));
-	}
-
 	public static function produceScaffold($config)
 	{
 		static $classes = [];
 
 		$namespace = 'SeanMorris\PressKit\Scaffold';
+
+		if(is_string($config))
+		{
+			if(!$config = json_decode($config))
+			{
+				return;
+			}
+		}
 
 		if(!isset($config['name']))
 		{
@@ -184,15 +223,22 @@ class Scaffold extends Model
 		if(!isset($classes[$fullClass]))
 		{
 			eval(sprintf(
-				'namespace %s; class %s extends \SeanMorris\PressKit\Scaffold {}'
+				'namespace %s;class %s extends \SeanMorris\PressKit\Scaffold{%s}'
 				, $namespace
 				, $config['name']
+				, isset($config['traits'])
+					? NULL //'use ' . implode(', ', $config['traits']) . '; '
+					: NULL
 			));
 
 			$classes[$fullClass] = TRUE;
 		}
 
-		return new $fullClass($config);
+		$obj = new $fullClass($config);
+
+		\SeanMorris\Ids\Log::trace();
+
+		return $obj;
 	}
 
 	protected static function database($database = 'main')
@@ -211,6 +257,21 @@ class Scaffold extends Model
 		)){
 			return self::$classRegistry[$class]['config']['table'];
 		}
+	}
+
+	public static function getProperties($all = FALSE)
+	{
+		$properties = parent::getProperties($all);
+
+		foreach(static::$config['schema'] as $property => $def)
+		{
+			if(!in_array($property, $properties))
+			{
+				$properties[] = $property;
+			}
+		}
+
+		return $properties;
 	}
 
 	protected function properties()
@@ -249,5 +310,31 @@ class Scaffold extends Model
 		}
 
 		return $columns + parent::getColumns($type, $all);
+	}
+
+	protected static function beforeWrite($instance, &$skeleton)
+	{
+		foreach($skeleton as $property => &$value)
+		{
+			if(!is_scalar($value))
+			{
+				$value = json_encode($value);
+			}
+		}
+	}
+
+	protected static function afterRead($instance)
+	{
+		foreach($instance as $property => &$value)
+		{
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Checking if %s is an array...'
+				, $property
+			));
+			if(is_array($obj = json_decode($value, TRUE)))
+			{
+				$value = $obj;
+			}
+		}
 	}
 }
