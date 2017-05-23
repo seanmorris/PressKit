@@ -6,15 +6,27 @@ class Scaffold extends Model
 	 *	TODO: Forms, relationships, truncations and dropping.
 	 */
 
-	protected static $config = [], $ignore = ['class', 'config'], $registry = [], $classRegistry;
+	protected static
+		$config = []
+		, $ignore = ['class', 'config']
+		, $registry = []
+		, $classRegistry
+		, $metaScaffold
+		, $tablesCreated = []
+	;
 
-	final public function __construct($config = [])
+	final public function __construct($config = [], $meta = FALSE)
 	{
 		$this->class = get_called_class();
 
+		if(!$meta && !isset(static::$metaScaffold[get_called_class()]))
+		{
+			static::$metaScaffold[get_called_class()] = static::metaScaffold();
+		}
+
 		if($config)
 		{
-			static::$config = $config;
+			static::$config[get_called_class()] = $config;
 
 			if($config['name'])
 			{
@@ -25,12 +37,17 @@ class Scaffold extends Model
 				];
 
 				self::$classRegistry[$this->class] =& self::$registry[$config['name']];
+
+				if(!$meta)
+				{
+					self::$registry[$config['name']] =& static::$metaScaffold[get_called_class()]->info;
+				}
 			}
 		}
 
-		if(isset(static::$config['schema']))
+		if(isset(static::$config[get_called_class()]['schema']))
 		{
-			foreach(static::$config['schema'] as $property => &$value)
+			foreach(static::$config[get_called_class()]['schema'] as $property => &$value)
 			{
 				if($value === FALSE)
 				{
@@ -41,69 +58,75 @@ class Scaffold extends Model
 		}
 
 		$this->createTable();
-		$this->updateTable();
 	}
 
 	public function createTable()
 	{
+		if(isset(static::$tablesCreated[get_called_class()]))
+		{
+			return;
+		}
+
+		static::$tablesCreated[get_called_class()] = TRUE;
+
 		$columns = [];
 		$keys    = [];
-		
-		if(isset(static::$config['schema']))
+
+		if(isset(static::$config[get_called_class()]['schema']))
 		{
-			foreach(static::$config['schema'] as $property => $value)
+			foreach(static::$config[get_called_class()]['schema'] as $property => $value)
 			{
 				$columns[] = sprintf('`%s` %s', $property, $value[1]);
 			}
 		}
 
-		if(isset(static::$config['keys']))
+		if(isset(static::$config[get_called_class()]['keys']))
 		{
-			if(isset(static::$config['keys']['primary']))
+			if(isset(static::$config[get_called_class()]['keys']['primary']))
 			{
 				$keys[] = sprintf(
 					'PRIMARY KEY (`%s`)'
-					, implode('`, `', static::$config['keys']['primary'])
-				);	
+					, implode('`, `', static::$config[get_called_class()]['keys']['primary'])
+				);
 			}
 
-			if(isset(static::$config['keys']['unique']))
+			if(isset(static::$config[get_called_class()]['keys']['unique']))
 			{
-				foreach(static::$config['keys']['unique'] as $keyName => $keyCols)
+				foreach(static::$config[get_called_class()]['keys']['unique'] as $keyName => $keyCols)
 				{
 					$keys[] = sprintf(
 						'UNIQUE KEY `%s` (`%s`)'
 						, $keyName
 						, implode('`, `', $keyCols)
-					);	
+					);
 				}
 			}
 
-			if(isset(static::$config['keys']['index']))
+			if(isset(static::$config[get_called_class()]['keys']['index']))
 			{
-				foreach(static::$config['keys']['index'] as $keyName => $keyCols)
+				foreach(static::$config[get_called_class()]['keys']['index'] as $keyName => $keyCols)
 				{
 					$keys[] = sprintf(
 						'KEY `%s` (`%s`)'
 						, $keyName
 						, implode('`, `', $keyCols)
-					);	
+					);
 				}
 			}
 		}
 
 		$engine = 'InnoDB';
 
-		if(isset(static::$config['engine']))
+		if(isset(static::$config[get_called_class()]['engine']))
 		{
-			$engine = static::$config['engine'];
+			$engine = static::$config[get_called_class()]['engine'];
 		}
 
 		$database = static::database();
 
 		$query = sprintf(
 			"CREATE TABLE IF NOT EXISTS `%s` (\n%s\n%s\n) ENGINE = %s"
-			, static::$config['table']
+			, static::$config[get_called_class()]['table']
 			, implode("\n, ", $columns)
 			, $keys ? (', ' . implode("\n, ", $keys)) : NULL
 		, $engine
@@ -138,9 +161,9 @@ class Scaffold extends Model
 				, $column->Extra ? ' ' . strtoupper($column->Extra) : NULL
 			);
 
-			if(isset(static::$config['schema'][$column->Field]))
+			if(isset(static::$config[get_called_class()]['schema'][$column->Field]))
 			{
-				if(static::$config['schema'][$column->Field] === FALSE)
+				if(static::$config[get_called_class()]['schema'][$column->Field] === FALSE)
 				{
 					$database->query(sprintf(
 						'ALTER TABLE `%s` DROP COLUMN IF EXISTS `%s`'
@@ -150,7 +173,7 @@ class Scaffold extends Model
 
 					$addressedColumns[] = $column->Field;
 				}
-				else if(static::$config['schema'][$column->Field][1] !== $columnString)
+				else if(static::$config[get_called_class()]['schema'][$column->Field][1] !== $columnString)
 				{
 					try
 					{
@@ -158,7 +181,7 @@ class Scaffold extends Model
 							'ALTER TABLE `%s` MODIFY COLUMN `%s` %s'
 							, static::table()
 							, $column->Field
-							, static::$config['schema'][$column->Field][1]
+							, static::$config[get_called_class()]['schema'][$column->Field][1]
 						));
 					}
 					catch(\PDOException $exception)
@@ -171,16 +194,16 @@ class Scaffold extends Model
 
 					$addressedColumns[] = $column->Field;
 				}
-				else if(static::$config['schema'][$column->Field][1] == $columnString)
+				else if(static::$config[get_called_class()]['schema'][$column->Field][1] == $columnString)
 				{
 					$addressedColumns[] = $column->Field;
 				}
 			}
 		}
 
-		if(isset(static::$config['schema']))
+		if(isset(static::$config[get_called_class()]['schema']))
 		{
-			foreach(static::$config['schema'] as $column => $def)
+			foreach(static::$config[get_called_class()]['schema'] as $column => $def)
 			{
 				if(in_array($column, $addressedColumns))
 				{
@@ -199,7 +222,7 @@ class Scaffold extends Model
 		}
 	}
 
-	public static function produceScaffold($config)
+	public static function produceScaffold($config, $meta = FALSE)
 	{
 		static $classes = [];
 
@@ -234,7 +257,12 @@ class Scaffold extends Model
 			$classes[$fullClass] = TRUE;
 		}
 
-		$obj = new $fullClass($config);
+		$obj = new $fullClass($config, $meta);
+
+		if($meta)
+		{
+			$obj->name = $config['name'];
+		}
 
 		\SeanMorris\Ids\Log::trace();
 
@@ -248,14 +276,9 @@ class Scaffold extends Model
 
 	protected static function table()
 	{
-		$class = get_called_class();
-
-		if(isset(
-			self::$classRegistry[$class]
-			, self::$classRegistry[$class]['config']
-			, self::$classRegistry[$class]['config']['table']
-		)){
-			return self::$classRegistry[$class]['config']['table'];
+		if(isset(static::$config[get_called_class()]))
+		{
+			return static::$config[get_called_class()]['table'];
 		}
 	}
 
@@ -263,8 +286,13 @@ class Scaffold extends Model
 	{
 		$properties = parent::getProperties($all);
 
-		foreach(static::$config['schema'] as $property => $def)
+		foreach(static::$config[get_called_class()]['schema'] as $property => $def)
 		{
+			if(!preg_match('/^[^_]\w+$/', $property))
+			{
+				continue;
+			}
+
 			if(!in_array($property, $properties))
 			{
 				$properties[] = $property;
@@ -277,16 +305,21 @@ class Scaffold extends Model
 	protected function properties()
 	{
 		$properties = [];
-		
-		if(isset(static::$config['schema']))
+
+		if(isset(static::$config[get_called_class()]['schema']))
 		{
-			foreach(static::$config['schema'] as $property => $value)
+			foreach(static::$config[get_called_class()]['schema'] as $property => $value)
 			{
-				if($value === FALSE)
+				if(!preg_match('/^[^_]\w+$/', $property))
 				{
 					continue;
 				}
-				$properties[$property] =& $this->{$property};
+
+				if($value === FALSE)
+				{
+					//continue;
+				}
+				$properties[$property] = $this->{$property};
 			}
 		}
 
@@ -297,10 +330,15 @@ class Scaffold extends Model
 	{
 		$columns = [];
 
-		if(isset(static::$config['schema']))
+		if(isset(static::$config[get_called_class()]['schema']))
 		{
-			foreach(static::$config['schema'] as $property => $value)
+			foreach(static::$config[get_called_class()]['schema'] as $property => $value)
 			{
+				if(empty($property) || !preg_match('/^[^_]\w+$/', $property))
+				{
+					continue;
+				}
+
 				if($value === FALSE)
 				{
 					continue;
@@ -312,13 +350,77 @@ class Scaffold extends Model
 		return $columns + parent::getColumns($type, $all);
 	}
 
+	protected function _create($curClass)
+	{
+		$schemaChanged = FALSE;
+
+		foreach($this as $property => &$value)
+		{
+			if(is_scalar($value) && !is_numeric($value))
+			{
+				if(strlen($value) < 1024 && !isset(static::$config[get_called_class()]['schema'][$property]))
+				{
+					static::$config[get_called_class()]['schema'][$property] = [NULL, 'VARCHAR(1024) NULL'];
+					$schemaChanged = TRUE;
+				}
+				else if(strlen($value) >= 1024
+					&& (!isset(static::$config[get_called_class()]['schema'][$property])
+						|| static::$config[get_called_class()]['schema'][$property][1] != 'LONGTEXT NULL'
+					)
+				){
+					static::$config[get_called_class()]['schema'][$property] = [NULL, 'LONGTEXT NULL'];
+					$schemaChanged = TRUE;
+				}
+			}
+			else if(is_numeric($value))
+			{
+				if(!isset(static::$config[get_called_class()]['schema'][$property]))
+				{
+					static::$config[get_called_class()]['schema'][$property] = [NULL, 'INT UNSIGNED NULL'];
+					$schemaChanged = TRUE;
+				}
+				else if($value < 0
+					&& (!isset(static::$config[get_called_class()]['schema'][$property])
+						|| static::$config[get_called_class()]['schema'][$property][1] != 'INT SIGNED NULL'
+					)
+				){
+					static::$config[get_called_class()]['schema'][$property] = [NULL, 'INT SIGNED NULL'];
+					$schemaChanged = TRUE;
+				}
+			}
+		}
+
+		unset($value);
+
+		if($schemaChanged)
+		{
+			if(isset(static::$metaScaffold[get_called_class()]))
+			{
+				static::$metaScaffold[get_called_class()]->info = static::$config[get_called_class()];
+				static::$metaScaffold[get_called_class()]->save();
+			}
+
+			$this->updateTable();
+		}
+
+		foreach($this as $property => $value)
+		{
+			if(!preg_match('/^\w+$/', $property))
+			{
+				unset($this->$property);
+			}
+		}
+
+		return parent::_create($curClass);
+	}
+
 	protected static function beforeWrite($instance, &$skeleton)
 	{
-		foreach($skeleton as $property => &$value)
+		foreach($skeleton as $property => $value)
 		{
-			if(!is_scalar($value))
+			if(!is_scalar($value) && !is_null($value))
 			{
-				$value = json_encode($value);
+				$skeleton[$property] = json_encode($value);
 			}
 		}
 	}
@@ -331,10 +433,32 @@ class Scaffold extends Model
 				'Checking if %s is an array...'
 				, $property
 			));
-			if(is_array($obj = json_decode($value, TRUE)))
+			if(is_string($value) && is_array($obj = json_decode($value, TRUE)))
 			{
 				$value = $obj;
 			}
 		}
+	}
+
+	protected static function metaScaffold()
+	{
+		$config = [
+			'table'    => 'MetaScaffold'
+			, 'name'   => 'MetaScaffold'
+			, 'engine' => 'InnoDB'
+			, 'keys'   => ['primary' => ['id'], 'unique' => [
+				'name' => ['name']
+			]]
+			, 'schema' => [
+				'id'     => [NULL, 'INT(11) UNSIGNED NOT NULL AUTO_INCREMENT']
+				, 'name' => [NULL, 'VARCHAR(512) NOT NULL']
+				, 'info' => [NULL, 'LONGTEXT NOT NULL']
+			]
+			, 'traits' => [
+				'\SeanMorris\PressKit\MetaScaffold'
+			]
+		];
+
+		return static::produceScaffold($config, TRUE);
 	}
 }

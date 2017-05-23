@@ -2,28 +2,6 @@
 namespace SeanMorris\PressKit\Route;
 class ScaffoldController extends \SeanMorris\PressKit\Controller
 {
-	protected function metaScaffold()
-	{
-		$config = [
-			'table'    => 'MetaScaffold'
-			, 'name'   => 'MetaScaffold'
-			, 'engine' => 'InnoDB'
-			, 'keys'   => ['primary' => ['id'], 'unique' => [
-				'name' => ['name']
-			]]
-			, 'schema' => [
-				'id'     => [NULL, 'INT(11) UNSIGNED NOT NULL AUTO_INCREMENT']
-				, 'name' => [NULL, 'VARCHAR(512) NOT NULL']
-				, 'info' => [NULL, 'LONGTEXT NOT NULL']
-			]
-			, 'traits' => [
-				'\SeanMorris\PressKit\MetaScaffold'
-			]
-		];
-
-		return \SeanMorris\PressKit\Scaffold::produceScaffold($config);
-	}
-
 	public function app()
 	{
 		return ' ';
@@ -42,7 +20,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 				case 'list' == $action:
 					$return = [];
 					$metaMeta = \SeanMorris\PressKit\Scaffold::produceScaffold($metaObj->info);
-					
+
 					if($id = $router->path()->consumeNode())
 					{
 
@@ -88,67 +66,36 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 
 	public function create($router)
 	{
-		$meta = $this->metaScaffold();
-		//$name = $router->path()->consumeNode();
-		$meta->name = $name = 'yoga';
-		$meta->info = $info = [
-			'table'    => $name
-			, 'name'   => $name
-			, 'engine' => 'InnoDB'
-			, 'keys'   => [
-				'primary'  => ['id']
-				, 'unique' => [
-					'place_id' => ['place_id']
-				]
-				, 'index' => [
-					'name' => ['name']
-				]
-			]
-			, 'schema' => [
-				'id'         => [NULL, 'INT(11) UNSIGNED NOT NULL AUTO_INCREMENT']
-				, 'name'     => [NULL, 'VARCHAR(255) NOT NULL']
-				, 'place_id' => [NULL, 'VARCHAR(255) NOT NULL']
-			]
-		];
-
-		$meta->save();
-
 		$file = fopen('/home/sean/yoga_2017-05-10.csv', 'r');
 		$header = [];
+		$i = 0;
 
 		while($line = fgetcsv($file))
 		{
+			$i++;
 			set_time_limit(10);
 
-			if(!$header)
+			if(!$header || $line[0] == '*')
 			{
 				$header = $line;
-				
-				foreach($header as $k)
-				{
-					if(!preg_match('/^\w/', $k))
-					{
-						continue;
-					}
-
-					$info['schema'][$k] = [NULL, 'INT(11) SIGNED NULL'];
-
-					$meta->info = $info;
-				}
 
 				continue;
 			}
 
 			if(count($header) !== count($line))
 			{
+				\SeanMorris\Ids\log::error(
+					"Line does not have the correct number of cells!"
+					, $header
+					, $line
+				);
 				continue;
 			}
-			
+
 			$line = array_combine($header, $line);
 
-			$line['detail'] = NULL;
-
 			$addressParts = json_decode($line['addressComponents'], TRUE);
+
 			$addressPartsNamed = [];
 
 			if($addressParts)
@@ -174,31 +121,29 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 				}
 			}
 
-			foreach($line as $k => $v)
-			{
-				if(!preg_match('/^\w/', $k))
-				{
-					continue;
-				}
+			$name = 'y_test_3';
 
-				if(!is_numeric($v))
-				{
-					if(strlen($v) < 1024 && (!isset($info['schema'][$k]) || $info['schema'][$k][1] != 'VARCHAR(1024) NULL'))
-					{
-						$info['schema'][$k] = [NULL, 'VARCHAR(1024) NULL'];
-					}
-					else if(strlen($v) >= 1024 && (!isset($info['schema'][$k]) || $info['schema'][$k][1] != 'LONGTEXT NULL'))
-					{
-						$info['schema'][$k] = [NULL, 'LONGTEXT NULL'];
-					}
+			$info = [
+				'table'    => $name
+				, 'name'   => $name
+				, 'engine' => 'InnoDB'
+				, 'keys'   => [
+					'primary'  => ['id']
+					, 'unique' => [
+						'place_id' => ['place_id']
+					]
+					, 'index' => [
+						'name' => ['name']
+					]
+				]
+				, 'schema' => [
+					'id'         => [NULL, 'INT UNSIGNED NOT NULL AUTO_INCREMENT']
+					, 'name'     => [NULL, 'VARCHAR(255)']
+					, 'place_id' => [NULL, 'VARCHAR(255)']
+				]
+			];
 
-					$meta->info = $info;
-				}
-			}
-
-			//$meta->save();
-
-			$model = \SeanMorris\PressKit\Scaffold::produceScaffold($meta->info);
+			$model = \SeanMorris\PressKit\Scaffold::produceScaffold($info);
 
 			foreach($line as $k => $v)
 			{
@@ -207,11 +152,14 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 
 			try
 			{
-				$model->save();	
+				$model->save();
 			}
 			catch(\PDOException $exception)
 			{
-
+				if($exception->getCode() != 23000)
+				{
+					throw $exception;
+				}
 			}
 		}
 
