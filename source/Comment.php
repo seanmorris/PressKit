@@ -76,9 +76,6 @@ class Comment extends \SeanMorris\PressKit\Model
 	{
 		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
-		var_dump($skeleton);
-		
-
 		if($user)
 		{
 			$skeleton['author'] = $user->id;

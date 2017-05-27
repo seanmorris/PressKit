@@ -105,14 +105,29 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 					$addressPartsNamed[ $addressPart['types'][0] ] = $addressPart;
 				}
 
-				if(isset($addressPartsNamed['administrative_area_level_2']))
+				if(isset($addressPartsNamed['street_number']))
 				{
-					$line['city'] = $addressPartsNamed['administrative_area_level_2']['long_name'];
+					$line['street_number'] = $addressPartsNamed['street_number']['long_name'];
+				}
+
+				if(isset($addressPartsNamed['route']))
+				{
+					$line['route'] = $addressPartsNamed['route']['long_name'];
+				}
+
+				if(isset($addressPartsNamed['locality']))
+				{
+					$line['city'] = $addressPartsNamed['locality']['long_name'];
 				}
 
 				if(isset($addressPartsNamed['administrative_area_level_1']))
 				{
 					$line['state'] = $addressPartsNamed['administrative_area_level_1']['short_name'];
+				}
+
+				if(isset($addressPartsNamed['postal_code']))
+				{
+					$line['postal_code'] = $addressPartsNamed['postal_code']['short_name'];
 				}
 
 				if(isset($addressPartsNamed['country']['short_name']))
@@ -121,7 +136,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 				}
 			}
 
-			$name = 'y_test_3';
+			$name = 'y_test_5';
 
 			$info = [
 				'table'    => $name
@@ -156,7 +171,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 			}
 			catch(\PDOException $exception)
 			{
-				if($exception->getCode() != 23000)
+				if($exception->errorInfo[1] != 1062)
 				{
 					throw $exception;
 				}

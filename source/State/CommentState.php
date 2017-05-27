@@ -6,7 +6,10 @@ class CommentState extends \SeanMorris\PressKit\State
 		$states	= [
 			0 => [
 				'create'	=> 'SeanMorris\Access\Role\User'
-				, 'read'	 => ['SeanMorris\Access\Role\User', 'SeanMorris\Access\Role\Moderator']
+				, 'read'	 => [
+					'SeanMorris\Access\Role\User'
+					, 'SeanMorris\Access\Role\Moderator'
+				]
 				, 'update'	 => [1, 'SeanMorris\Access\Role\Moderator']
 				, 'delete'	 => [1, 'SeanMorris\Access\Role\Administrator']
 				
