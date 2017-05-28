@@ -139,8 +139,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 			$name = 'y_test_5';
 
 			$info = [
-				'table'    => $name
-				, 'name'   => $name
+				'name'   => $name
 				, 'engine' => 'InnoDB'
 				, 'keys'   => [
 					'primary'  => ['id']
@@ -150,11 +149,6 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 					, 'index' => [
 						'name' => ['name']
 					]
-				]
-				, 'schema' => [
-					'id'         => [NULL, 'INT UNSIGNED NOT NULL AUTO_INCREMENT']
-					, 'name'     => [NULL, 'VARCHAR(255)']
-					, 'place_id' => [NULL, 'VARCHAR(255)']
 				]
 			];
 

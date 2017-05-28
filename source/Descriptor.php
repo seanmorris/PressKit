@@ -3,7 +3,12 @@ namespace SeanMorris\PressKit;
 class Descriptor extends Model
 {
 	protected $id, $name, $info;
-	protected static $table = 'Descriptor';
+	protected static
+		$table = 'Descriptor'
+		, $byName = [
+			'where' => [['name' => '?']]
+		]
+	;
 
 	const DEFAULT_COLUMN = [
 		'sqlDef'  => 0,
@@ -22,6 +27,18 @@ class Descriptor extends Model
 		'VARCHAR(%d)'
 		, 'LONGTEXT'
 	];
+
+	public function addHas($property, $class, $many = FALSE)
+	{
+		if($many)
+		{
+			$this->info['hasMany'][$property] = $class;
+		}
+		else
+		{
+			$this->info['hasOne'][$property] = $class;	
+		}
+	}
 
 	public static function beforeWrite($instance, &$skeleton)
 	{
@@ -47,7 +64,7 @@ class Descriptor extends Model
 
 		$prec = static::NUMBER_PRECEDENCE;
 		
-		if(!$this->info['schema'][$column]['numeric'])
+		if(!$this->info['schema'][$column]['numeric'] && $column !== 'id')
 		{
 			$prec = static::TEXT_PRECEDENCE;
 		}
@@ -93,7 +110,7 @@ class Descriptor extends Model
 					$changed = TRUE;
 				}
 			}
-			else
+			else if(is_string($value) && $column !== 'id')
 			{
 				if($this->info['schema'][$column]['numeric'])
 				{

@@ -29,6 +29,16 @@ class Scaffold extends Model
 			}
 		}
 
+		if(isset(static::$descriptor[get_called_class()]->info['hasOne']))
+		{
+			static::$hasOne = static::$descriptor[get_called_class()]->info['hasOne'];
+		}
+		
+		if(isset(static::$descriptor[get_called_class()]->info['hasMany']))
+		{
+			static::$hasMany = static::$descriptor[get_called_class()]->info['hasMany'];
+		}
+
 		$this->createTable();
 	}
 
@@ -117,13 +127,22 @@ class Scaffold extends Model
 			{
 				continue;
 			}
-
-			$database->query(sprintf(
-				'ALTER TABLE `%s` ADD `%s` %s'
-				, static::table()
-				, $column
-				, static::$descriptor[get_called_class()]->getColumnDef($column)
-			));
+			try
+			{
+				$database->query(sprintf(
+					'ALTER TABLE `%s` ADD `%s` %s'
+					, static::table()
+					, $column
+					, static::$descriptor[get_called_class()]->getColumnDef($column)
+				));	
+			}
+			catch(\PDOException $exception)
+			{
+				if($exception->errorInfo[1] != 1060)
+				{
+					throw $exception;
+				}
+			}
 		}
 	}
 
@@ -151,11 +170,14 @@ class Scaffold extends Model
 		if(!isset($classes[$fullClass]))
 		{
 			eval(sprintf(
-				'namespace %s;class %s extends \SeanMorris\PressKit\Scaffold{%s}'
+				'namespace %s;class %s extends \SeanMorris\PressKit\Scaffold{
+					%s
+					protected static $hasOne = [], $hasMany = [];
+				}'
 				, $namespace
 				, $config['name']
 				, isset($config['traits'])
-					? NULL //'use ' . implode(', ', $config['traits']) . '; '
+					? 'use ' . implode(', ', $config['traits']) . '; '
 					: NULL
 			));
 
@@ -276,7 +298,54 @@ class Scaffold extends Model
 
 		foreach($this as $property => $value)
 		{
-			$properties[$property] = $value; 
+			$arr = $value;
+
+			if(!is_array($value))
+			{
+				if(is_string($value))
+				{
+					$arr = json_decode($value, TRUE);
+				}
+
+				if(is_object($value))
+				{
+					$arr = (array) $value;
+				}
+			}
+
+			if(is_array($arr) && $arr && !array_filter(array_keys($arr), 'is_numeric'))
+			{
+				$submodel = \SeanMorris\PressKit\Scaffold::produceScaffold([
+					'name' => '__' . $property . '__' . sha1(static::table())
+				]);
+
+				foreach($arr as $k => $v)
+				{
+					if($k == 'id')
+					{
+						$k = 'original_id';
+					}
+
+					$submodel->{$k} = $v;
+				}
+
+				$submodel->save();
+
+				$properties[$property] = $this->$property = $submodel;
+
+				static::$descriptor[get_called_class()]->addHas($property, get_class($submodel));
+				static::$descriptor[get_called_class()]->save();
+
+				static::$hasOne[$property] = get_class($submodel);
+			}
+			else if(is_array($arr) && array_filter(array_keys($arr), 'is_numeric'))
+			{
+				$properties[$property] = json_encode($arr);
+			}
+			else
+			{
+				$properties[$property] = $value; 
+			}
 		}
 
 		if(isset(static::$descriptor[get_called_class()]))
@@ -301,6 +370,11 @@ class Scaffold extends Model
 			if(!preg_match('/^[a-z]\w+/i', $property))
 			{
 				continue;
+			}
+
+			if(!is_scalar($value) && !is_null($value))
+			{
+				$value = json_encode($value);
 			}
 
 			if(static::$descriptor[get_called_class()]->columnChanged($property, $value))
