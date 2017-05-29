@@ -15,28 +15,34 @@ class Scaffold extends Model
 	{
 		$this->class = get_called_class();
 
-		if(!isset(static::$descriptor[get_called_class()]))
+		if(!isset(static::$descriptor))
 		{
 			if($descriptor = Descriptor::loadOneByName($config['name']))
 			{
-				static::$descriptor[get_called_class()] = $descriptor;
+				static::$descriptor = $descriptor;
 			}
 			else
 			{
-				static::$descriptor[get_called_class()] = new Descriptor();
-				static::$descriptor[get_called_class()]->name = $config['name'];
-				static::$descriptor[get_called_class()]->save();
+				static::$descriptor = new Descriptor();
+				static::$descriptor->name = $config['name'];
+				static::$descriptor->info = $config;
+				static::$descriptor->save();
 			}
 		}
 
-		if(isset(static::$descriptor[get_called_class()]->info['hasOne']))
+		if(!isset(static::$table))
 		{
-			static::$hasOne = static::$descriptor[get_called_class()]->info['hasOne'];
+			static::$table = static::$descriptor->name;
 		}
 		
-		if(isset(static::$descriptor[get_called_class()]->info['hasMany']))
+		if(isset(static::$descriptor->info['hasOne']))
 		{
-			static::$hasMany = static::$descriptor[get_called_class()]->info['hasMany'];
+			static::$hasOne = static::$descriptor->info['hasOne'];
+		}
+		
+		if(isset(static::$descriptor->info['hasMany']))
+		{
+			static::$hasMany = static::$descriptor->info['hasMany'];
 		}
 
 		$this->createTable();
@@ -64,7 +70,7 @@ class Scaffold extends Model
 			$columns[] = sprintf(
 				'`%s` %s'
 				, $property
-				, static::$descriptor[get_called_class()]->getColumnDef($property)
+				, static::$descriptor->getColumnDef($property)
 			);
 		}
 
@@ -83,24 +89,25 @@ class Scaffold extends Model
 		return $database->query($query);
 	}
 
-	public function updateTable()
+	public function updateTable($columnsChanged)
 	{
 		$database = static::database();
 
 		$columns = $database->query(sprintf(
 			'SHOW FULL COLUMNS FROM `%s`'
-			, static::table()
+			, static::$table
 		));
 
 		$addressedColumns = [];
 
 		while($column = $columns->fetchObject())
 		{
-			if($def = static::$descriptor[get_called_class()]->getColumnDef($column->Field))
-			{
+			if(in_array($column->Field, $columnsChanged)
+				&& $def = static::$descriptor->getColumnDef($column->Field)
+			){
 				$database->query(sprintf(
 					'ALTER TABLE `%s` MODIFY COLUMN `%s` %s'
-					, static::table()
+					, static::$table
 					, $column->Field
 					, $def
 				));
@@ -109,7 +116,7 @@ class Scaffold extends Model
 			$addressedColumns[] = $column->Field;
 		}
 
-		$columns = static::$descriptor[get_called_class()]->columns();
+		$columns = static::$descriptor->columns();
 
 		foreach($this as $property => $value)
 		{
@@ -131,9 +138,9 @@ class Scaffold extends Model
 			{
 				$database->query(sprintf(
 					'ALTER TABLE `%s` ADD `%s` %s'
-					, static::table()
+					, static::$table
 					, $column
-					, static::$descriptor[get_called_class()]->getColumnDef($column)
+					, static::$descriptor->getColumnDef($column)
 				));	
 			}
 			catch(\PDOException $exception)
@@ -171,8 +178,12 @@ class Scaffold extends Model
 		{
 			eval(sprintf(
 				'namespace %s;class %s extends \SeanMorris\PressKit\Scaffold{
+					protected static
+						$hasOne = []
+						, $hasMany = []
+						, $table
+						, $descriptor;
 					%s
-					protected static $hasOne = [], $hasMany = [];
 				}'
 				, $namespace
 				, $config['name']
@@ -198,9 +209,9 @@ class Scaffold extends Model
 
 	protected static function table()
 	{
-		if(isset(static::$descriptor[get_called_class()]))
+		if(isset(static::$descriptor))
 		{
-			return static::$descriptor[get_called_class()]->name;
+			return static::$descriptor->name;
 		}
 	}
 
@@ -208,9 +219,9 @@ class Scaffold extends Model
 	{
 		$properties = parent::getProperties($all);
 
-		if(isset(static::$descriptor[get_called_class()]))
+		if(isset(static::$descriptor))
 		{
-			foreach(static::$descriptor[get_called_class()]->columns() as $property)
+			foreach(static::$descriptor->columns() as $property)
 			{
 				if(!preg_match('/^[a-z]\w+/i', $property))
 				{
@@ -244,9 +255,9 @@ class Scaffold extends Model
 			$properties[$property] = $value;
 		}
 
-		if(isset(static::$descriptor[get_called_class()]))
+		if(isset(static::$descriptor))
 		{
-			foreach(static::$descriptor[get_called_class()]->columns() as $property)
+			foreach(static::$descriptor->columns() as $property)
 			{
 				if(!isset($properties[$property]))
 				{
@@ -270,9 +281,9 @@ class Scaffold extends Model
 	{
 		$columns = parent::getColumns($type, $all);
 
-		if(isset(static::$descriptor[get_called_class()]))
+		if(isset(static::$descriptor))
 		{
-			foreach(static::$descriptor[get_called_class()]->columns() as $property)
+			foreach(static::$descriptor->columns() as $property)
 			{
 				if(!isset($columns[$property]))
 				{
@@ -294,7 +305,7 @@ class Scaffold extends Model
 
 	protected function _create($curClass)
 	{
-		$schemaChanged = FALSE;
+		$schemaChanged = [];
 
 		foreach($this as $property => $value)
 		{
@@ -313,7 +324,21 @@ class Scaffold extends Model
 				}
 			}
 
-			if(is_array($arr) && $arr && !array_filter(array_keys($arr), 'is_numeric'))
+			$isList = FALSE;
+
+			if(is_array($arr) && count(array_filter(array_keys($arr), 'is_numeric')) == count($arr))
+			{
+				$isList = TRUE;
+			}
+
+			$fragmentMode = FALSE;
+
+			if(isset(static::$descriptor->info['frag']))
+			{
+				$fragmentMode = static::$descriptor->info['frag'];
+			}
+
+			if(is_array($arr) && $arr && !$isList && $fragmentMode)
 			{
 				$submodel = \SeanMorris\PressKit\Scaffold::produceScaffold([
 					'name' => '__' . $property . '__' . sha1(static::table())
@@ -333,8 +358,8 @@ class Scaffold extends Model
 
 				$properties[$property] = $this->$property = $submodel;
 
-				static::$descriptor[get_called_class()]->addHas($property, get_class($submodel));
-				static::$descriptor[get_called_class()]->save();
+				static::$descriptor->addHas($property, get_class($submodel));
+				static::$descriptor->save();
 
 				static::$hasOne[$property] = get_class($submodel);
 			}
@@ -348,9 +373,9 @@ class Scaffold extends Model
 			}
 		}
 
-		if(isset(static::$descriptor[get_called_class()]))
+		if(isset(static::$descriptor))
 		{
-			foreach(static::$descriptor[get_called_class()]->columns() as $property)
+			foreach(static::$descriptor->columns() as $property)
 			{
 				if(!preg_match('/^[a-z]\w+/i', $property))
 				{
@@ -359,7 +384,7 @@ class Scaffold extends Model
 
 				if(!isset($properties[$property]))
 				{
-					$schemaChanged = TRUE;
+					$schemaChanged[] = $property;
 					$properties[$property] = NULL;
 				}
 			}
@@ -377,16 +402,16 @@ class Scaffold extends Model
 				$value = json_encode($value);
 			}
 
-			if(static::$descriptor[get_called_class()]->columnChanged($property, $value))
+			if(static::$descriptor->columnChanged($property, $value))
 			{
-				$schemaChanged = TRUE;
+				$schemaChanged[] = $property;
 			}
 		}
 
 		if($schemaChanged)
 		{
-			static::$descriptor[get_called_class()]->save();
-			$this->updateTable();
+			static::$descriptor->save();
+			$this->updateTable($schemaChanged);
 		}
 
 		return parent::_create($curClass);

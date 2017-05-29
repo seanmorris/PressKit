@@ -9,6 +9,8 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 
 	public function _dynamic($router)
 	{
+		return;
+
 		$id = $router->path()->getNode();
 		$meta = $this->metaScaffold();
 		$metaObj = $meta::loadOneById($id);
@@ -56,17 +58,12 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 	public function index($router)
 	{
 		$scaffolds = [];
-		foreach($this->metaScaffold()::x()() as $m)
-		{
-			$scaffolds[] = $m;
-		}
-
 		return $scaffolds;
 	}
 
 	public function create($router)
 	{
-		$file = fopen('/home/sean/yoga_2017-05-10.csv', 'r');
+		$file = fopen('/home/sean/thewhtrbt/util/super_scraper/result/yoga.csv', 'r');
 		$header = [];
 		$i = 0;
 
@@ -140,6 +137,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 
 			$info = [
 				'name'   => $name
+				, 'frag'   => FALSE
 				, 'engine' => 'InnoDB'
 				, 'keys'   => [
 					'primary'  => ['id']
@@ -163,9 +161,9 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 			{
 				$model->save();
 			}
-			catch(\PDOException $exception)
+			catch(\Exception $exception)
 			{
-				if($exception->errorInfo[1] != 1062)
+				if($exception->getCode() != 1062)
 				{
 					throw $exception;
 				}
