@@ -16,53 +16,71 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 
 	public function mapData()
 	{
-		$model = \SeanMorris\PressKit\Scaffold::produceScaffold(['name' => 'y_test']);
-		$gen = $model::generate();
-
-		print '{
-			"type": "FeatureCollection",
-			"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-			                                                                                
-			"features": [' . PHP_EOL;
-
-		$first = TRUE;
-
-		foreach($gen() as $model)
+		if(!$cache = \SeanMorris\PressKit\Cache::loadOneByName('MapDataCache'))
 		{
-			if(!isset($model->detail, $model->detail['geometry'], $model->detail['geometry']['location']))
+			$model = \SeanMorris\PressKit\Scaffold::produceScaffold(['name' => 'y_test']);
+			$gen = $model::generate();
+
+			$resp = '{
+				"type": "FeatureCollection",
+				"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+				                                                                                
+				"features": [' . PHP_EOL;
+
+			$first = TRUE;
+
+			foreach($gen() as $model)
 			{
-				continue;
+				if(!isset($model->detail, $model->detail['geometry'], $model->detail['geometry']['location']))
+				{
+					continue;
+				}
+				if($first)
+				{
+					$first = FALSE;
+				}
+				else
+				{
+					$resp .= ',' . PHP_EOL;
+				}
+				$resp .= json_encode([
+					"type"=> "Feature",
+					"geometry"=> [
+					  "type"=> "Point",
+					  "coordinates"=> [
+					  	$model->detail['geometry']['location']['lng'],
+					  	$model->detail['geometry']['location']['lat']
+					  ]
+					],
+					"properties"=> [
+					  "marker-color"=> "#3ca0d3",
+					  "marker-size"=> "large",
+					  "marker-symbol"=> "rocket",
+					  "name"=> $model->name,
+					  "description"=> $model->name,
+					  "title"=> $model->name,
+					  "id"=> $model->id,
+					],
+				]);
 			}
-			if($first)
-			{
-				$first = FALSE;
-			}
-			else
-			{
-				print ',' . PHP_EOL;
-			}
-			print json_encode([
-				"type"=> "Feature",
-				"geometry"=> [
-				  "type"=> "Point",
-				  "coordinates"=> [
-				  	$model->detail['geometry']['location']['lng'],
-				  	$model->detail['geometry']['location']['lat']
-				  ]
-				],
-				"properties"=> [
-				  "marker-color"=> "#3ca0d3",
-				  "marker-size"=> "large",
-				  "marker-symbol"=> "rocket",
-				  "name"=> $model->name,
-				  "description"=> $model->name,
-				  "title"=> $model->name,
-				  "id"=> $model->id,
-				],
+
+			$resp .= ']}' . PHP_EOL;
+			$cache = new \SeanMorris\PressKit\Cache();
+
+			$cache->consume([
+				'name'    => 'MapDataCache',
+				'expiry'  => time() + 600,
+				'content' => $resp
 			]);
+
+			$cache->save();
+		}
+		else
+		{
+			$resp = $cache->content;
 		}
 
-		print ']}' . PHP_EOL;
+		print $resp;
 
 		die;
 	}
