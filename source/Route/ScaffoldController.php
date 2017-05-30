@@ -7,6 +7,66 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 		return ' ';
 	}
 
+	public function map()
+	{
+		
+		print new \SeanMorris\PressKit\View\Map();
+		die;
+	}
+
+	public function mapData()
+	{
+		$model = \SeanMorris\PressKit\Scaffold::produceScaffold(['name' => 'y_test']);
+		$gen = $model::generate();
+
+		print '{
+			"type": "FeatureCollection",
+			"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+			                                                                                
+			"features": [' . PHP_EOL;
+
+		$first = TRUE;
+
+		foreach($gen() as $model)
+		{
+			if(!isset($model->detail, $model->detail['geometry'], $model->detail['geometry']['location']))
+			{
+				continue;
+			}
+			if($first)
+			{
+				$first = FALSE;
+			}
+			else
+			{
+				print ',' . PHP_EOL;
+			}
+			print json_encode([
+				"type"=> "Feature",
+				"geometry"=> [
+				  "type"=> "Point",
+				  "coordinates"=> [
+				  	$model->detail['geometry']['location']['lng'],
+				  	$model->detail['geometry']['location']['lat']
+				  ]
+				],
+				"properties"=> [
+				  "marker-color"=> "#3ca0d3",
+				  "marker-size"=> "large",
+				  "marker-symbol"=> "rocket",
+				  "name"=> $model->name,
+				  "description"=> $model->name,
+				  "title"=> $model->name,
+				  "id"=> $model->id,
+				],
+			]);
+		}
+
+		print ']}' . PHP_EOL;
+
+		die;
+	}
+
 	public function _dynamic($router)
 	{
 		return;
