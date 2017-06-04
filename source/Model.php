@@ -31,7 +31,6 @@ class Model extends \SeanMorris\Ids\Model
 
 		\SeanMorris\Ids\Log::debug(sprintf('Cannot create %s.', get_called_class()));
 
-
 		throw new \SeanMorris\PressKit\Exception\ModelAccessException(
 			'Access denied - Cannot create model.'
 		);
@@ -104,20 +103,13 @@ class Model extends \SeanMorris\Ids\Model
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
 
-		/*
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Checking %s(%d) has a state... ', get_called_class(), $this->id)
-			, $state ? 1 : 0
+			, $state
 		);
-		*/
 
 		if(!$state)
 		{
-			\SeanMorris\Ids\Log::debug(
-				sprintf('Creating state for %s(%d). ', get_called_class(), $this->id)
-				, $state ? 1 : 0
-			);
-
 			$state = $this->ensureState();
 
 			if(!$state)
@@ -134,6 +126,11 @@ class Model extends \SeanMorris\Ids\Model
 				, $state ? 1 : 0
 			);
 			*/
+		}
+
+		if(php_sapi_name() == 'cli')
+		{
+			return TRUE;
 		}
 
 		if($point)

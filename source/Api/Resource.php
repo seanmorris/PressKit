@@ -8,13 +8,15 @@ class Resource
 		, $navigation = []
 		, $messages = []
 		, $controller = NULL
+		, $router = NULL
 	;
 
 	public function __construct($router, $more = [], $code = 0)
 	{
 		$controller = $router->routes();
 
-		$this->controller = get_class($controller);
+		$this->controller = $controller;
+		$this->router     = $router;
 
 		$objectIds = [];
 
@@ -135,5 +137,10 @@ class Resource
 	public function toXml()
 	{
 		return \xmlrpc_encode($this->toStructure());
+	}
+
+	public function toHtml()
+	{
+		return $this->controller->_renderList($this->router);
 	}
 }

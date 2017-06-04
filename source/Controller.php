@@ -4,7 +4,7 @@ class Controller implements \SeanMorris\Ids\Routable
 {
 	protected
 		$modelClass
-		, $theme
+		, $theme = 'SeanMorris\PressKit\Theme\Austere\Theme'
 		, $title
 		, $access = []
 		, $context = []
@@ -966,8 +966,21 @@ class Controller implements \SeanMorris\Ids\Routable
 				$router
 				, ['navigation' => $pagerLinks]
 			);
-			header('Content-Type: application/json');
-			echo $resource->toJson();
+			\SeanMorris\Ids\Log::debug($resource);
+			if($params['api'] == 'html')
+			{
+				echo $resource->toHtml();
+			}
+			else if($params['api'] == 'xml')
+			{
+				header('Content-Type: application/xml');
+				echo $resource->toXml();
+			}
+			else
+			{
+				header('Content-Type: application/json');
+				echo $resource->toJson();
+			}
 			/*/
 			echo json_encode(array_map(
 				function($o)
@@ -980,18 +993,22 @@ class Controller implements \SeanMorris\Ids\Routable
 			die;
 		}
 
-		if(!$objects)
-		{
-			$objects = [];
-		}
-
 		if(!$router->subRouted() && !in_array($router->routedTo(), $this->hideTitle))
 		{
 			$this->context['title'] = $this->title;
 		}
 
+		$list = $this->_renderList($router);
+
+		return $formRendered . $list;
+	}
+
+	public function _renderList($router)
+	{
 		$list = NULL;
 
+		$objects  = $this->models;
+		$path     = $router->path();
 		if($theme = $this->_getTheme($router))
 		{
 			$objectClass = $objects ? get_class(current($objects)) : $objectClass;
@@ -1015,8 +1032,8 @@ class Controller implements \SeanMorris\Ids\Routable
 						, '_controller'   => $this
 						, '_router'       => $router
 						, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
-						, 'page'          => $pageNumber
-						, 'pager'         => $pagerLinks
+						/*, 'page'          => $pageNumber
+						, 'pager'         => $pagerLinks*/
 						, 'query'         => $_GET
 						, '__debug'       => TRUE
 					] + $this->context
@@ -1035,14 +1052,14 @@ class Controller implements \SeanMorris\Ids\Routable
 				, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
 				, 'currentPath'   => $path->pathString()
 				, 'path'          => $path->getAliasedPath()->pathString()
-				, 'page'          => $pageNumber
-				, 'pager'         => $pagerLinks
+				/*, 'page'          => $pageNumber
+				, 'pager'         => $pagerLinks*/
 				, 'query'         => $_GET
 				, '__debug'       => TRUE
 			] + $this->context);
 		}
 
-		return $formRendered . $list;
+		return $list;
 	}
 
 	public function create($router)

@@ -14,11 +14,13 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 		die;
 	}
 
-	public function mapData()
+	public function mapData($router)
 	{
-		if(!$cache = \SeanMorris\PressKit\Cache::loadOneByName('MapDataCache'))
+		$modelName = $router->path()->consumeNode();
+
+		if(!$cache = \SeanMorris\PressKit\Cache::loadOneByName('MapDataCache_' . $modelName))
 		{
-			$model = \SeanMorris\PressKit\Scaffold::produceScaffold(['name' => 'y_test']);
+			$model = \SeanMorris\PressKit\Scaffold::produceScaffold(['name' => $modelName]);
 			$gen = $model::generate();
 
 			$resp = '{
@@ -68,8 +70,8 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 			$cache = new \SeanMorris\PressKit\Cache();
 
 			$cache->consume([
-				'name'    => 'MapDataCache',
-				'expiry'  => time() + 600,
+				'name'    => 'MapDataCache_' . $modelName,
+				'expiry'  => time() + 6000,
 				'content' => $resp
 			]);
 
