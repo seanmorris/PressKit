@@ -29,8 +29,8 @@ class ModelGrid extends Grid
 		$vars['createLink'] = NULL;
 
 		$vars['createLink'] = sprintf(
-			'<a href = "/%s/create">Create</a>'
-			, $path
+			'<a href = "%s/create">Create</a>'
+			, $path ? '/' . $path : NULL
 		);
 
 		$rows = [];
@@ -55,8 +55,8 @@ class ModelGrid extends Grid
 				: $object->id;
 
 			$rows[$object->id]['view'] = sprintf(
-				'<a href = "/%s/%s">View</a>'
-				, $path
+				'<a href = "%s/%s">View</a>'
+				, $path ? '/' . $path : NULL
 				, $id
 			);
 
@@ -65,8 +65,8 @@ class ModelGrid extends Grid
 			if($object->can('update'))
 			{
 				$rows[$object->id]['edit'] = sprintf(
-					'<a href = "/%s/%s/edit">Edit</a>'
-					, $path
+					'<a href = "%s/%s/edit">Edit</a>'
+					, $path ? '/' . $path : NULL
 					, $id
 				);
 			}
@@ -76,8 +76,8 @@ class ModelGrid extends Grid
 			if($object->can('delete'))
 			{
 				$rows[$object->id]['delete'] = sprintf(
-					'<a href = "/%s/%s/delete">Delete</a>'
-					, $path
+					'<a href = "%s/%s/delete">Delete</a>'
+					, $path ? '/' . $path : NULL
 					, $id
 				);
 			}

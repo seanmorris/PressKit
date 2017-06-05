@@ -27,6 +27,65 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 		$params = $router->request()->params();
 
+		if($model)
+		{
+			$parentController::beforeRead($model);
+
+			$state = $model->getSubject('state');
+
+			$session = \SeanMorris\Ids\Meta::staticSession(1);
+
+			\SeanMorris\Ids\Log::debug('SESSION LOADED:', $session);
+
+			if($state && isset($session['user']))
+			{
+				//var_dump($state, $session['user'], $state->can($session['user'], 'read'));
+			}
+
+			\SeanMorris\Ids\Log::debug('State', $state);
+
+			$titleField = 'title';
+
+			if(static::$titleField)
+			{
+				$titleField = static::$titleField;
+			}
+
+			if($model->{$titleField})
+			{
+				$this->title = $model->{$titleField};
+			}
+			else
+			{
+				$this->title = 'View';
+			}
+
+			if(!$router->subRouted())
+			{
+				$this->context['title'] = $this->title;
+			}
+			
+			if($theme = $this->_getTheme($router))
+			{
+				\SeanMorris\Ids\Log::debug(sprintf(
+					'Rendering %s with theme %s.'
+					, get_class($model)
+					, $theme
+				));
+
+				$body .= ' ' . $theme::render($model, [
+					'path'          => $router->path()->pathString()
+					, 'hideTitle'   => in_array($router->routedTo(), $this->hideTitle)
+					, '_controller' => $this
+					, '_router'     => $router
+				] + $this->context, 'single');
+			}
+
+			$parentController::afterRead($model);
+		}
+
+		$resource = new \SeanMorris\PressKit\Api\Resource($router);
+
 		if(isset($params['api']))
 		{
 			//var_dump($parentController->modelSubRoutes);
@@ -34,71 +93,25 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			$resource = new \SeanMorris\PressKit\Api\Resource(
 				$router
 			);
-			echo $resource->toJson();
+			if($params['api'] == 'html')
+			{
+				echo $body;
+			}
+			else if($params['api'] == 'xml')
+			{
+				header('Content-Type: application/xml');
+				echo $resource->toXml();
+			}
+			else
+			{
+				header('Content-Type: application/json');
+				echo $resource->toJson();
+			}
 			/*/
 			echo json_encode($model->unconsume(1));
 			/*/
 			die;
 		}
-
-		if(!$model)
-		{
-			return false;
-		}
-
-		$parentController::beforeRead($model);
-
-		$state = $model->getSubject('state');
-
-		$session = \SeanMorris\Ids\Meta::staticSession(1);
-
-		\SeanMorris\Ids\Log::debug('SESSION LOADED:', $session);
-
-		if($state && isset($session['user']))
-		{
-			//var_dump($state, $session['user'], $state->can($session['user'], 'read'));
-		}
-
-		\SeanMorris\Ids\Log::debug('State', $state);
-
-		$titleField = 'title';
-
-		if(static::$titleField)
-		{
-			$titleField = static::$titleField;
-		}
-
-		if($model->{$titleField})
-		{
-			$this->title = $model->{$titleField};
-		}
-		else
-		{
-			$this->title = 'View';
-		}
-
-		if(!$router->subRouted())
-		{
-			$this->context['title'] = $this->title;
-		}
-		
-		if($theme = $this->_getTheme($router))
-		{
-			\SeanMorris\Ids\Log::debug(sprintf(
-				'Rendering %s with theme %s.'
-				, get_class($model)
-				, $theme
-			));
-
-			$body .= ' ' . $theme::render($model, [
-				'path'          => $router->path()->pathString()
-				, 'hideTitle'   => in_array($router->routedTo(), $this->hideTitle)
-				, '_controller' => $this
-				, '_router'     => $router
-			] + $this->context, 'single');
-		}
-
-		$parentController::afterRead($model);
 
 		return $body;
 	}

@@ -409,28 +409,28 @@ class Controller implements \SeanMorris\Ids\Routable
 			$modelPath = $this->model->publicId;
 
 			$contextMenu = [ '✯' => [
-					'_weight' => -100
-					, '_access'	=> isset($this->access['_contextMenu'])
-						? $this->access['_contextMenu']
+				'_weight' => -100
+				, '_access'	=> isset($this->access['_contextMenu'])
+					? $this->access['_contextMenu']
+					: false
+				, 'View'=> [
+					'_link'		=> $modelPath . '/view'
+					, '_access'	=> isset($this->access['view'])
+						? $this->access['view']
+						: true
+				]
+				, 'Edit'=> [
+					'_link'		=> $modelPath . '/edit'
+					, '_access'	=> isset($this->access['edit'])
+						? $this->access['edit']
 						: false
-					, 'View'=> [
-						'_link'		=> $modelPath . '/view'
-						, '_access'	=> isset($this->access['view'])
-							? $this->access['view']
-							: true
-					]
-					, 'Edit'=> [
-						'_link'		=> $modelPath . '/edit'
-						, '_access'	=> isset($this->access['edit'])
-							? $this->access['edit']
-							: false
-					]
-					, 'Delete'=> [
-						'_link'		=> $modelPath . '/delete'
-						, '_access'	=> isset($this->access['delete'])
-							? $this->access['delete']
-							: false
-					]
+				]
+				, 'Delete'=> [
+					'_link'		=> $modelPath . '/delete'
+					, '_access'	=> isset($this->access['delete'])
+						? $this->access['delete']
+						: false
+				]
 			]];
 
 			$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
@@ -893,42 +893,6 @@ class Controller implements \SeanMorris\Ids\Routable
 						$listParams[] = $pageNumber;
 						$listParams[] = static::$pageSize;
 					}
-
-					if($pageNumber)
-					{
-						$pagerLinks['<<'] = 0;
-						$pagerLinks['<'] = $pageNumber - 1;
-					}
-
-					$firstPage = $pageNumber - static::$pageSpread;
-					$firstPage = $firstPage >= 0 ? $firstPage : 0;
-
-					if($lastPage < $lastPageSpread)
-					{
-						$lastPageSpread = $lastPage;
-					}
-
-					if($pageNumber <= $lastPageSpread)
-					{
-						$pager = $firstPage;
-
-						while($pager <= $lastPageSpread)
-						{
-							if($pager >= $lastPage)
-							{
-								break;
-							}
-
-							$pagerLinks[$pager] = $pager;
-							$pager++;
-						}
-
-						if($pageNumber < $lastPageSpread-1)
-						{
-							$pagerLinks['>'] = $pageNumber+1;
-							$pagerLinks['>>'] = $lastPage -1;
-						}
-					}
 				}
 
 				$listBy = 'generate' . $listBy;
@@ -940,6 +904,61 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$this->models[] = $objects[] = $object;
 			}
+		}
+
+		if(!$router->subRouted() && !in_array($router->routedTo(), $this->hideTitle))
+		{
+			$this->context['title'] = $this->title;
+		}
+
+		if($theme = $this->_getTheme($router))
+		{
+			$objectClass = $objects ? get_class(current($objects)) : $objectClass;
+
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Rendering list of %s with theme %s.'
+				, $objectClass
+				, $theme
+			));
+
+			if($listViewClass = $theme::resolveFirst($objectClass, NULL, 'list'))
+			{
+				$list = new $listViewClass(
+					[
+						'columns'         => $this->listColumns
+						, 'content'       => $objects
+						, 'path'          => $path->getAliasedPath()->pathString()
+						, 'currentPath'   => $path->pathString()
+						, 'columnClasses' => $this->columnClasses
+						, 'subRouted'     => $router->subRouted()
+						, '_controller'   => $this
+						, '_router'       => $router
+						, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
+						, 'page'          => $pageNumber
+						, 'pager'         => $pagerLinks
+						, 'query'         => $_GET
+						, '__debug'       => TRUE
+					] + $this->context
+				);
+			}
+		}
+		else
+		{
+			$list = new \SeanMorris\PressKit\Theme\Austere\Grid([
+				'columns' => ['id', 'title', 'view']
+				, 'columnClasses' => $this->columnClasses
+				, 'objects'       => $objects
+				, '_controller'   => $this
+				, '_router'       => $router
+				, 'subRouted'     => $router->subRouted()
+				, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
+				, 'currentPath'   => $path->pathString()
+				, 'path'          => $path->getAliasedPath()->pathString()
+				, 'page'          => $pageNumber
+				, 'pager'         => $pagerLinks
+				, 'query'         => $_GET
+				, '__debug'       => TRUE
+			] + $this->context);
 		}
 
 		if(isset($params['api']))
@@ -969,7 +988,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			\SeanMorris\Ids\Log::debug($resource);
 			if($params['api'] == 'html')
 			{
-				echo $resource->toHtml();
+				echo $list;
 			}
 			else if($params['api'] == 'xml')
 			{
@@ -981,85 +1000,11 @@ class Controller implements \SeanMorris\Ids\Routable
 				header('Content-Type: application/json');
 				echo $resource->toJson();
 			}
-			/*/
-			echo json_encode(array_map(
-				function($o)
-				{
-					return $o->unconsume();
-				},
-				$objects
-			));
-			//*/
+
 			die;
 		}
 
-		if(!$router->subRouted() && !in_array($router->routedTo(), $this->hideTitle))
-		{
-			$this->context['title'] = $this->title;
-		}
-
-		$list = $this->_renderList($router);
-
 		return $formRendered . $list;
-	}
-
-	public function _renderList($router)
-	{
-		$list = NULL;
-
-		$objects  = $this->models;
-		$path     = $router->path();
-		if($theme = $this->_getTheme($router))
-		{
-			$objectClass = $objects ? get_class(current($objects)) : $objectClass;
-
-			\SeanMorris\Ids\Log::debug(sprintf(
-				'Rendering list of %s with theme %s.'
-				, $objectClass
-				, $theme
-			));
-
-			if($listViewClass = $theme::resolveFirst($objectClass, NULL, 'list'))
-			{
-				$list = new $listViewClass(
-					[
-						'columns'         => $this->listColumns
-						, 'content'       => $objects
-						, 'path'          => $path->getAliasedPath()->pathString()
-						, 'currentPath'   => $path->pathString()
-						, 'columnClasses' => $this->columnClasses
-						, 'subRouted'     => $router->subRouted()
-						, '_controller'   => $this
-						, '_router'       => $router
-						, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
-						/*, 'page'          => $pageNumber
-						, 'pager'         => $pagerLinks*/
-						, 'query'         => $_GET
-						, '__debug'       => TRUE
-					] + $this->context
-				);
-			}
-		}
-		else
-		{
-			$list = new \SeanMorris\PressKit\Theme\Austere\Grid([
-				'columns' => ['id', 'title', 'view']
-				, 'columnClasses' => $this->columnClasses
-				, 'objects'       => $objects
-				, '_controller'   => $this
-				, '_router'       => $router
-				, 'subRouted'     => $router->subRouted()
-				, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
-				, 'currentPath'   => $path->pathString()
-				, 'path'          => $path->getAliasedPath()->pathString()
-				/*, 'page'          => $pageNumber
-				, 'pager'         => $pagerLinks*/
-				, 'query'         => $_GET
-				, '__debug'       => TRUE
-			] + $this->context);
-		}
-
-		return $list;
 	}
 
 	public function create($router)
