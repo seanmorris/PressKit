@@ -57,15 +57,38 @@ PressKit.Registry = PressKit.Class.extend({
 
 		return widgetObj;
 	}
-	, autoRegisterTags: function(classes)
+	, registerClasses: function(classes)
 	{
 		for(var selector in classes)
 		{
+			if(!classes[selector])
+			{
+				continue;
+			}
+
 			var classObj = classes[selector];
 			var handlers = classes[selector].prototype.events;
 
 			this.selectorClasses[selector] = classObj;
+		}
+	}
+	, registerTags: function(classes)
+	{
+		for(var selector in classes)
+		{
+			if(!classes[selector])
+			{
+				continue;
+			}
 
+			var classObj = classes[selector];
+			var handlers = classes[selector].prototype.events;
+
+			this.selectorClasses[selector] = classObj;
+		}
+		
+		for(var selector in this.selectorClasses)
+		{
 			var _this = this;
 
 			for(var eventName in handlers)
@@ -104,7 +127,7 @@ PressKit.register = function(classes) {
 	{
 		PressKit._registry = new PressKit.Registry();
 	}
-	PressKit._registry.autoRegisterTags(classes);
+	PressKit._registry.registerTags(classes);
 };
 PressKit.getRegistry = function()
 {
@@ -187,6 +210,8 @@ PressKit.WidgetModel = PressKit.Class.extend({
 	}
 	, getSubwidget: function(name, index)
 	{
+		console.log(name);
+
 		var subTag = $(this.tag).find(this.subWidgetSelectors[name]);
 
 		var subWidgets = subTag.map(function(index, element){
@@ -846,13 +871,14 @@ PressKit.TerminalWidget = PressKit.WidgetModel.extend({
 	}
 });
 */
+var ob = function(i) { PressKit._registry.tagObjects[i] };
 $(function()
 {
-	PressKit.register({
+	PressKit.getRegistry().registerClasses({
 		'a': PressKit.LinkWidgetModel
 		, 'input': PressKit.InputWidgetModel
 		, '[data-presskit-widget="ModelSearch"]': PressKit.ModelSearchWidget
 		, 'fieldset': PressKit.FieldSetWidget
-		, 'body': PressKit.TerminalWidget
+		//, 'body': PressKit.TerminalWidget
 	});
 });
