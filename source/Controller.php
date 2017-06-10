@@ -4,7 +4,7 @@ class Controller implements \SeanMorris\Ids\Routable
 {
 	protected
 		$modelClass
-		, $theme = 'SeanMorris\PressKit\Theme\Austere\Theme'
+		, $theme
 		, $title
 		, $access = []
 		, $context = []

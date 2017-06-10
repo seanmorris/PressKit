@@ -68,9 +68,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			if($theme = $this->_getTheme($router))
 			{
 				\SeanMorris\Ids\Log::debug(sprintf(
-					'Rendering %s with theme %s.'
+					'Rendering %s with theme %s under %s.'
 					, get_class($model)
 					, $theme
+					, get_called_class()
 				));
 
 				$body .= ' ' . $theme::render($model, [
