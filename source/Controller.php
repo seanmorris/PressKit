@@ -20,6 +20,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $columnClasses = []
 		, $hideTitle = []
 		, $alias = []
+		, $skipWrapping = FALSE
 	;
 
 	protected static
@@ -107,6 +108,23 @@ class Controller implements \SeanMorris\Ids\Routable
 		}
 
 		return $propertyContents;
+	}
+
+	public function _dontWrap($router)
+	{
+		$this->skipWrapping = TRUE;
+
+		while($router)
+		{
+			$router = $router->parent();
+
+			if(!$router)
+			{
+				break;
+			}
+
+			$router->routes()->skipWrapping = TRUE;
+		}
 	}
 
 	protected function _getForm($name)
@@ -573,7 +591,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 
-		if($theme = $this->_getTheme($router))
+		if(!$this->skipWrapping && $theme = $this->_getTheme($router))
 		{
 			foreach(['css','js'] as $contextElement)
 			{

@@ -97,7 +97,7 @@ class Resource
 	{
 		return (object)[
 			'code'			=> $this->code
-			, 'controller'	=> $this->controller
+			, 'controller'	=> get_class($this->controller)
 			, 'body'		=> $this->body
 			, 'navigation'	=> $this->navigation
 			, 'messages'	=> $this->messages
