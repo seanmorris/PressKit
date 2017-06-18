@@ -389,6 +389,15 @@ PressKit.WidgetModel = PressKit.Class.extend({
 		return null;
 	}
 });
+
+PressKit.WidgetModel.addEvents = function(events)
+{
+	PressKit.WidgetModel.prototype.events = Object.assign(
+		PressKit.WidgetModel.prototype.events
+		, events
+	);
+};
+
 /* /Boilerplate */
 
 /* Base Fields */
@@ -806,6 +815,7 @@ PressKit.FieldSetWidget = PressKit.WidgetModel.extend({
 		widget.tag.parent().remove();
 	}
 });
+
 /* /Multi Field */
 /*
 PressKit.TerminalWidget = PressKit.WidgetModel.extend({
@@ -871,7 +881,7 @@ PressKit.TerminalWidget = PressKit.WidgetModel.extend({
 	}
 });
 */
-var ob = function(i) { PressKit._registry.tagObjects[i] };
+var ob = function(i) { return PressKit._registry.tagObjects[i] };
 $(function()
 {
 	PressKit.getRegistry().registerClasses({
