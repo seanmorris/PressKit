@@ -249,15 +249,15 @@ class Model extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::debug($this);
 	}
 
-	public function unconsume($children = 0)
+	public function unconsume($children = 0, $override = FALSE)
 	{
 		$skeleton = parent::unconsume($children);
 
 		$remove = [];
 
-		foreach ($skeleton as $column => &$value)
+		foreach($skeleton as $column => &$value)
 		{
-			if(!$this->can('read', $column))
+			if(!$override && !$this->can('read', $column))
 			{
 				$remove[] = $column;
 			}
