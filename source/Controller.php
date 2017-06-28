@@ -640,10 +640,11 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$stack = new $stack(
 					[
-						'menu' => $menu
-						, '__debug' => \SeanMorris\Ids\Settings::read('devmode')
+						'menu'          => $menu
+						, '__debug'     => \SeanMorris\Ids\Settings::read('devmode')
 						//, 'messages' => \SeanMorris\Message\MessageHandler::get()->render()
-						, 'body' => $panels
+						, 'body'        => $panels
+						, '_controller' => $this
 					] + $this->context
 					, get_class()
 				);

@@ -9,17 +9,20 @@ PressKit.Registry = PressKit.Class.extend({
 	, observer: null
 	, init: function()
 	{
-		this.observer = new MutationObserver(function(){
+		this.observer = new MutationObserver(function(mutations){
 			mutations.forEach(function (mutation) {
-				// or use all mutation records is entirely up to you
 				var entry = {
 					mutation: mutation,
 					el: mutation.target,
 					value: mutation.target.textContent,
 					oldValue: mutation.oldValue
 				};
-				console.log('Recording mutation:', entry);
+				console.log('Recording mutation:', mutation);
 			});
+		});
+
+		this.observer.observe(document.body, {
+			characterData: true 
 		});
 	}
 	, register: function(object, tag)
