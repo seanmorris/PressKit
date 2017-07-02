@@ -639,12 +639,20 @@ class Controller implements \SeanMorris\Ids\Routable
 
 				// \SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
 			}
+			else
+			{
+				$context['js'] = [];
+			}
 
 			if(isset($context['css']) && $context['css'] && !$router->parent())
 			{
 				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 
 				// \SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
+			}
+			else
+			{
+				$context['css'] = [];
 			}
 
 			$stack = $theme::resolveFirst('stack');
