@@ -35,6 +35,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $menus = []
 		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
 		, $actions = []
+		, $redirected = FALSE
 		, $forms = [
 			'delete' => 'SeanMorris\PressKit\Form\ModelDeleteForm'
 		]
@@ -171,7 +172,14 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	public function _init($router)
 	{
+		$existingContext = $this->context;
+
 		$this->context =& $router->getContext();
+
+		foreach($existingContext as $key => $val)
+		{
+			$this->context[$key] = $val;
+		}
 	}
 
 	public function _access($endPoint, $router)
@@ -511,6 +519,11 @@ class Controller implements \SeanMorris\Ids\Routable
 
 						$panels[$subRouteSubNodes] = $panel;
 					}
+					catch(\SeanMorris\Ids\Http\Http303 $e)
+					{
+						\SeanMorris\Ids\Log::logException($e);
+						continue;
+					}
 					catch(\SeanMorris\Ids\Http\HttpException $e)
 					{
 						\SeanMorris\Ids\Log::logException($e);
@@ -518,6 +531,11 @@ class Controller implements \SeanMorris\Ids\Routable
 					}
 				}
 			}
+		}
+
+		if(!$router->subRouted() && static::$redirected)
+		{
+			return;
 		}
 
 		$trail = [];
@@ -631,18 +649,29 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$stack = $theme::resolveFirst('stack');
 
-			if(!isset($this->context['messages']))
+			$messages = NULL;
+			
+			if(!$router->parent())
 			{
-				$this->context['messages'] = \SeanMorris\Message\MessageHandler::get()->render();
+				$messages = (string) \SeanMorris\Message\MessageHandler::get()->render();
+
+				$this->context['messages'] = isset($this->context['messages'])
+					? $this->context['messages']
+					: '';
+
+				if($messages)
+				{
+					$this->context['messages'] = $messages;
+				}
 			}
 
-			if($stack)
+			if($stack && !static::$redirected)
 			{
 				$stack = new $stack(
 					[
 						'menu'          => $menu
 						, '__debug'     => \SeanMorris\Ids\Settings::read('devmode')
-						//, 'messages' => \SeanMorris\Message\MessageHandler::get()->render()
+						, 'messages'    => $messages
 						, 'body'        => $panels
 						, '_controller' => $this
 					] + $this->context
@@ -655,6 +684,11 @@ class Controller implements \SeanMorris\Ids\Routable
 		else
 		{
 			$body = implode(PHP_EOL . PHP_EOL, $panels);
+		}
+
+		if($theme && !$router->parent())
+		{
+			$body = $theme::wrap($body, $this->context);
 		}
 
 		return $body;
@@ -1175,6 +1209,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if($redirect)
 			{
+				$this->context['redirect'] = TRUE;
 				throw $redirect;
 			}
 		}
@@ -1480,5 +1515,10 @@ class Controller implements \SeanMorris\Ids\Routable
 	public function __get($name)
 	{
 		return $this->$name;
+	}
+
+	public static function _titleField()
+	{
+		return static::$titleField;
 	}
 }

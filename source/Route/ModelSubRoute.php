@@ -50,6 +50,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			{
 				$titleField = static::$titleField;
 			}
+			else if($parentController::_titleField())
+			{
+				$titleField = $parentController::_titleField();
+			}
 
 			if($model->{$titleField})
 			{
@@ -85,12 +89,8 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			$parentController::afterRead($model);
 		}
 
-		$resource = new \SeanMorris\PressKit\Api\Resource($router);
-
 		if(isset($params['api']))
 		{
-			//var_dump($parentController->modelSubRoutes);
-			//*/
 			$resource = new \SeanMorris\PressKit\Api\Resource(
 				$router
 			);
