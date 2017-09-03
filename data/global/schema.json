@@ -809,6 +809,42 @@
                     }
                 }
             }
+        },
+        "6": {
+            "PressKitRelationship": {
+                "keys": {
+                    "ownerClass": {
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
         }
     }
 }

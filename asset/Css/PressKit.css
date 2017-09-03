@@ -16,7 +16,7 @@ div.messageContainer:empty {
 .PressKitAjaxSearchResults{
 	position: relative;
 	top: -2px;
-	background: #ccc;
+	background: rgba(255,255,255,0.2);
 	/*
 	height:0px;
 	overflow: visible;
@@ -36,20 +36,16 @@ div.messageContainer:empty {
 	border-bottom-right-radius:4px;
 }
 
-div.container{
-	margin-top:10px;
-}
-
 .PressKitAjaxSearchResult:nth-child(2n){
-	background: #ddd;
+	background: rgba(255,255,255,0.2);
 }
 
 .PressKitAjaxSearchResult:nth-child(2n+1){
-	background: #ccc;
+	background: rgba(255,255,255,0.5);
 }
 
 .PressKitAjaxSearchResult:hover{
-	background: #eee;
+	background: rgba(255,255,255,0.3);
 }
 
 img.preview {

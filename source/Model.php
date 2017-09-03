@@ -102,11 +102,12 @@ class Model extends \SeanMorris\Ids\Model
 
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
-
+		/*
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Checking %s(%d) has a state... ', get_called_class(), $this->id)
 			, $state
 		);
+		*/
 
 		if(!$state)
 		{

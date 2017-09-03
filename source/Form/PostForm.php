@@ -78,6 +78,22 @@ class PostForm extends \SeanMorris\PressKit\Form\Form
 			, '_array' => TRUE
 			, '_multi' => TRUE
 		];
+		
+		$skeleton['images']['_children']['title'] = [
+			'_title' => 'Title',
+		];
+
+		$skeleton['images']['_children']['image'] = [
+			'_title' => 'Image File',
+			'type' => 'file',
+		];
+
+		$skeleton['images']['_children']['state'] = [
+			'_title' => 'State'
+			, '_subtitle' => 'State'
+			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
+			, '_multi' => FALSE
+		];
 
 		$skeleton['state'] = [
 			'_title' => 'State'

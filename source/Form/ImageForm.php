@@ -37,7 +37,6 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 			'type' => 'submit',
 		];
 
-
 		parent::__construct($skeleton);
 	}
 }

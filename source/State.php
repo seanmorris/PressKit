@@ -63,6 +63,7 @@ class State extends \SeanMorris\Ids\Model
 	public function can($user, $point, $action = 'read')
 	{
 		$result = $this->_can($user, $point, $action);
+/*
 		\SeanMorris\Ids\Log::debug([
 			'subclass' => get_called_class() . '::can',
 			'$this'   => $this,
@@ -71,7 +72,7 @@ class State extends \SeanMorris\Ids\Model
 			'$result' => $result,
 			'$user'   => $user
 		]);
-
+*/
 		if($action == 'write')
 		{
 			//\SeanMorris\Ids\Log::trace();
@@ -186,9 +187,9 @@ class State extends \SeanMorris\Ids\Model
 		}
 
 		\SeanMorris\Ids\Log::debug(
-			'Checking for role '
-			. $role
-			. '... '
+			'Checking for role "'
+			. print_r($role, 1)
+			. '"... '
 			. (int)$user->hasRole($role)
 		);
 

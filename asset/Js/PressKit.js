@@ -75,26 +75,13 @@ PressKit.Registry = PressKit.Class.extend({
 			this.selectorClasses[selector] = classObj;
 		}
 	}
-	, registerTags: function(classes)
+	, start: function(classes)
 	{
-		for(var selector in classes)
-		{
-			if(!classes[selector])
-			{
-				continue;
-			}
-
-			var classObj = classes[selector];
-			var handlers = classes[selector].prototype.events;
-
-			this.selectorClasses[selector] = classObj;
-		}
-		
 		for(var selector in this.selectorClasses)
 		{
 			var _this = this;
 
-			for(var eventName in handlers)
+			for(var eventName in this.selectorClasses[selector].prototype.events)
 			{
 				$(document).on(eventName, selector, {}, (function(eventName)
 				{
@@ -116,7 +103,7 @@ PressKit.Registry = PressKit.Class.extend({
 			}
 		}
 
-		for(var selector in classes)
+		for(var selector in this.selectorClasses)
 		{
 			$(selector).map(function(index, tag)
 			{
@@ -125,13 +112,6 @@ PressKit.Registry = PressKit.Class.extend({
 		}
 	}
 });
-PressKit.register = function(classes) {
-	if(!PressKit._registry)
-	{
-		PressKit._registry = new PressKit.Registry();
-	}
-	PressKit._registry.registerTags(classes);
-};
 PressKit.getRegistry = function()
 {
 	if(!PressKit._registry)
@@ -141,7 +121,12 @@ PressKit.getRegistry = function()
 
 	return PressKit._registry;
 };
-
+PressKit.register = function(classes) {
+	PressKit.getRegistry().registerClasses(classes);
+};
+PressKit.start = function() {
+	PressKit.getRegistry().start();
+};
 PressKit.WidgetModel = PressKit.Class.extend({
 	name: 'WidgetModel'
 	, registry: null
@@ -665,7 +650,8 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 			return;
 		}
 		var option = $('<a class = "PressKitAjaxSearchResult">')
-			.attr('href', this.searchEndpoint + '/' + result.publicId)
+			.attr('href', this.searchEndpoint + '/' + (result.publicId || result.id))
+			.attr('target', '_blank')
 			.css({'display':'block'})
 		;
 

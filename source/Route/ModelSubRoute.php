@@ -156,7 +156,8 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			, '_controller' => $this
 		]);
 
-		if($params = $router->request->post())
+
+		if($params = array_replace_recursive($router->request()->post(), $router->request()->files()))
 		{
 			$messages = \SeanMorris\Message\MessageHandler::get();
 
@@ -318,8 +319,6 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 	public function owners($router)
 	{
 		$model = $this->getModel($router);
-
-		var_dump($model->getOwners());
 	}
 
 	public function api($router)

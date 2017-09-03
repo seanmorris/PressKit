@@ -6,6 +6,7 @@ class Image extends \SeanMorris\PressKit\Model
 		$id
 		, $publicId
 		, $created
+		, $class
 		, $title
 		, $url
 		, $state
@@ -26,11 +27,14 @@ class Image extends \SeanMorris\PressKit\Model
 		, $hasOne				= [
 			'state'				=> 'SeanMorris\PressKit\State\ImageState'
 		]
+		, $byNull = ['with' => ['state' => 'byNull']]
 		, $byId = [
 			'where' => [['id' => '?']]
+			, 'with' => ['state' => 'byNull']
 		]
 		, $byPublicId = [
 			'where' => [['publicId' => 'UNHEX(?)']]
+			, 'with' => ['state' => 'byNull']
 		]
 		, $byAll = []
 		, $byModerated = [
@@ -41,6 +45,7 @@ class Image extends \SeanMorris\PressKit\Model
 					, 'type' => 'LEFT'
 				]
 			]
+			, 'with' => ['state' => 'byNull']
 		]
 		, $bySearch = [
 			'named' => TRUE
@@ -51,71 +56,85 @@ class Image extends \SeanMorris\PressKit\Model
 					, ['id' => '?', '=', '%s', 'id', FALSE]
 				]
 			]
+			, 'with' => ['state' => 'byNull']
 		]
-		, $files = ['image']
 	;
 
 	protected static function beforeConsume($instance, &$skeleton)
 	{
-		//$skeleton['url'] = $instance->url;
+		$tmpFile = NULL;
 
-		$request = new \SeanMorris\Ids\Request;
-		foreach($request->files() as $fileField => $tmpFile)
+		if(isset($skeleton['image']))
 		{
-			if(!array_key_exists($fileField, $skeleton))
+			$tmpFile = $skeleton['image'];
+		
+			if($tmpFile && !($tmpFile instanceof \SeanMorris\Ids\Disk\File))
 			{
-				continue;
-			}
-
-			if(!($tmpFile instanceof \SeanMorris\Ids\Disk\File))
-			{
-				continue;
-			}
-
-			$originalName = $tmpFile->originalName();
-
-			preg_match(
-				'/\.(gif|png|jpe?g)$/'
-				, $originalName
-				, $m
-			);
-
-			if(!$m)
-			{
-				\SeanMorris\Ids\Log::debug('Not an image.');
 				return FALSE;
 			}
+		}		
 
-			$microtime = explode(' ', microtime());
-
-			$publicDir = \SeanMorris\Ids\Settings::read('public');
-
-			$newName = sprintf(
-				'/Static/Dynamic/%s.%s.%03d.%s'
-				, $microtime[1]
-				, substr($microtime[0], 2)
-				, rand(0,999)
-				, $m[1]
-			);
-
-			$newUrl = $newName;
-			$newFileName = $publicDir . $newName;
-
-			$newFile = $tmpFile->copy($newFileName);
-
-			var_dump($fileField, $tmpFile, $newFileName);
-
-			if(!$newFile->check())
-			{
-				\SeanMorris\Ids\Log::error('Failed to copy.', $newFileName);
-				return FALSE;
-			}
-
-			$skeleton['url'] = $newUrl;
+		if(!$tmpFile)
+		{
+			return;
 		}
+
+		$originalName = $tmpFile->originalName();
+
+		preg_match(
+			'/\.(gif|png|jpe?g)$/'
+			, $originalName
+			, $m
+		);
+
+		if(!$m)
+		{
+			\SeanMorris\Ids\Log::debug('Not an image.');
+			return FALSE;
+		}
+
+		$microtime = explode(' ', microtime());
+
+		$publicDir = \SeanMorris\Ids\Settings::read('public');
+
+		$newName = sprintf(
+			'/Static/Dynamic/%s.%s.%03d.%s'
+			, $microtime[1]
+			, substr($microtime[0], 2)
+			, rand(0,999)
+			, $m[1]
+		);
+
+		$newUrl = $newName;
+		$newFileName = $publicDir . $newName;
+
+		$newFile = $tmpFile->copy($newFileName);
+
+		if(!$newFile->check())
+		{
+			\SeanMorris\Ids\Log::error('Failed to copy.', $newFileName);
+			return FALSE;
+		}
+
+		$skeleton['url'] = $newUrl;
 	}
 
-	protected static function beforeCreate($instance, &$skeleton)
+	protected function store()
 	{
+
+	}
+
+	protected function alter()
+	{
+
+	}
+
+	protected function remove()
+	{
+
 	}
 }
+/*
+AKIAJTO6SO6UO4YR6ZJQ
+lOZrsFg5WcB6ebzWLwj2t4NvcyK8g1AuVvb2xheW
+*/

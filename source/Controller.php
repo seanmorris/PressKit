@@ -609,6 +609,8 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 
+		$context =& $router->getContext();
+
 		if(!$this->skipWrapping && $theme = $this->_getTheme($router))
 		{
 			foreach(['css','js'] as $contextElement)
@@ -617,8 +619,6 @@ class Controller implements \SeanMorris\Ids\Routable
 				{
 					$this->context[$contextElement] = [];
 				}
-
-				$context =& $router->getContext();
 
 				$ctxEle = $theme::resolveList($contextElement, [], false);
 
@@ -663,13 +663,13 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$messages = (string) \SeanMorris\Message\MessageHandler::get()->render();
 
-				$this->context['messages'] = isset($this->context['messages'])
-					? $this->context['messages']
+				$context['messages'] = isset($context['messages'])
+					? $context['messages']
 					: '';
 
 				if($messages)
 				{
-					$this->context['messages'] = $messages;
+					$context['messages'] = $messages;
 				}
 			}
 
@@ -682,7 +682,7 @@ class Controller implements \SeanMorris\Ids\Routable
 						, 'messages'    => $messages
 						, 'body'        => $panels
 						, '_controller' => $this
-					] + $this->context
+					] + $context
 					, get_class()
 				);
 
@@ -696,7 +696,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if($theme && !$router->parent())
 		{
-			$body = $theme::wrap($body, $this->context);
+			$body = $theme::wrap($body, $context);
 		}
 
 		return $body;
@@ -1089,7 +1089,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			, '_controller'	=> $this
 		]);
 
-		if($params = $router->request()->post())
+		if($params = array_replace_recursive($router->request()->post(), $router->request()->files()))
 		{
 			$messages = \SeanMorris\Message\MessageHandler::get();
 			$redirect = FALSE;

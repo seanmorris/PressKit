@@ -17,7 +17,7 @@ fieldset legend, fieldset{
 }
 
 form{
-	background-color:rgba(0,0,0,0.2);
+	background-color:rgba(127,127,127,0.5);
 }
 
 fieldset:hover, form:hover
@@ -51,7 +51,9 @@ button, input[type="submit"], input[type="button"] {
 	transition:background-color 1s ease-out;	
 }
 
-button, input[type="submit"], input[type="button"] {
+button:not(.swal2-styled)
+, input[type="submit"]:not(.swal2-styled)
+, input[type="button"]:not(.swal2-styled) {
 	padding:10px;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -91,6 +93,7 @@ fieldset legend {
 fieldset {
 	margin-top: 30px;
 	border-radius:0px 4px 4px 4px;
+	border:none;
 }
 
 input[type="text"]
@@ -98,7 +101,8 @@ input[type="text"]
 , input[type="password"]
 , input[type=""]
 , textarea
-, select {
+, select
+, .selection > .PressKitAjaxSearchResult{
 	box-sizing: border-box;
 	width: 100%;
 	font-size: 13pt;
@@ -125,6 +129,13 @@ fieldset[data-presskit-field="indicator"] .PressKitAjaxSearchResult:last-child{
 	border-top:1px #999 solid;
 	border-top-left-radius:4px;
 	border-top-right-radius:4px;
+}
+
+.selection > .PressKitAjaxSearchResult {
+	border:1px #999 solid;
+	border-bottom-left-radius:4px;
+	border-bottom-right-radius:4px;
+	padding: 7.5px;
 }
 
 fieldset.selectedModel{

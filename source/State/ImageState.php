@@ -9,7 +9,10 @@ class ImageState extends \SeanMorris\PressKit\State
 				, 'read'	 => ['SeanMorris\Access\Role\User', 'SeanMorris\Access\Role\Moderator']
 				, 'update'	 => [TRUE, 'SeanMorris\Access\Role\Moderator']
 				, 'delete'	 => [TRUE, 'SeanMorris\Access\Role\Administrator']
-				, '$class'   => FALSE
+				, '$class'   => [
+					'read' 		=> TRUE
+					, 'write'   => 'SeanMorris\Access\Role\Administrator'
+				]
 				, '$state'   => [
 					'read' 		=> TRUE
 					, 'write'   => 'SeanMorris\Access\Role\Administrator'
