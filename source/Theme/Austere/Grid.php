@@ -16,7 +16,7 @@ class Grid extends \SeanMorris\Theme\View
 		if(!isset($this->vars['columns']))
 		{
 			$row = current($this->vars['rows']);
-			$this->vars['columns'] = array_keys((array)$row->unconsume());
+			$this->vars['columns'] = array_keys((array)($row->unconsume()));
 		}
 
 		if(isset($this->vars['skipColumns']))
