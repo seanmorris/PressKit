@@ -807,6 +807,8 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		$pagerLinks = [];
 
+		$count = 0;
+
 		if($parentModels = $this->getParentModels($router))
 		{
 			if(count($parentModels) == 1)
@@ -997,6 +999,8 @@ class Controller implements \SeanMorris\Ids\Routable
 						, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
 						, 'page'          => $pageNumber
 						, 'pager'         => $pagerLinks
+						, 'count'         => $count
+						, 'pageSize'      => static::$pageSize
 						, 'query'         => $_GET
 						, '__debug'       => TRUE
 					] + $this->context

@@ -18,8 +18,6 @@ class ModelGrid extends Grid
 
 		$rows =& $this->vars['rows'];
 		
-		// \SeanMorris\Ids\Log::debug($objects);
-
 		if($actionFunctions)
 		{
 			$this->vars['columns'] = ['select' => NULL]
@@ -28,10 +26,13 @@ class ModelGrid extends Grid
 
 		$vars['createLink'] = NULL;
 
-		$vars['createLink'] = sprintf(
-			'<a href = "%s/create">Create</a>'
-			, $path ? '/' . $path : NULL
-		);
+		if($controller->_modelClass()::canStatic('update'))
+		{
+			$vars['createLink'] = sprintf(
+				'<a href = "%s/create">Create</a>'
+				, $path ? '/' . $path : NULL
+			);
+		}
 
 		$rows = [];
 		
@@ -60,10 +61,11 @@ class ModelGrid extends Grid
 				, $id
 			);
 
-			$rows[$object->id]['edit'] = NULL;
+			$this->vars['columns']['view'] = NULL;
 			
 			if($object->can('update'))
 			{
+				$this->vars['columns']['edit'] = NULL;
 				$rows[$object->id]['edit'] = sprintf(
 					'<a href = "%s/%s/edit">Edit</a>'
 					, $path ? '/' . $path : NULL
@@ -75,6 +77,7 @@ class ModelGrid extends Grid
 
 			if($object->can('delete'))
 			{
+				$this->vars['columns']['delete'] = NULL;
 				$rows[$object->id]['delete'] = sprintf(
 					'<a href = "%s/%s/delete">Delete</a>'
 					, $path ? '/' . $path : NULL
@@ -82,10 +85,6 @@ class ModelGrid extends Grid
 				);
 			}
 		}
-
-		$this->vars['columns']['view'] = NULL;
-		$this->vars['columns']['edit'] = NULL;
-		$this->vars['columns']['delete'] = NULL;
 
 		if(!isset($this->vars['buttons']))
 		{
@@ -107,8 +106,30 @@ class ModelGrid extends Grid
 		}
 
 		$this->vars['grid'] = static::render([], 1);
+
+		$this->vars['prevPageLink'] = NULL;
+		$this->vars['nextPageLink'] = NULL;
+
+		if($this->vars['page'] > 0)
+		{
+			$this->vars['prevPageLink'] = sprintf(
+				'<a href = "?page=%d">&lt;</a>'
+				, $this->vars['page'] - 1
+			);
+		}
+
+		$this->vars['nextPageLink'] = sprintf(
+			'<a href = "?page=%d">&gt;</a>'
+			, $this->vars['page'] + 1
+		);
 	}
 }
 __halt_compiler();
 ?>
-<form method = "POST" action = "/<?=$path;?>" class = "sublime"><?=$grid;?><br /><?=$createLink;?></form>
+<form method = "POST" action = "/<?=$path;?>" class = "sublime">
+	<?=$grid; ?>
+	<?=$createLink; ?>
+	<?=$prevPageLink; ?>
+	<?=$nextPageLink; ?>
+	Displaying <?=$pageSize * $page + 1; ?> - <?=$pageSize * ($page + 1); ?>/<?=$count ;?> records.
+</form>

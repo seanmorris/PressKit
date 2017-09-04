@@ -134,7 +134,3 @@ class Image extends \SeanMorris\PressKit\Model
 
 	}
 }
-/*
-AKIAJTO6SO6UO4YR6ZJQ
-lOZrsFg5WcB6ebzWLwj2t4NvcyK8g1AuVvb2xheW
-*/
