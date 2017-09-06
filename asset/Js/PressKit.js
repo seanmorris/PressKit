@@ -457,6 +457,7 @@ PressKit.ModelSearchWidget = PressKit.WidgetModel.extend({
 	, subWidgetHandlers: {
 		search: {
 			keyup: 'searchSubWidgetKeyupHandler'
+			, click: 'searchSubWidgetKeyupHandler'
 		}
 		, results: {
 			click: 'searchResultSubWidgetClickHandler'

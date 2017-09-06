@@ -6,6 +6,7 @@ class Image extends \SeanMorris\PressKit\Model
 		$id
 		, $publicId
 		, $created
+		, $updated
 		, $class
 		, $title
 		, $url
@@ -17,12 +18,14 @@ class Image extends \SeanMorris\PressKit\Model
 		, $createColumns		= [
 			'publicId'			=> 'UNHEX(REPLACE(UUID(), "-", ""))'
 			, 'created' 		=> 'UNIX_TIMESTAMP()'
+			, 'updated' 		=> '0'
 		]
 		, $readColumns			= [
 			'publicId'			=> 'HEX(%s)'
 		]
 		, $updateColumns		= [
 			'publicId'			=> 'UNHEX(%s)'
+			, 'updated'         => 'UNIX_TIMESTAMP()'
 		]
 		, $hasOne				= [
 			'state'				=> 'SeanMorris\PressKit\State\ImageState'
@@ -30,6 +33,10 @@ class Image extends \SeanMorris\PressKit\Model
 		, $byNull = ['with' => ['state' => 'byNull']]
 		, $byId = [
 			'where' => [['id' => '?']]
+			, 'with' => ['state' => 'byNull']
+		]
+		, $byUrl = [
+			'where' => [['url' => '?']]
 			, 'with' => ['state' => 'byNull']
 		]
 		, $byPublicId = [
@@ -79,6 +86,11 @@ class Image extends \SeanMorris\PressKit\Model
 			return;
 		}
 
+		return $instance->store($tmpFile);	
+	}
+
+	protected function store($tmpFile)
+	{
 		$originalName = $tmpFile->originalName();
 
 		preg_match(
@@ -93,15 +105,12 @@ class Image extends \SeanMorris\PressKit\Model
 			return FALSE;
 		}
 
-		$microtime = explode(' ', microtime());
-
 		$publicDir = \SeanMorris\Ids\Settings::read('public');
 
 		$newName = sprintf(
-			'/Static/Dynamic/%s.%s.%03d.%s'
-			, $microtime[1]
-			, substr($microtime[0], 2)
-			, rand(0,999)
+			'/Static/Dynamic/%s.%s.%s'
+			, $this->publicId ?? uniqid()
+			, microtime(TRUE)
 			, $m[1]
 		);
 
@@ -116,17 +125,7 @@ class Image extends \SeanMorris\PressKit\Model
 			return FALSE;
 		}
 
-		$skeleton['url'] = $newUrl;
-	}
-
-	protected function store()
-	{
-
-	}
-
-	protected function alter()
-	{
-
+		$this->url = $newUrl;
 	}
 
 	protected function remove()

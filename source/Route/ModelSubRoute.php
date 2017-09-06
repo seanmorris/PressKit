@@ -217,16 +217,22 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 				{
 					if($params['submit'] === 'Save & View')
 					{
-						throw new \SeanMorris\Ids\Http\Http303($router->path()->pathString(1));
+						throw new \SeanMorris\Ids\Http\Http303(
+							$router->path()->pathString(1)
+						);
 					}
 
 					if($params['submit'] === 'Save & Exit')
 					{
-						throw new \SeanMorris\Ids\Http\Http303($router->path()->pathString(2));
+						throw new \SeanMorris\Ids\Http\Http303(
+							$router->path()->pathString(2)
+						);
 					}
 				}
 
-				throw new \SeanMorris\Ids\Http\Http303($router->path()->pathString());
+				throw new \SeanMorris\Ids\Http\Http303(
+					$router->path()->pathString()
+				);
 			}
 			else
 			{

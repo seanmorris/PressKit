@@ -26,9 +26,9 @@ div.messageContainer:empty {
 .PressKitAjaxSearchResult{
 	padding:5px;
 	font-size: 13pt;
-	border-left:1px #999 solid;
-	border-right:1px #999 solid;
-	border-bottom:1px #999 solid;
+	border-left:1px #777 solid;
+	border-right:1px #777 solid;
+	border-bottom:1px #777 solid;
 }
 
 .PressKitAjaxSearchResult:last-child{
@@ -36,21 +36,27 @@ div.messageContainer:empty {
 	border-bottom-right-radius:4px;
 }
 
+.PressKitAjaxSearchResult a {
+	border: none;
+}
+
 .PressKitAjaxSearchResult:nth-child(2n){
-	background: rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.1);
 }
 
 .PressKitAjaxSearchResult:nth-child(2n+1){
-	background: rgba(255,255,255,0.5);
+	background: rgba(255,255,255,0.25);
 }
 
 .PressKitAjaxSearchResult:hover{
-	background: rgba(255,255,255,0.3);
+	background: rgba(255,255,255,0.5);
 }
 
 img.preview {
 	width: 55px;
 	margin-right:10px;
+	vertical-align: middle;
+	border:none;
 }
 
 h3 {

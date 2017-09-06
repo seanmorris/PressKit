@@ -845,6 +845,176 @@
                     }
                 }
             }
+        },
+        "7": {
+            "PressKitImage": {
+                "fields": {
+                    "updated": {
+                        "Field": "updated",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "NO",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "original": {
+                        "Field": "original",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    },
+                    "crop": {
+                        "Field": "crop",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            },
+            "PressKitRelationship": {
+                "fields": {
+                    "subjectClass": {
+                        "Field": "subjectClass",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "NO",
+                        "Key": "MUL",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "relationship": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "owner": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "owner",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "owner",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "subjectClass": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "subjectClass",
+                            "Seq_in_index": "1",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "subjectClass",
+                            "Seq_in_index": "2",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
         }
     }
 }
