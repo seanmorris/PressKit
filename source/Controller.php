@@ -1468,7 +1468,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$route = new $route;
 
-				if($model === $route->modelClass || is_subclass_of($model, $route->modelClass))
+				if($class === $route->modelClass || is_a($class, $route->modelClass, TRUE))
 				{
 					return [$prefix . '/' . $node => $route];
 				}
@@ -1532,5 +1532,15 @@ class Controller implements \SeanMorris\Ids\Routable
 	public static function _titleField()
 	{
 		return static::$titleField;
+	}
+
+	public function top($router)
+	{
+		while($r = $router->parent())
+		{
+			$router = $r;
+		}
+
+		return $router;
 	}
 }

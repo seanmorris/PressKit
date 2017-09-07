@@ -11,6 +11,7 @@ class Image extends \SeanMorris\PressKit\Model
 		, $title
 		, $url
 		, $state
+		, $_content
 	;
 
 	protected static
@@ -131,5 +132,22 @@ class Image extends \SeanMorris\PressKit\Model
 	protected function remove()
 	{
 
+	}
+
+	protected function content()
+	{
+		if($this->_content)
+		{
+			return $this->_content;
+		}
+
+		return file_get_contents($res->getBody());
+	}
+
+	public function mime()
+	{
+		$finfo = new \finfo(FILEINFO_MIME_TYPE);
+
+		return $finfo->buffer($this->content());
 	}
 }
