@@ -31,7 +31,15 @@ class Image extends \SeanMorris\PressKit\Model
 		, $hasOne				= [
 			'state'				=> 'SeanMorris\PressKit\State\ImageState'
 		]
-		, $byNull = ['with' => ['state' => 'byNull']]
+		, $byNull = [
+			'with'    => ['state' => 'byNull']
+			, 'order' => ['id' => 'ASC']
+		]
+		, $byFullSized = [
+			'where' => [['crop' => 'NULL', 'IS']]
+			, 'order' => ['id' => 'ASC']
+			, 'with'    => ['state' => 'byNull']
+		]
 		, $byId = [
 			'where' => [['id' => '?']]
 			, 'with' => ['state' => 'byNull']
@@ -69,9 +77,11 @@ class Image extends \SeanMorris\PressKit\Model
 		, $crops = [
 			'thumbnail' => [38, 38]
 			, 'preview' => [122, 82]
+			/*
 			, 'cga'     => [320, 200]
 			, 'vga'     => [680, 480]
 			, 'hd'      => [1920, 1080]
+			*/
 		]	
 	;
 
@@ -226,23 +236,31 @@ class Image extends \SeanMorris\PressKit\Model
 		return(ob_get_clean());
 	}
 
-	public function crop($size)
+	public function crop($size, $useExisting = TRUE)
 	{
+		$original = $this;
+
+		if($this->original)
+		{
+			$original = static::getOneById($this->original);
+		}
+
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking for existing crop "%s" for image #%d.'
 			, $size
-			, $this->id
+			, $original->id
 		));
-		if($existingCrop = static::loadOneByCrop($this->id, $size))
+
+		if($useExisting && $existingCrop = static::loadOneByCrop($original->id, $size))
 		{
 			\SeanMorris\Ids\Log::debug('Existing crop found.');
 			return $existingCrop;
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Creating new crop "%d" for image %d.'
+			'Creating new crop "%s" for image %d.'
 			, $size
-			, $this->id
+			, $original->id
 		));
 
 		if(isset($size))
@@ -257,21 +275,21 @@ class Image extends \SeanMorris\PressKit\Model
 			return FALSE;
 		}
 
-		$scaledImage = $this->scaled($width, $height);
+		$scaledImage = $original->scaled($width, $height);
 
-		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $this->url);
+		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
 
 		preg_match(
 			'/\.(gif|png|jpe?g)$/'
-			, $this->url
+			, $original->url
 			, $m
 		);
 
 		$newName = sprintf(
 			'%s.%s.%dx%d.%s'
-			, $this->publicId
-			, $this->updated
+			, $original->publicId
+			, $original->updated
 			, $width
 			, $height
 			, $m[1]
@@ -280,8 +298,8 @@ class Image extends \SeanMorris\PressKit\Model
 		$crop = new static;
 
 		$crop->consume([
-			'title'      => $this->title
-			, 'original' => $this->id
+			'title'      => $original->title
+			, 'original' => $original->id
 			, 'crop'     => $size
 		], TRUE);
 
@@ -297,5 +315,13 @@ class Image extends \SeanMorris\PressKit\Model
 		$finfo = new \finfo(FILEINFO_MIME_TYPE);
 
 		return $finfo->buffer($this->content());
+	}
+
+	public function warmCrops()
+	{
+		foreach(static::$crops as $cropName => $size)
+		{
+			$this->crop($cropName);
+		}
 	}
 }
