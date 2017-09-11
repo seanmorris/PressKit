@@ -66,6 +66,13 @@ class Image extends \SeanMorris\PressKit\Model
 			]
 			, 'with' => ['state' => 'byNull']
 		]
+		, $crops = [
+			'thumbnail' => [38, 38]
+			, 'preview' => [122, 82]
+			, 'cga'     => [320, 200]
+			, 'vga'     => [680, 480]
+			, 'hd'      => [1920, 1080]
+		]	
 	;
 
 	protected static function beforeConsume($instance, &$skeleton)
@@ -141,7 +148,148 @@ class Image extends \SeanMorris\PressKit\Model
 			return $this->_content;
 		}
 
-		return file_get_contents($res->getBody());
+		$publicDir = \SeanMorris\Ids\Settings::read('public');
+
+		$filename = $publicDir . $image->url;
+
+		return file_get_contents($filename);
+	}
+
+	protected function scaled($width, $height)
+	{
+		$image = $this->content();
+
+		list($originalWidth, $originalHeight,)
+			 = $info
+			 = getimagesizefromstring($image);
+
+		$imageData = imagecreatefromstring($image);
+
+		$resizedImageData = imagecreatetruecolor($width, $height);
+
+		$originalRatio = $originalWidth/$originalHeight;
+		$newRatio = $width/$height;
+
+		$widthRatio = $originalWidth / $width;
+		$heightRatio = $originalHeight / $height;
+		
+		if($originalWidth > $originalHeight)
+		{
+			if($width < $height)
+			{
+				$sampleWidth = $originalWidth;
+				$sampleHeight = $originalWidth / $newRatio;
+				$sampleLeft = 0;
+				$sampleTop = ($originalHeight / 2) - ($sampleHeight / 2);
+			}
+			else
+			{
+				$sampleWidth = $originalHeight * $newRatio;
+				$sampleHeight = $originalHeight;
+				$sampleLeft = ($originalWidth / 2) - ($sampleWidth / 2);
+				$sampleTop = 0;
+			}
+		}
+		else
+		{
+			if($width > $height)
+			{
+				$sampleWidth = $originalWidth;
+				$sampleHeight = $originalWidth / $newRatio;
+				$sampleLeft = 0;
+				$sampleTop = ($originalHeight / 2) - ($sampleHeight / 2);
+			}
+			else
+			{
+				$sampleWidth = $originalHeight * $newRatio;
+				$sampleHeight = $originalHeight;
+				$sampleLeft = ($originalWidth / 2) - ($sampleWidth / 2);
+				$sampleTop = 0;
+			}
+		}
+
+		imagecopyresampled(
+			$resizedImageData
+			, $imageData
+			, 0 // dst_x
+			, 0 // dst_y
+			, $sampleLeft // src_x
+			, $sampleTop // src_y
+			, $width // dst_w
+			, $height // dst_h
+			, $sampleWidth // src_w
+			, $sampleHeight // src_h
+		);
+
+		ob_start();
+		imagejpeg($resizedImageData);
+		return(ob_get_clean());
+	}
+
+	public function crop($size)
+	{
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Checking for existing crop "%s" for image #%d.'
+			, $size
+			, $this->id
+		));
+		if($existingCrop = static::loadOneByCrop($this->id, $size))
+		{
+			\SeanMorris\Ids\Log::debug('Existing crop found.');
+			return $existingCrop;
+		}
+
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Creating new crop "%d" for image %d.'
+			, $size
+			, $this->id
+		));
+
+		if(isset($size))
+		{
+			if(isset(static::$crops[ $size ]))
+			{
+				list($width, $height) = static::$crops[ $size ];
+			}
+		}
+		else
+		{
+			return FALSE;
+		}
+
+		$scaledImage = $this->scaled($width, $height);
+
+		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $this->url);
+		$tmpFile->write($scaledImage);
+
+		preg_match(
+			'/\.(gif|png|jpe?g)$/'
+			, $this->url
+			, $m
+		);
+
+		$newName = sprintf(
+			'%s.%s.%dx%d.%s'
+			, $this->publicId
+			, $this->updated
+			, $width
+			, $height
+			, $m[1]
+		);
+
+		$crop = new static;
+
+		$crop->consume([
+			'title'      => $this->title
+			, 'original' => $this->id
+			, 'crop'     => $size
+		], TRUE);
+
+		$crop->store($tmpFile);
+
+		$crop->forceSave();
+
+		return $crop;
 	}
 
 	public function mime()
