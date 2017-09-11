@@ -1015,6 +1015,40 @@
                     }
                 }
             }
+        },
+        "8": {
+            "PressKitImage": {
+                "fields": {
+                    "crop": {
+                        "Field": "crop",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "MUL",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "crop": {
+                        "1": {
+                            "Table": "PressKitImage",
+                            "Non_unique": "1",
+                            "Key_name": "crop",
+                            "Seq_in_index": "1",
+                            "Column_name": "crop",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "YES",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
         }
     }
 }
