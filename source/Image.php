@@ -296,7 +296,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 		if(!preg_match('/\.(gif|png|jpe?g)$/', $original->url, $m))
 		{
-			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $image);
+			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $this, $image);
 			return;
 		}
 
