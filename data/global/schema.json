@@ -1049,6 +1049,40 @@
                     }
                 }
             }
+        },
+        "9": {
+            "PressKitImage": {
+                "fields": {
+                    "original": {
+                        "Field": "original",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "MUL",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "original": {
+                        "1": {
+                            "Table": "PressKitImage",
+                            "Non_unique": "1",
+                            "Key_name": "original",
+                            "Seq_in_index": "1",
+                            "Column_name": "original",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "YES",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
         }
     }
 }
