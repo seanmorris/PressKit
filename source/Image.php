@@ -182,7 +182,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 		catch (\Exception $e)
 		{
-			\SeanMorris\Ids\Log::warn('Cannot scale image', $image);
+			\SeanMorris\Ids\Log::warn('Cannot scale image', $this);
 			return;
 		}
 
