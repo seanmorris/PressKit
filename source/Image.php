@@ -172,11 +172,19 @@ class Image extends \SeanMorris\PressKit\Model
 			return;
 		}
 
-		list($originalWidth, $originalHeight,)
-			 = $info
-			 = getimagesizefromstring($image);
+		try
+		{
+			list($originalWidth, $originalHeight,)
+				 = $info
+				 = getimagesizefromstring($image);
 
-		$imageData = imagecreatefromstring($image);
+			$imageData = imagecreatefromstring($image);
+		}
+		catch (\Exception $e)
+		{
+			\SeanMorris\Ids\Log::warn('Cannot scale image', $image);
+			return;
+		}
 
 		$resizedImageData = imagecreatetruecolor($width, $height);
 
@@ -286,11 +294,11 @@ class Image extends \SeanMorris\PressKit\Model
 		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
 
-		preg_match(
-			'/\.(gif|png|jpe?g)$/'
-			, $original->url
-			, $m
-		);
+		if(!preg_match('/\.(gif|png|jpe?g)$/', $original->url, $m))
+		{
+			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $image);
+			return;
+		}
 
 		$newName = sprintf(
 			'%s.%s.%dx%d.%s'
