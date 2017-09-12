@@ -167,7 +167,10 @@ class Image extends \SeanMorris\PressKit\Model
 
 	protected function scaled($width, $height)
 	{
-		$image = $this->content();
+		if(!$image = $this->content())
+		{
+			return;
+		}
 
 		list($originalWidth, $originalHeight,)
 			 = $info
@@ -275,7 +278,10 @@ class Image extends \SeanMorris\PressKit\Model
 			return FALSE;
 		}
 
-		$scaledImage = $original->scaled($width, $height);
+		if(!$scaledImage = $original->scaled($width, $height))
+		{
+			return FALSE;
+		}
 
 		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
