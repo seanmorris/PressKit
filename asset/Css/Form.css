@@ -100,6 +100,10 @@ input[type="text"]
 , input[type="number"]
 , input[type="password"]
 , input[type=""]
+, input[type="date"]
+, input[type="time"]
+, input[type="datetime"]
+, input[type="datetime-local"]
 , textarea
 , select
 , .selection > .PressKitAjaxSearchResult{
@@ -143,4 +147,16 @@ fieldset.selectedModel{
 	border:none !important;
 	background: transparent;
 	margin-top: 20px;
+}
+
+input.narrow,
+select.narrow {
+	width: auto;
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+form label {
+	margin-top: 15px;
+	display: block;
 }

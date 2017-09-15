@@ -133,29 +133,29 @@ PressKit.WidgetModel = PressKit.Class.extend({
 	, tag: null
 	, events: {
 		blur: []
-		,  focus: []
-		,  focusin: []
-		,  focusout: []
-		,  load: []
-		,  resize: []
-		,  scroll: []
-		,  unload: []
-		,  click: []
-		,  dblclick: []
-		,  mousedown: []
-		,  mouseup: []
-		,  mousemove: []
-		,  mouseover: []
-		,  mouseout: []
-		,  mouseenter: []
-		,  mouseleave: []
-		,  change: []
-		,  select: []
-		,  submit: []
-		,  keydown: []
-		,  keypress: []
-		,  keyup: []
-		,  error: []
+		, focus: []
+		, focusin: []
+		, focusout: []
+		, load: []
+		, resize: []
+		, scroll: []
+		, unload: []
+		, click: []
+		, dblclick: []
+		, mousedown: []
+		, mouseup: []
+		, mousemove: []
+		, mouseover: []
+		, mouseout: []
+		, mouseenter: []
+		, mouseleave: []
+		, change: []
+		, select: []
+		, submit: []
+		, keydown: []
+		, keypress: []
+		, keyup: []
+		, error: []
 	}
 	, superWidget: null
 	, subWidgets: {}
@@ -392,16 +392,10 @@ PressKit.WidgetModel.addEvents = function(events)
 PressKit.InputWidgetModel = PressKit.WidgetModel.extend({
 	name: 'InputWidgetModel'
 	, events: {
-		keyup:'keyupHandler'
-		, click: 'clickHandler'
-	}
-	, keyupHandler: function(event)
-	{
-		// console.log(this.name);
-	}
-	, clickHandler: function(event)
-	{
-		// console.log('222');
+		keyup:    null
+		, click:  null
+		, change: null
+		, load:   null
 	}
 	, set: function(value)
 	{
@@ -409,6 +403,14 @@ PressKit.InputWidgetModel = PressKit.WidgetModel.extend({
 	}
 	, value: function()
 	{
+		if(this.tag.attr('type') == 'checkbox')
+		{
+			if(!this.tag.is(':checked'))
+			{
+				return;
+			}
+		}
+
 		return this.tag.val();
 	}
 });
@@ -876,7 +878,7 @@ $(function()
 {
 	PressKit.getRegistry().registerClasses({
 		'a': PressKit.LinkWidgetModel
-		, 'input': PressKit.InputWidgetModel
+		, 'input,select,textarea': PressKit.InputWidgetModel
 		, '[data-presskit-widget="ModelSearch"]': PressKit.ModelSearchWidget
 		, 'fieldset': PressKit.FieldSetWidget
 		//, 'body': PressKit.TerminalWidget
