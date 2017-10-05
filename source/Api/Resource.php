@@ -9,6 +9,9 @@ class Resource
 		, $messages = []
 		, $controller = NULL
 		, $router = NULL
+
+		, $model = []
+		, $models = []
 	;
 
 	public function __construct($router, $more = [], $code = 0)
@@ -22,11 +25,12 @@ class Resource
 
 		if(isset($more['body']))
 		{
-			$this->body = $more['body'];
+			$this->body  = $more['body'];
 		}
 		else if($models = $controller->_models())
 		{
-			$this->body = $this->processObjects($models);
+			$this->models = $models;
+			$this->body  = $this->processObjects($models);
 
 			foreach($this->body as $object)
 			{
@@ -38,7 +42,8 @@ class Resource
 		}
 		else if($model = $controller->_model())
 		{
-			$this->body = $this->processObject($model);
+			$this->model = $model;
+			$this->body  = $this->processObject($model);
 		}
 
 		$realPath = $router->path()->getAliasedPath()->pathString();
@@ -104,7 +109,7 @@ class Resource
 		];
 	}
 
-	protected function processObject($object)
+	protected function processObject($object, $type = NULL)
 	{
 		$value = NULL;
 
@@ -142,5 +147,24 @@ class Resource
 	public function toHtml()
 	{
 		return $this->controller->_renderList($this->router);
+	}
+
+	public function encode($type)
+	{
+		if($type == 'xml')
+		{
+			header('Content-Type: application/xml');
+			return $this->toXml();
+		}
+		else
+		{
+			header('Content-Type: application/json');
+			return $this->toJson();
+		}
+	}
+
+	public function decode($type)
+	{
+
 	}
 }

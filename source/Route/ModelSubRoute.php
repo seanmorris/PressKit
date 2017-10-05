@@ -91,27 +91,19 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 		if(isset($params['api']))
 		{
-			$resource = new \SeanMorris\PressKit\Api\Resource(
-				$router
-			);
 			if($params['api'] == 'html')
 			{
 				echo $body;
+				die;
 			}
-			else if($params['api'] == 'xml')
+			else if($params['api'])
 			{
-				header('Content-Type: application/xml');
-				echo $resource->toXml();
+				$resourceClass = static::$resourceClass;
+				$resource = new $resourceClass($router);
+				//\SeanMorris\Ids\Log::debug($resource);
+				echo $resource->encode($params['api']);
+				die;
 			}
-			else
-			{
-				header('Content-Type: application/json');
-				echo $resource->toJson();
-			}
-			/*/
-			echo json_encode($model->unconsume(1));
-			/*/
-			die;
 		}
 
 		return $body;

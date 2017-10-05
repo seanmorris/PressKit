@@ -36,6 +36,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $modelRoute = 'SeanMorris\PressKit\Route\ModelSubRoute'
 		, $actions = []
 		, $redirected = FALSE
+		, $resourceClass = '\SeanMorris\PressKit\Api\Resource'
 		, $forms = [
 			'delete' => 'SeanMorris\PressKit\Form\ModelDeleteForm'
 		]
@@ -989,9 +990,9 @@ class Controller implements \SeanMorris\Ids\Routable
 				$list = new $listViewClass(
 					[
 						'columns'         => $this->listColumns
-						, 'content'       => $objects
-						, 'path'          => $path->getAliasedPath()->pathString()
-						, 'currentPath'   => $path->pathString()
+						, 'content'       => $this->models
+						, 'path'          => $router->path()->getAliasedPath()->pathString()
+						, 'currentPath'   => $router->path()->pathString()
 						, 'columnClasses' => $this->columnClasses
 						, 'subRouted'     => $router->subRouted()
 						, '_controller'   => $this
@@ -1012,13 +1013,13 @@ class Controller implements \SeanMorris\Ids\Routable
 			$list = new \SeanMorris\PressKit\Theme\Austere\Grid([
 				'columns' => ['id', 'title', 'view']
 				, 'columnClasses' => $this->columnClasses
-				, 'objects'       => $objects
+				, 'objects'       => $this->models
 				, '_controller'   => $this
 				, '_router'       => $router
 				, 'subRouted'     => $router->subRouted()
 				, 'hideTitle'     => in_array($router->routedTo(), $this->hideTitle)
-				, 'currentPath'   => $path->pathString()
-				, 'path'          => $path->getAliasedPath()->pathString()
+				, 'currentPath'   => $router->path()->pathString()
+				, 'path'          => $router->path()->getAliasedPath()->pathString()
 				, 'page'          => $pageNumber
 				, 'pager'         => $pagerLinks
 				, 'query'         => $_GET
@@ -1045,28 +1046,23 @@ class Controller implements \SeanMorris\Ids\Routable
 			);
 
 			$pagerLinks = array_combine($pagerLinksKeys, $pagerLinks);
-			//*/
-			$resource = new \SeanMorris\PressKit\Api\Resource(
-				$router
-				, ['navigation' => $pagerLinks]
-			);
-			\SeanMorris\Ids\Log::debug($resource);
+			
 			if($params['api'] == 'html')
 			{
 				echo $list;
+				die;
 			}
-			else if($params['api'] == 'xml')
+			else if($params['api'])
 			{
-				header('Content-Type: application/xml');
-				echo $resource->toXml();
+				$resourceClass = static::$resourceClass;
+				$resource = new $resourceClass(
+					$router
+					, ['navigation' => $pagerLinks]
+				);
+				//\SeanMorris\Ids\Log::debug($resource);
+				echo $resource->encode($params['api']);
+				die;
 			}
-			else
-			{
-				header('Content-Type: application/json');
-				echo $resource->toJson();
-			}
-
-			die;
 		}
 
 		return $formRendered . $list;
@@ -1150,12 +1146,29 @@ class Controller implements \SeanMorris\Ids\Routable
 							$parent = array_shift($parents);
 							$property = $router->path()->getNode(-1);
 
+							\SeanMorris\Ids\Log::debug(
+								'Checking if model can be subjugated.'
+								, get_class($parent)
+								, $property
+								, get_class($model)
+								, $parent->canHaveMany($property)
+								, is_a(
+									get_class($model)
+									, $parent->canHaveMany($property)
+									, TRUE
+								)
+							);
+
 							// @TODO: Add case for singular children
-							if(get_class($model) == $parent->canHaveMany($property))
-							{
-								\SeanMorris\Ids\Log::debug($parent);
+							if(is_a(
+									get_class($model)
+									, $parent->canHaveMany($property)
+									, TRUE
+							)){
 								$parent->addSubject($property, $model);
 								$parent->storeRelationships($property, $parent->{$property});
+								
+								\SeanMorris\Ids\Log::debug($parent);
 							}
 
 							static::afterCreate($model, $skeleton);

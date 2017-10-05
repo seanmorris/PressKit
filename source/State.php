@@ -149,7 +149,7 @@ class State extends \SeanMorris\Ids\Model
 			$owner = $this->getSubject('owner');
 
 			$owner && \SeanMorris\Ids\Log::debug(sprintf(
-				'Checking if user "%s" is owner...'
+				'Checking if user "%s" is owner... %d'
 				, $user->username
 				, $owner->isSame($user)
 			));

@@ -327,4 +327,40 @@ class Model extends \SeanMorris\Ids\Model
 
 		$this->$name = $value;
 	}
+
+	public static function solrSearch(array $args = [])
+	{
+		$queryString = http_build_query(
+			$args = [
+				'wt'             => 'json'
+				, 'version'      => 2.2
+				, 'content_type' => get_called_class()
+			]                // Non overrideable defaults
+			+ $args          // Supplied args
+			+ ['rows' => 10] // Overrideable defaults
+		);
+
+		$client = new \GuzzleHttp\Client();
+
+		if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
+		{
+			return FALSE;
+		}
+
+		$res = $client->request('GET', sprintf(
+			'http://%s:%d%sselect/?%s'
+			, $solrSettings->host
+			, $solrSettings->port
+			, $solrSettings->path
+			, $queryString
+		));
+
+		if($res->getStatusCode() == 200)
+		{
+			$resp = json_decode($res->getBody());
+			$resp = (array) $resp->response;
+
+			return (object) $resp;
+		}
+	}
 }

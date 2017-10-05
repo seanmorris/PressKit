@@ -113,13 +113,13 @@ class ModelGrid extends Grid
 		if($this->vars['page'] > 0)
 		{
 			$this->vars['prevPageLink'] = sprintf(
-				'<a href = "?page=%d">&lt;</a>'
+				'<a href = "?page=%d">&lt; prev</a>'
 				, $this->vars['page'] - 1
 			);
 		}
 
 		$this->vars['nextPageLink'] = sprintf(
-			'<a href = "?page=%d">&gt;</a>'
+			'<a href = "?page=%d">next &gt;</a>'
 			, $this->vars['page'] + 1
 		);
 	}
@@ -128,8 +128,8 @@ __halt_compiler();
 ?>
 <form method = "POST" action = "/<?=$path;?>" class = "sublime">
 	<?=$grid; ?>
-	<?=$createLink; ?>
+	<?=$createLink; ?><br />
 	<?=$prevPageLink; ?>
-	<?=$nextPageLink; ?>
+	<?=$nextPageLink; ?><br />
 	Displaying <?=$pageSize * $page + 1; ?> - <?=$pageSize * ($page + 1); ?>/<?=$count ;?> records.
 </form>
