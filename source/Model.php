@@ -166,8 +166,11 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!isset(static::$hasOne['state']))
 		{
+			\SeanMorris\Ids\Log::debug('No state control, can create.');
 			return true;
 		}
+
+		\SeanMorris\Ids\Log::debug('Checking new state instance...');
 
 		$state = new static::$hasOne['state'];
 		$state->owner = $user->id;
