@@ -9,7 +9,8 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		$routes = []
 		, $subRoutes = []
 		, $alias = [
-			'index' => 'view'
+			NULL => 'view'
+			, 'index' => 'view'
 		]
 	;
 
@@ -89,16 +90,14 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			$parentController::afterRead($model);
 		}
 
-		if(isset($params['api']))
+		if(isset($params['api']) && !$router->subRouted())
 		{
 			if($params['api'] == 'html')
 			{
-				echo $body;
-				die;
 			}
 			else if($params['api'])
 			{
-				$resourceClass = static::$resourceClass;
+				$resourceClass = $parentController::$resourceClass ?? static::$resourceClass;
 				$resource = new $resourceClass($router);
 				//\SeanMorris\Ids\Log::debug($resource);
 				echo $resource->encode($params['api']);

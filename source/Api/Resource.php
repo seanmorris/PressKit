@@ -117,6 +117,27 @@ class Resource
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
 				$value = $object->unconsume(1);
+				foreach($value as $k => &$v)
+				{
+					if(!$object::getSubjectClass($k))
+					{
+						continue;
+					}
+
+					if($vv = $object->getSubject($k))
+					{
+						$v = $this->processObject($vv, $type);
+					}
+					else if($vv = $object->getSubjects($k))
+					{
+						$v = [];
+
+						foreach($vv as $subject)
+						{
+							$v[] = $this->processObject($subject, $type);
+						}
+					}
+				}
 				break;
 		}
 

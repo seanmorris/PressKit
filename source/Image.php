@@ -75,13 +75,9 @@ class Image extends \SeanMorris\PressKit\Model
 			, 'with' => ['state' => 'byNull']
 		]
 		, $crops = [
-			'thumbnail' => [38, 38]
-			, 'preview' => [122, 82]
-			/*
-			, 'cga'     => [320, 200]
+			'cga'     => [320, 200]
 			, 'vga'     => [680, 480]
 			, 'hd'      => [1920, 1080]
-			*/
 		]	
 	;
 
@@ -151,7 +147,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 	}
 
-	protected function content()
+	public function content()
 	{
 		if($this->_content)
 		{
@@ -165,7 +161,7 @@ class Image extends \SeanMorris\PressKit\Model
 		return file_get_contents($filename);
 	}
 
-	protected function scaled($width, $height)
+	public function scaled($width, $height)
 	{
 		if(!$image = $this->content())
 		{
@@ -194,39 +190,21 @@ class Image extends \SeanMorris\PressKit\Model
 		$widthRatio = $originalWidth / $width;
 		$heightRatio = $originalHeight / $height;
 		
-		if($originalWidth > $originalHeight)
+		if($originalRatio > $newRatio)
 		{
-			if($width < $height)
-			{
-				$sampleWidth = $originalWidth;
-				$sampleHeight = $originalWidth / $newRatio;
-				$sampleLeft = 0;
-				$sampleTop = ($originalHeight / 2) - ($sampleHeight / 2);
-			}
-			else
-			{
-				$sampleWidth = $originalHeight * $newRatio;
-				$sampleHeight = $originalHeight;
-				$sampleLeft = ($originalWidth / 2) - ($sampleWidth / 2);
-				$sampleTop = 0;
-			}
+			$sampleHeight = $originalHeight;
+			$sampleWidth  = $originalHeight * $newRatio;
+
+			$sampleTop    = 0;
+			$sampleLeft   = ($originalWidth / 2) - ($sampleWidth / 2);
 		}
 		else
 		{
-			if($width > $height)
-			{
-				$sampleWidth = $originalWidth;
-				$sampleHeight = $originalWidth / $newRatio;
-				$sampleLeft = 0;
-				$sampleTop = ($originalHeight / 2) - ($sampleHeight / 2);
-			}
-			else
-			{
-				$sampleWidth = $originalHeight * $newRatio;
-				$sampleHeight = $originalHeight;
-				$sampleLeft = ($originalWidth / 2) - ($sampleWidth / 2);
-				$sampleTop = 0;
-			}
+			$sampleHeight = $originalWidth / $newRatio;
+			$sampleWidth  = $originalWidth;
+
+			$sampleTop    = 0;
+			$sampleLeft   = 0;
 		}
 
 		imagecopyresampled(
@@ -279,6 +257,10 @@ class Image extends \SeanMorris\PressKit\Model
 			if(isset(static::$crops[ $size ]))
 			{
 				list($width, $height) = static::$crops[ $size ];
+			}
+			else
+			{
+				return FALSE;
 			}
 		}
 		else

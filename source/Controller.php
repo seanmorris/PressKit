@@ -690,14 +690,28 @@ class Controller implements \SeanMorris\Ids\Routable
 				return $stack;
 			}
 		}
-		else
+
+
+		
+		if(is_array($panels))
 		{
 			$body = implode(PHP_EOL . PHP_EOL, $panels);
 		}
 
+		$params = $router->request()->params();
+
+		if(isset($params['api']) && !$router->subRouted())
+		{
+			if($params['api'] == 'html')
+			{
+				print $body;
+				die;
+			}
+		}
+
 		if($theme && !$router->parent())
 		{
-			$body = $theme::wrap($body, $context);
+			$body = $theme::wrap($panels, $context);
 		}
 
 		return $body;
@@ -1047,12 +1061,12 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			$pagerLinks = array_combine($pagerLinksKeys, $pagerLinks);
 			
-			if($params['api'] == 'html')
+			if($params['api'] == 'html' && !$router->subRouted())
 			{
 				echo $list;
 				die;
 			}
-			else if($params['api'])
+			else if(isset($params['api']) && !$router->subRouted())
 			{
 				$resourceClass = static::$resourceClass;
 				$resource = new $resourceClass(
