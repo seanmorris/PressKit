@@ -227,11 +227,9 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 
 			\SeanMorris\Ids\Log::debug('Access Denied.');
-
-			return false;
 		}
 
-		return false;
+		throw new \SeanMorris\Ids\Http\Http404('Not found');
 	}
 
 	public function _preRoute($router)
@@ -711,7 +709,11 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if($theme && !$router->parent())
 		{
-			$body = $theme::wrap($panels, $context);
+			$body = $theme::wrap($panels, [
+				'_controller' => $this
+				, '_router'     => $router
+				, 'path'        => $router->path()->pathString()
+			] + $context);
 		}
 
 		return $body;

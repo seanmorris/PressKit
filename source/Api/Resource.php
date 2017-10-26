@@ -5,6 +5,7 @@ class Resource
 	protected
 		$code = 0
 		, $body = NULL
+		, $meta = NULL
 		, $navigation = []
 		, $messages = []
 		, $controller = NULL
@@ -103,13 +104,14 @@ class Resource
 		return (object)[
 			'code'			=> $this->code
 			, 'controller'	=> get_class($this->controller)
+			, 'messages'	=> $this->messages
+			, 'meta'		=> $this->meta
 			, 'body'		=> $this->body
 			, 'navigation'	=> $this->navigation
-			, 'messages'	=> $this->messages
 		];
 	}
 
-	protected function processObject($object, $type = NULL)
+	protected function processObject($object, $type = NULL, $index = 0)
 	{
 		$value = NULL;
 
@@ -119,22 +121,22 @@ class Resource
 				$value = $object->unconsume(1);
 				foreach($value as $k => &$v)
 				{
-					if(!$object::getSubjectClass($k))
+					if(!$object::getSubjectClass($k) || $object->{$k})
 					{
 						continue;
 					}
 
 					if($vv = $object->getSubject($k))
 					{
-						$v = $this->processObject($vv, $type);
+						$v = $this->processObject($vv, $type, $k);
 					}
 					else if($vv = $object->getSubjects($k))
 					{
 						$v = [];
 
-						foreach($vv as $subject)
+						foreach($vv as $kk => $subject)
 						{
-							$v[] = $this->processObject($subject, $type);
+							$v[] = $this->processObject($subject, $type, $kk);
 						}
 					}
 				}
@@ -147,11 +149,12 @@ class Resource
 	protected function processObjects($objects)
 	{
 		return array_map(
-			function($o)
+			function($o, $i)
 			{
-				return $this->processObject($o);
-			},
-			$objects
+				return $this->processObject($o, NULL, $i);
+			}
+			, $objects
+			, array_keys($objects)
 		);
 	}
 
@@ -187,5 +190,17 @@ class Resource
 	public function decode($type)
 	{
 
+	}
+
+	public function meta($key, $value)
+	{
+		$this->meta[$key] = $value;
+
+		return $this->meta;
+	}
+
+	public function body($body)
+	{
+		return $this->body = $body;
 	}
 }

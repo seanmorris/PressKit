@@ -34,15 +34,18 @@ class Image extends \SeanMorris\PressKit\Model
 		, $byNull = [
 			'with'    => ['state' => 'byNull']
 			, 'order' => ['id' => 'ASC']
+			, 'with' => ['state' => 'byNull']
 		]
 		, $byFullSized = [
 			'where' => [['crop' => 'NULL', 'IS']]
 			, 'order' => ['id' => 'ASC']
 			, 'with'    => ['state' => 'byNull']
 		]
+
 		, $byId = [
-			'where' => [['id' => '?']]
-			, 'with' => ['state' => 'byNull']
+			'where'   => [['id' => '?']]
+			, 'with'  => ['state' => 'byNull']
+			, 'order' => ['id' => 'ASC']
 		]
 		, $byUrl = [
 			'where' => [['url' => '?']]
@@ -229,21 +232,27 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		$original = $this;
 
-		if($this->original)
+		while($this->original)
 		{
-			$original = static::getOneById($this->original);
+			if(!$original = static::getOneById($this->original))
+			{
+				return;
+			}
 		}
 
-		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking for existing crop "%s" for image #%d.'
-			, $size
-			, $original->id
-		));
-
-		if($useExisting && $existingCrop = static::loadOneByCrop($original->id, $size))
+		if(1 || $useExisting)
 		{
-			\SeanMorris\Ids\Log::debug('Existing crop found.');
-			return $existingCrop;
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Checking for existing crop "%s" for image #%d.'
+				, $size
+				, $original->id
+			));
+
+			if($existingCrop = static::loadOneByCrop($original->id, $size))
+			{
+				\SeanMorris\Ids\Log::debug('Existing crop found.');
+				return $existingCrop;
+			}
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
@@ -313,11 +322,11 @@ class Image extends \SeanMorris\PressKit\Model
 		return $finfo->buffer($this->content());
 	}
 
-	public function warmCrops()
+	public function warmCrops($useExisting = TRUE)
 	{
 		foreach(static::$crops as $cropName => $size)
 		{
-			$this->crop($cropName);
+			$this->crop($cropName, $useExisting);
 		}
 	}
 }

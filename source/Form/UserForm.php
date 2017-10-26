@@ -42,7 +42,7 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			'_title' => 'Roles'
 			, '_subtitle' => 'Role'
 			, 'type' => 'modelSearch'
-			, '_searchEndpoint' => '/users/roles'
+			, '_searchEndpoint' => '/user/roles'
 			, '_titlePoint' => 'class'
 			, '_array' => TRUE
 			, '_multi' => TRUE
