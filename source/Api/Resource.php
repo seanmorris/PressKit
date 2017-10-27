@@ -111,7 +111,7 @@ class Resource
 		];
 	}
 
-	protected function processObject($object, $type = NULL, $index = 0)
+	protected function processObject($object, $type = NULL, $index = 0, $parent = NULL)
 	{
 		$value = NULL;
 
@@ -128,7 +128,7 @@ class Resource
 
 					if($vv = $object->getSubject($k))
 					{
-						$v = $this->processObject($vv, $type, $k);
+						$v = $this->processObject($vv, $type, $k, $object);
 					}
 					else if($vv = $object->getSubjects($k))
 					{
@@ -136,7 +136,7 @@ class Resource
 
 						foreach($vv as $kk => $subject)
 						{
-							$v[] = $this->processObject($subject, $type, $kk);
+							$v[] = $this->processObject($subject, $type, $kk, $object);
 						}
 					}
 				}
