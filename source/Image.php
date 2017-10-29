@@ -41,7 +41,6 @@ class Image extends \SeanMorris\PressKit\Model
 			, 'order' => ['id' => 'ASC']
 			, 'with'    => ['state' => 'byNull']
 		]
-
 		, $byId = [
 			'where'   => [['id' => '?']]
 			, 'with'  => ['state' => 'byNull']

@@ -146,7 +146,12 @@ class State extends \SeanMorris\Ids\Model
 				return false;
 			}
 
-			$owner = $this->getSubject('owner');
+			$owner = NULL;
+
+			if($this->owner)
+			{
+				$owner = $this->getSubject('owner');
+			}
 
 			$owner && \SeanMorris\Ids\Log::debug(sprintf(
 				'Checking if user "%s" is owner... %d'
