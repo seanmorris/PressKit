@@ -38,7 +38,10 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected static function instantiate($skeleton, $args = [], $rawArgs = [])
 	{
-		$instance = parent::instantiate($skeleton, $args, $rawArgs);
+		if(!$instance = parent::instantiate($skeleton, $args, $rawArgs))
+		{
+			return;
+		}
 
 		$instance->_selected = time();
 
