@@ -71,6 +71,11 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		{
 			$keywordFieldName = $fieldDef['name'];
 		}
+
+		if(isset($fieldDef['_keywordField']))
+		{
+			$keywordFieldName = $fieldDef['_keywordField'];
+		}
 		
 		$children['_children'][$keywordFieldName] = [
 			'_title' => 'Search'

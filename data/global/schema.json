@@ -1083,6 +1083,308 @@
                     }
                 }
             }
+        },
+        "10": {
+            "PressKitRelationship": {
+                "keys": {
+                    "ownerClass_2": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_2",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_4": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_4",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_4",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_4",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_4",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_6": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_6",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_6",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_6",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "ownerClass_6",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_3": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_3",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_3",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_5": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_5",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_5",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "ownerClass_7": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_7",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "1",
+                            "Key_name": "ownerClass_7",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            },
+            "StateFlowState": {
+                "fields": {
+                    "owner": {
+                        "Field": "owner",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "YES",
+                        "Key": "MUL",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                },
+                "keys": {
+                    "owner": {
+                        "1": {
+                            "Table": "StateFlowState",
+                            "Non_unique": "1",
+                            "Key_name": "owner",
+                            "Seq_in_index": "1",
+                            "Column_name": "owner",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "YES",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    }
+                }
+            }
         }
     }
 }

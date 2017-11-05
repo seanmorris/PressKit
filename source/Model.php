@@ -369,4 +369,9 @@ class Model extends \SeanMorris\Ids\Model
 			return (object) $resp;
 		}
 	}
+
+	public function toApi($depth = 0)
+	{
+		return $this->unconsume($depth);
+	}
 }

@@ -26,25 +26,15 @@ class Resource
 
 		if(isset($more['body']))
 		{
-			$this->body  = $more['body'];
+			$this->body = $more['body'];
 		}
 		else if($models = $controller->_models())
 		{
-			$this->models = $models;
-			$this->body  = $this->processObjects($models);
-
-			foreach($this->body as $object)
-			{
-				if(isset($object['publicId']))
-				{
-					$objectIds[$object['publicId']] = $object['publicId'];
-				}
-			}
+			$this->models($models);
 		}
 		else if($model = $controller->_model())
 		{
-			$this->model = $model;
-			$this->body  = $this->processObject($model);
+			$this->model($model);
 		}
 
 		$realPath = $router->path()->getAliasedPath()->pathString();
@@ -99,8 +89,27 @@ class Resource
 		unset($this->navigation['view']);
 	}
 
-	protected function toStructure()
+	protected function toStructure($type)
 	{
+		if($this->models)
+		{
+			$this->body = $this->processObjects($this->models, $type);
+			$this->meta['count'] = count($this->models);
+		}
+
+		if($this->model)
+		{
+			$this->body = $this->processObject($this->model, $type);
+		}
+
+		foreach($this->models as $object)
+		{
+			if(isset($object->publicId))
+			{
+				$objectIds[$object->publicId] = $object->publicId;
+			}
+		}
+
 		return (object)[
 			'code'			=> $this->code
 			, 'controller'	=> get_class($this->controller)
@@ -111,17 +120,17 @@ class Resource
 		];
 	}
 
-	protected function processObject($object, $type = NULL, $index = 0, $parent = NULL, $property = NULL)
+	protected function processObject($object, $type = NULL, $index = 0, $parent = NULL, $property = NULL, $skipSubjects = [])
 	{
 		$value = NULL;
 
 		switch(TRUE)
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
-				$value = $object->unconsume(1);
+				$value = $object->toApi(1);
 				foreach($value as $k => &$v)
 				{
-					if(!$object::getSubjectClass($k) || $object->{$k})
+					if(!$object::getSubjectClass($k) || ($skipSubjects[$k] ?? FALSE))
 					{
 						continue;
 					}
@@ -146,26 +155,26 @@ class Resource
 		return $value;
 	}
 
-	protected function processObjects($objects)
+	protected function processObjects($objects, $type = NULL)
 	{
 		return array_map(
-			function($o, $i)
+			function($o, $i) use($type)
 			{
-				return $this->processObject($o, NULL, $i);
+				return $this->processObject($o, $type, $i);
 			}
 			, $objects
 			, array_keys($objects)
 		);
 	}
 
-	public function toJson()
+	public function toJson($type)
 	{
-		return json_encode($this->toStructure(), JSON_PRETTY_PRINT);
+		return json_encode($this->toStructure($type), JSON_PRETTY_PRINT);
 	}
 
 	public function toXml()
 	{
-		return \xmlrpc_encode($this->toStructure());
+		return \xmlrpc_encode($this->toStructure($type));
 	}
 
 	public function toHtml()
@@ -178,12 +187,12 @@ class Resource
 		if($type == 'xml')
 		{
 			header('Content-Type: application/xml');
-			return $this->toXml();
+			return $this->toXml($type);
 		}
 		else
 		{
 			header('Content-Type: application/json');
-			return $this->toJson();
+			return $this->toJson($type);
 		}
 	}
 
@@ -202,5 +211,15 @@ class Resource
 	public function body($body)
 	{
 		return $this->body = $body;
+	}
+
+	public function models($models)
+	{
+		$this->models = $models;		
+	}
+
+	public function model($model)
+	{
+		$this->model = $model;
 	}
 }

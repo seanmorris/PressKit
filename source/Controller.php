@@ -26,7 +26,7 @@ class Controller implements \SeanMorris\Ids\Routable
 	protected static
 		$titleField = NULL
 		, $list = []
-		, $pageSize = NULL
+		, $pageSize = 10
 		, $pageSpread = NULL
 		, $loadBy = NULL
 		, $listBy = 'byNull'
@@ -636,7 +636,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
 
-				// \SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
+				\SeanMorris\Ids\Log::debug('Assets built:', $context['js']);
 			}
 			else
 			{
@@ -647,7 +647,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 
-				// \SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
+				\SeanMorris\Ids\Log::debug('Assets built:', $context['css']);
 			}
 			else
 			{
@@ -688,8 +688,6 @@ class Controller implements \SeanMorris\Ids\Routable
 				return $stack;
 			}
 		}
-
-
 		
 		if(is_array($panels))
 		{
