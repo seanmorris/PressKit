@@ -76,16 +76,6 @@ class Resource
 			$this->navigation[$value] = sprintf('/%s/%s', $realPath, $value);
 		}
 
-		$messages = \SeanMorris\Message\MessageHandler::get();
-
-		$this->messages = array_map(
-			function($msg)
-			{
-				return $msg->text();
-			},
-			$messages->flash()
-		);
-
 		unset($this->navigation['view']);
 	}
 
@@ -109,6 +99,16 @@ class Resource
 				$objectIds[$object->publicId] = $object->publicId;
 			}
 		}
+
+		$messages = \SeanMorris\Message\MessageHandler::get();
+
+		$this->messages += array_map(
+			function($msg)
+			{
+				return $msg->text();
+			},
+			$messages->flash()
+		);
 
 		return (object)[
 			'code'			=> $this->code
