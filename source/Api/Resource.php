@@ -167,12 +167,12 @@ class Resource
 		);
 	}
 
-	public function toJson($type)
+	public function toJson($type = 'json')
 	{
 		return json_encode($this->toStructure($type), JSON_PRETTY_PRINT);
 	}
 
-	public function toXml()
+	public function toXml($type = 'xml')
 	{
 		return \xmlrpc_encode($this->toStructure($type));
 	}
