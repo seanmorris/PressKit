@@ -41,7 +41,6 @@ class State extends \SeanMorris\Ids\Model
 		, $updateColumns = [
 			'publicId' => 'UNHEX(%s)'
 		]
-
 		, $byId = [
 			'where' => [['id' => '?']]
 		]
@@ -322,5 +321,10 @@ class State extends \SeanMorris\Ids\Model
 		{
 			parent::__set($name, $value);
 		}
+	}
+
+	public function unconsume($children = 0)
+	{
+		return parent::unconsume(1);
 	}
 }

@@ -127,6 +127,7 @@ class Resource
 		switch(TRUE)
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
+
 				$value = $object->toApi(1);
 				foreach($value as $k => &$v)
 				{
@@ -137,7 +138,15 @@ class Resource
 
 					if($vv = $object->getSubject($k))
 					{
-						$v = $this->processObject($vv, $type, $k, $object, $k);
+						if(is_object($vv) && $vv instanceof \SeanMorris\PressKit\Model)
+						{
+							$v = $this->processObject($vv, $type, $k, $object, $k);
+						}
+						else if(is_object($vv) && $vv instanceof \SeanMorris\Ids\Model)
+						{
+							$v = $vv->unconsume();
+						}
+						
 					}
 					else if($vv = $object->getSubjects($k))
 					{

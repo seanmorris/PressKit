@@ -8,7 +8,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		
 		$fieldDef['_multi'] = isset($fieldDef['_multi'])
 			? $fieldDef['_multi']
-			: true
+			: TRUE
 		;
 
 		$fieldDef['_titlePoint'] = isset($fieldDef['_titlePoint'])
@@ -18,7 +18,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 
 		$fieldDef['_previewImagePoint'] = isset($fieldDef['_previewImagePoint'])
 			? $fieldDef['_previewImagePoint']
-			: false
+			: FALSE
 		;
 
 		$subChildren = isset($fieldDef['_children'])
@@ -28,7 +28,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 
 		$fieldDef['_array'] = isset($fieldDef['_array'])
 			? $fieldDef['_array']
-			: []
+			: FALSE
 		;
 
 		$children =& $fieldDef['_children'];

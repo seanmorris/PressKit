@@ -989,6 +989,8 @@ class Controller implements \SeanMorris\Ids\Routable
 			$this->context['title'] = $this->title;
 		}
 
+		$list = NULL;
+
 		if($theme = $this->_getTheme($router))
 		{
 			$objectClass = $objects ? get_class(current($objects)) : $objectClass;
@@ -1082,7 +1084,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		return $formRendered . $list;
 	}
 
-	public function create($router)
+	public function create($router, $submitPost = TRUE)
 	{
 		$session = \SeanMorris\Ids\Meta::staticSession();
 
@@ -1103,7 +1105,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			, '_controller'	=> $this
 		]);
 
-		if($params = array_replace_recursive($router->request()->post(), $router->request()->files()))
+		if($submitPost && $params = array_replace_recursive($router->request()->post(), $router->request()->files()))
 		{
 			$messages = \SeanMorris\Message\MessageHandler::get();
 			$redirect = FALSE;

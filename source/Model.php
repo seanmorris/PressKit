@@ -154,6 +154,11 @@ class Model extends \SeanMorris\Ids\Model
 				, get_called_class()
 		), $allowed ? 1:0);
 
+		if($allowed && $point && isset($this->{$point}))
+		{
+			\SeanMorris\Ids\Log::debug('Content:', $this->{$point});
+		}
+
 		return $allowed;
 	}
 
@@ -181,9 +186,9 @@ class Model extends \SeanMorris\Ids\Model
 		return $state->can($user, $action);
 	}
 
-	public function getSubjects($column)
+	public function getSubjects($column, $override = FALSE)
 	{
-		if(!$this->can('read', $column))
+		if(!$this->can('read', $column) && !$override)
 		{
 			return [];
 		}
@@ -191,12 +196,12 @@ class Model extends \SeanMorris\Ids\Model
 		return parent::getSubjects($column);
 	}
 
-	public function getSubject($column = NULL)
+	public function getSubject($column = NULL, $override = FALSE)
 	{
 		if( isset(static::$hasOne['state'])
 			&& !is_subclass_of(static::$hasOne['state'], '\SeanMorris\PressKit\State')
 		){
-			if(!$this->can('read', $column))
+			if(!$this->can('read', $column) && !$override)
 			{
 				return FALSE;
 			}

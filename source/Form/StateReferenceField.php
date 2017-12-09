@@ -4,11 +4,22 @@ class StateReferenceField extends \SeanMorris\Form\Fieldset
 {
 	public function __construct($fieldDef, $form)
 	{
-		$fieldDef['_array'] = true;
+		$fieldDef['_array'] = TRUE;
+		$fieldDef['_multi'] = FALSE;
 		$fieldDef['_children']['id'] = [
 			'_title' => 'Id'
 			, 'value' => ''
 			, 'type' => 'hidden'
+		];
+		$fieldDef['_children']['owner'] = [
+			'_title'            => 'Owner'
+			, '_subtitle'       => 'Owner'
+			, 'type'            => 'modelSearch'
+			, '_searchEndpoint' => '/user'
+			, '_keywordField'   => 'keyword'
+			, '_titlePoint'     => 'username'
+			, '_array'          => TRUE
+			, '_multi'          => FALSE
 		];
 		$fieldDef['_children']['state'] = [
 			'_title' => 'State'
