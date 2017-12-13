@@ -147,6 +147,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			, '_controller' => $this
 		]);
 
+		$parentController = $router->parent()->routes();
 
 		if($params = array_replace_recursive($router->request()->post(), $router->request()->files()))
 		{
@@ -154,8 +155,6 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 			if($form->validate($params))
 			{
-				$parentController = $router->parent()->routes();
-
 				$modelClass = $parentController->_modelClass();
 
 				\SeanMorris\Ids\Log::debug('Model class: ', $modelClass);
@@ -249,9 +248,29 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 		$formPostVals = $form->getValues();
 
-		$return = $form->render($formTheme);
+		$get = $router->request()->get();
 
-		return $return;
+		if(isset($get['api']) && !$router->subRouted())
+		{
+			if($get['api'] == 'html')
+			{
+				print $form->render($formTheme);
+			}
+			else if($get['api'])
+			{
+				$resourceClass = $parentController::$resourceClass
+					?? static::$resourceClass;
+
+				$resource = new $resourceClass($router);
+
+				$resource->body($form->toStructure());
+
+				echo $resource->encode($get['api']);
+				die;
+			}
+		}
+
+		return $form->render($formTheme);
 	}
 
 	public function delete($router)

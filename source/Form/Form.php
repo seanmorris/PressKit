@@ -138,4 +138,39 @@ class Form extends \SeanMorris\Form\Form
 
 		return $values;
 	}
+
+	public function toStructure()
+	{
+		$sub = function($fields) use(&$sub)
+		{
+			$structure = (object) [];
+
+			foreach($fields as $name => $field)
+			{
+				$structure->$name = (object) [
+					'name'    => $field->fullname()
+					, 'title' => $field->title()
+					, 'value' => NULL
+					, 'type'  => $field->type()
+					, 'attrs' => $field->attrs()
+				];
+
+				$fieldValue = $field->value();
+
+				if(is_scalar($fieldValue) || is_null($fieldValue))
+				{
+					$structure->$name->value = $fieldValue;
+				}
+				else
+				{
+					//print_r([$field->fullname() => $field->value()]);
+					$structure->$name->children = $sub($field->fields());
+				}
+			}
+
+			return $structure;
+		};
+
+		return (object) $sub($this->fields);
+	}
 }
