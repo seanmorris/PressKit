@@ -120,41 +120,57 @@ class Resource
 		];
 	}
 
-	protected function processObject($object, $type = NULL, $index = 0, $parent = NULL, $property = NULL, $skipSubjects = [])
+	protected function processObject($object, $type = NULL, $index = NULL, $parent = NULL, $property = NULL, $skipSubjects = [], $depth = NULL)
 	{
+		if($depth === NULL)
+		{
+			$depth = 0;
+			if($parent === NULL && $index === NULL)
+			{
+				$depth = 3;
+			}
+		}
 		$value = NULL;
 
 		switch(TRUE)
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
 
-				$value = $object->toApi(1);
+				$value = $object->toApi($depth);
 				foreach($value as $k => &$v)
 				{
-					if(!$object::getSubjectClass($k) || ($skipSubjects[$k] ?? FALSE))
+					if($depth <= 0)
 					{
 						continue;
 					}
 
-					if($vv = $object->getSubject($k))
+					if(!($subjectClass = $object::getSubjectClass($k))
+						|| ($skipSubjects[$k] ?? FALSE)
+					) {
+						continue;
+					}
+
+					if(is_object($vv = $object->getSubject($k))/*$vv = $object->getSubject($k)*/)
 					{
-						if(is_object($vv) && $vv instanceof \SeanMorris\PressKit\Model)
-						{
-							$v = $this->processObject($vv, $type, $k, $object, $k);
-						}
+						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth-1);
+						// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
+						// {
+						// 	$v = $this->processObject($vv, $type, $k, $object, $k, $depth-1);
+						//}
+						/*
 						else if(is_object($vv) && $vv instanceof \SeanMorris\Ids\Model)
 						{
 							$v = $vv->unconsume();
-						}
+						}*/
 						
 					}
-					else if($vv = $object->getSubjects($k))
+					else if(is_array($vv = $object->getSubjects($k))/*$vv = $object->getSubjects($k)*/)
 					{
-						$v = [];
+						$v  = [];
 
 						foreach($vv as $kk => $subject)
 						{
-							$v[] = $this->processObject($subject, $type, $kk, $object, $k);
+							$v[] = $this->processObject($subject, $type, $kk, $object, $k, [], $depth - 1);
 						}
 					}
 				}
@@ -164,12 +180,12 @@ class Resource
 		return $value;
 	}
 
-	protected function processObjects($objects, $type = NULL)
+	protected function processObjects($objects, $type = NULL, $depth = 0)
 	{
 		return array_map(
-			function($o, $i) use($type)
+			function($o, $i) use($type, $depth)
 			{
-				return $this->processObject($o, $type, $i);
+				return $this->processObject($o, $type, $i, NULL, NULL, NULL, $depth);
 			}
 			, $objects
 			, array_keys($objects)

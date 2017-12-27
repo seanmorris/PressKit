@@ -5,6 +5,7 @@ class StateReferenceField extends \SeanMorris\Form\Fieldset
 	public function __construct($fieldDef, $form)
 	{
 		$fieldDef['_array'] = TRUE;
+		$fieldDef['type']   = 'fieldset';
 		$fieldDef['_multi'] = FALSE;
 		$fieldDef['_children']['id'] = [
 			'_title' => 'Id'
@@ -26,8 +27,8 @@ class StateReferenceField extends \SeanMorris\Form\Fieldset
 			, 'value' => ''
 			, 'type' => 'select'
 			, '_options' => [
-				0 => 'Unpublished'
-				, 1 => 'Published'
+				'Unpublished' => 0
+				, 'Published' => 1
 			]
 		];
 		parent::__construct($fieldDef, $form);

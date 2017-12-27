@@ -148,11 +148,12 @@ class Form extends \SeanMorris\Form\Form
 			foreach($fields as $name => $field)
 			{
 				$structure->$name = (object) [
-					'name'    => $field->fullname()
-					, 'title' => $field->title()
-					, 'value' => NULL
-					, 'type'  => $field->type()
-					, 'attrs' => $field->attrs()
+					'name'      => $field->fullname()
+					, 'title'   => $field->title()
+					, 'value'   => NULL
+					, 'type'    => $field->type()
+					, 'attrs'   => $field->attrs()
+					, 'options' => $field->options()
 				];
 
 				$fieldValue = $field->value();

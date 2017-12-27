@@ -1075,6 +1075,9 @@ class Controller implements \SeanMorris\Ids\Routable
 					$router
 					, ['navigation' => $pagerLinks]
 				);
+				if(!$this->models) {
+					$resource->body([]);
+				}
 				//\SeanMorris\Ids\Log::debug($resource);
 				echo $resource->encode($params['api']);
 				die;
