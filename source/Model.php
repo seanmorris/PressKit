@@ -148,10 +148,17 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if user "%s" can %s on %s'
+			'Checking if user[%d] "%s" can %s on'
+				. PHP_EOL
+				. '%s[%d]::%s[%d] (%d)'
+				, $user->id
 				, $user->username
 				, $action . ($point ? (' property $' . $point) : NULL)
 				, get_called_class()
+				, $this->id
+				, get_class($state)
+				, $state->id
+				, $state->state
 		), $allowed ? 1:0);
 
 		if($allowed && $point && isset($this->{$point}))
