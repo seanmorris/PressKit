@@ -141,7 +141,7 @@ class ScaffoldController extends \SeanMorris\PressKit\Controller
 		return $scaffolds;
 	}
 
-	public function create($router)
+	public function create($router, $submitPost = TRUE)
 	{
 		$file = fopen('/home/sean/thewhtrbt/util/super_scraper/result/yoga.csv', 'r');
 		$header = [];
