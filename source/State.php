@@ -114,11 +114,11 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if($pointCheck && $action === 'read')
 			{
-				//\SeanMorris\Ids\Log::debug('Can.');
+				\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 
-			//\SeanMorris\Ids\Log::debug('Cannot.');
+			\SeanMorris\Ids\Log::debug('Cannot.', static::$states);
 			return FALSE;
 		}
 
@@ -172,15 +172,18 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if($role == 1)
 			{
+				\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 			else if($role == 0)
 			{
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return FALSE;
 			}
 
 			if($role < 0)
 			{
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return FALSE;
 			}
 		}
@@ -199,8 +202,11 @@ class State extends \SeanMorris\Ids\Model
 
 		if($user->hasRole($role))
 		{
+			\SeanMorris\Ids\Log::debug('Can.');
 			return true;
 		}
+
+		\SeanMorris\Ids\Log::debug('Cannot.');
 
 		return false;
 	}

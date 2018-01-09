@@ -125,7 +125,8 @@ class RootRoute implements \SeanMorris\Ids\Routable
 	public function stateCleanUp()
 	{
 		$models = [
-			'SeanMorris\Access\User'
+			'SeanMorris\PressKit\Post'
+			, 'SeanMorris\Access\User'
 		];
 
 		foreach($models as $class)
@@ -134,21 +135,34 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 			foreach($generator() as $model)
 			{
+				if(!$stateClass = $model->canHaveOne('state'))
+				{
+					continue;
+				}
+
 				$state = $model->getSubject('state');
 
-				if(!$state)
+				if(!$state || !$state instanceof $stateClass)
 				{
-					$state = new \SeanMorris\PressKit\State;
-					$state->consume([
+					$stateSkeleton = [
 						'state' => 0
 						, 'owner' => 0
-					]);
+					];
+
+					if($state)
+					{
+						$stateSkeleton = $state->unconsume();
+
+						unset($stateSkeleton['id']);
+					}
+
+					$state = new $stateClass;
+
+					$state->consume($stateSkeleton);
 
 					$state->save();
 
-					$model->consume([
-						'state' => $state->id
-					]);
+					$model->consume(['state' => $state->id], TRUE);
 
 					$model->save();
 

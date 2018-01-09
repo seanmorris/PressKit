@@ -100,7 +100,11 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!isset(static::$hasOne['state']))
 		{
-			return true;
+			if($action === 'read' || $action === 'view')
+			{
+				return true;
+			}
+			return false;
 		}
 
 		$stateClass = static::$hasOne['state'];
@@ -148,9 +152,9 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if user "%s" can %s on %s'
+			'Checking if user "%s" can %s %s'
 				, $user->username
-				, $action . ($point ? (' property $' . $point) : NULL)
+				, $action . ($point ? (' property $ on' . $point) : NULL)
 				, get_called_class()
 		), $allowed ? 1:0);
 

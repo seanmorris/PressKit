@@ -203,7 +203,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 			if($roleNeeded === TRUE)
 			{
-				\SeanMorris\Ids\Log::debug('Access always granted.');
+				\SeanMorris\Ids\Log::debug('Access granted.');
 				return TRUE;
 			}
 
@@ -826,7 +826,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		if($parentModels = $this->getParentModels($router))
 		{
-			if(count($parentModels) == 1)
+			if(count(array_filter($parentModels)) == 1)
 			{
 				$parentModel = current($parentModels);
 

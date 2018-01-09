@@ -174,6 +174,13 @@ class Resource
 						}
 					}
 				}
+
+				$value['_permissions'] = [
+					'read'     => $object->can('read')
+					, 'update' => $object->can('update')
+					, 'delete' => $object->can('delete')
+				];
+
 				break;
 		}
 

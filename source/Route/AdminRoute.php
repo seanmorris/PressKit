@@ -5,12 +5,15 @@ class AdminRoute extends \SeanMorris\PressKit\Controller
 	public
 		$title = 'Admin'
 		, $access = [
-			'index' => 'SeanMorris\Access\Role\Administrator'
+			'index'       =>   'SeanMorris\Access\Role\Administrator'
+			, 'posts'     => 'SeanMorris\Access\Role\Administrator'
+			, 'images'    => 'SeanMorris\Access\Role\Administrator'
+			, 'comments'  => 'SeanMorris\Access\Role\Administrator'
 		]
 		, $routes = [
-			'posts' => 'SeanMorris\PressKit\Route\AdminPostRoute'
-			, 'images' => 'SeanMorris\PressKit\Route\AdminImageRoute'
-			, 'comments' => 'SeanMorris\PressKit\Route\AdminCommentRoute'
+			'posts'       => 'SeanMorris\PressKit\Route\AdminPostRoute'
+			, 'images'    => 'SeanMorris\PressKit\Route\AdminImageRoute'
+			, 'comments'  => 'SeanMorris\PressKit\Route\AdminCommentRoute'
 		]
 	;
 
