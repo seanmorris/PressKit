@@ -118,7 +118,7 @@ class State extends \SeanMorris\Ids\Model
 				return TRUE;
 			}
 
-			\SeanMorris\Ids\Log::debug('Cannot.', static::$states);
+			\SeanMorris\Ids\Log::debug('Cannot.');
 			return FALSE;
 		}
 
