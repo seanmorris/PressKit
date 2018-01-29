@@ -14,7 +14,8 @@ abstract class Queue
 		, CHANNEL_LOCAL     = FALSE
 		, CHANNEL_NO_ACK    = TRUE
 		, CHANNEL_EXCLUSIVE = FALSE
-		, CHANNEL_WAIT      = FALSE;
+		, CHANNEL_WAIT      = FALSE
+		, BATCH_ACKS        = FALSE;
 	protected static $channel;
 	abstract protected static function recieve($message);
 	public static function send($message)
@@ -24,16 +25,29 @@ abstract class Queue
 	}
 	public static function manageReciept($message)
 	{
-		if(static::recieve(unserialize($message->body), $message) !== FALSE && !static::CHANNEL_NO_ACK)
+		if(!static::CHANNEL_NO_ACK)
 		{
-			$message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+			$result = static::recieve(unserialize($message->body), $message);
+			if($result === FALSE)
+			{	
+				$message->delivery_info['channel']->basic_nack(
+					$message->delivery_info['delivery_tag']
+					, static::BATCH_ACKS
+				);
+			}
+			else if(!static::BATCH_ACKS || $result === TRUE)
+			{
+				$message->delivery_info['channel']->basic_ack(
+					$message->delivery_info['delivery_tag']
+					, static::BATCH_ACKS
+				);
+			}
 		}
 	}
 	protected static function getChannel()
 	{
 		if(!static::$channel)
 		{
-
 			$servers = \SeanMorris\Ids\Settings::read('rabbitMq');
 			
 			if(!$servers)

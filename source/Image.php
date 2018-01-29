@@ -328,4 +328,9 @@ class Image extends \SeanMorris\PressKit\Model
 			$this->crop($cropName, $useExisting);
 		}
 	}
+
+	public static function getCrops()
+	{
+		return static::$crops;
+	}
 }

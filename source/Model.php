@@ -154,7 +154,7 @@ class Model extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if user[%d] "%s" can %s on'
 				. PHP_EOL
-				. '%s[%d]::%s[%d] (%d)'
+				. '%s[%d] in state %s[%d] (%d)'
 				, $user->id
 				, $user->username
 				, $action . ($point ? (' property $ on' . $point) : NULL)
@@ -163,7 +163,7 @@ class Model extends \SeanMorris\Ids\Model
 				, get_class($state)
 				, $state->id
 				, $state->state
-		), $allowed ? 1:0);
+		), $allowed ? 1:0, $user);
 
 		if($allowed && $point && isset($this->{$point}))
 		{
