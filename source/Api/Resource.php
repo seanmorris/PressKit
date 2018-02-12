@@ -19,6 +19,8 @@ class Resource
 	{
 		$controller = $router->routes();
 
+		$this->code = $code;
+
 		$this->controller = $controller;
 		$this->router     = $router;
 

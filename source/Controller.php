@@ -610,6 +610,8 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		$context =& $router->getContext();
 
+		$params = $router->request()->params();
+
 		if(!$this->skipWrapping && $theme = $this->_getTheme($router))
 		{
 			foreach(['css','js'] as $contextElement)
@@ -632,7 +634,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				);
 			}
 
-			if(isset($context['js']) && $context['js'] && !$router->parent())
+			if(!isset($params['api']) && isset($context['js']) && $context['js'] && !$router->parent())
 			{
 				$context['js'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['js'])];
 
@@ -643,7 +645,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				$context['js'] = [];
 			}
 
-			if(isset($context['css']) && $context['css'] && !$router->parent())
+			if(!isset($params['api']) && isset($context['css']) && $context['css'] && !$router->parent())
 			{
 				$context['css'] = [\SeanMorris\Ids\AssetManager::buildAssets2($context['css'])];
 
@@ -694,7 +696,6 @@ class Controller implements \SeanMorris\Ids\Routable
 			$body = implode(PHP_EOL . PHP_EOL, $panels);
 		}
 
-		$params = $router->request()->params();
 
 		if(isset($params['api']) && !$router->subRouted())
 		{
