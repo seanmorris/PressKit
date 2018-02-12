@@ -401,7 +401,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		$theme = $this->_getTheme($router);
 
-		if(is_object($body))
+		if($theme && is_object($body))
 		{
 			$viewClass = $theme::resolveFirst(get_class($body));
 
