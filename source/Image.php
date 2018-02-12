@@ -34,12 +34,12 @@ class Image extends \SeanMorris\PressKit\Model
 		, $byNull = [
 			'with'    => ['state' => 'byNull']
 			, 'order' => ['id' => 'ASC']
-			, 'with' => ['state' => 'byNull']
+			, 'with'  => ['state' => 'byNull']
 		]
 		, $byFullSized = [
-			'where' => [['crop' => 'NULL', 'IS']]
+			'where'   => [['crop' => 'NULL', 'IS']]
 			, 'order' => ['id' => 'ASC']
-			, 'with'    => ['state' => 'byNull']
+			, 'with'  => ['state' => 'byNull']
 		]
 		, $byId = [
 			'where'   => [['id' => '?']]
@@ -47,11 +47,11 @@ class Image extends \SeanMorris\PressKit\Model
 			, 'order' => ['id' => 'ASC']
 		]
 		, $byUrl = [
-			'where' => [['url' => '?']]
+			'where'  => [['url' => '?']]
 			, 'with' => ['state' => 'byNull']
 		]
 		, $byPublicId = [
-			'where' => [['publicId' => 'UNHEX(?)']]
+			'where'  => [['publicId' => 'UNHEX(?)']]
 			, 'with' => ['state' => 'byNull']
 		]
 		, $byAll = []

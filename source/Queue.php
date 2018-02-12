@@ -37,10 +37,20 @@ abstract class Queue
 			}
 			else if(!static::BATCH_ACKS || $result === TRUE)
 			{
-				$message->delivery_info['channel']->basic_ack(
-					$message->delivery_info['delivery_tag']
-					, static::BATCH_ACKS
-				);
+				try
+				{
+					$message->delivery_info['channel']->basic_ack(
+						$message->delivery_info['delivery_tag']
+						, static::BATCH_ACKS
+					);
+				}
+				catch(\Exception $e)
+				{
+					\SeanMorris\Ids\Log::error($e->getCode());
+					\SeanMorris\Ids\Log::error($e->getMessage());
+
+					throw $e;
+				}
 			}
 		}
 	}

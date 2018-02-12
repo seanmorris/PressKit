@@ -172,6 +172,11 @@ class Form extends \SeanMorris\Form\Form
 			return $structure;
 		};
 
-		return (object) $sub($this->fields);
+		$structure = (object) $sub($this->fields);
+
+		$structure->_method = $this->method;
+		$structure->_action = $this->action;
+
+		return $structure;
 	}
 }
