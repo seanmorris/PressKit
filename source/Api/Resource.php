@@ -127,11 +127,14 @@ class Resource
 		if($depth === NULL)
 		{
 			$depth = 0;
-			if($parent === NULL && $index === NULL)
+
+			// if($parent === NULL && $index === NULL)
+			if($parent === NULL)
 			{
 				$depth = 3;
 			}
 		}
+
 		$value = NULL;
 
 		switch(TRUE)
@@ -189,7 +192,7 @@ class Resource
 		return $value;
 	}
 
-	protected function processObjects($objects, $type = NULL, $depth = 0)
+	protected function processObjects($objects, $type = NULL, $depth = NULL)
 	{
 		return array_map(
 			function($o, $i) use($type, $depth)

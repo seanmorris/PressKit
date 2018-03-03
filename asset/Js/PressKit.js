@@ -77,6 +77,7 @@ PressKit.Registry = PressKit.Class.extend({
 	}
 	, start: function(classes)
 	{
+		console.log('Starting presskit!');
 		for(var selector in this.selectorClasses)
 		{
 			var _this = this;

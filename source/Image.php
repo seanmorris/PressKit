@@ -102,7 +102,7 @@ class Image extends \SeanMorris\PressKit\Model
 			return;
 		}
 
-		return $instance->store($tmpFile);	
+		$instance->store($tmpFile);
 	}
 
 	protected function store($tmpFile)

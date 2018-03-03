@@ -21,7 +21,7 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 			'edit' => 'SeanMorris\PressKit\Form\ImageForm',
 			'search' => 'SeanMorris\PressKit\Form\ImageSearchForm',
 		]
-		, $resourceClass = '\SeanMorris\TheWhtRbt\Resource'
+		// , $resourceClass = '\SeanMorris\TheWhtRbt\Resource'
 		, $pageSize = 16
 		, $menus = [
 			'main' => [

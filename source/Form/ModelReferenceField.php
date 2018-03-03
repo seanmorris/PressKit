@@ -8,7 +8,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 		
 		$fieldDef['_multi'] = isset($fieldDef['_multi'])
 			? $fieldDef['_multi']
-			: true
+			: false
 		;
 
 		$fieldDef['_titlePoint'] = isset($fieldDef['_titlePoint'])

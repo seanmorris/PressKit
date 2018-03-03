@@ -8,7 +8,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		
 		$fieldDef['_multi'] = isset($fieldDef['_multi'])
 			? $fieldDef['_multi']
-			: TRUE
+			: FALSE
 		;
 
 		$fieldDef['_titlePoint'] = isset($fieldDef['_titlePoint'])

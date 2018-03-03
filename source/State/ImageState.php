@@ -28,7 +28,8 @@ class ImageState extends \SeanMorris\PressKit\State
 				]
 			]*/
 			0 => [
-				'read'		 => 1
+				'create'	 => 'SeanMorris\Access\Role\Administrator'
+				, 'read'	 => 1
 				, 'update'	 => [1, 'SeanMorris\Access\Role\Administrator']
 				, 'delete'	 => [1, 'SeanMorris\Access\Role\Administrator']
 				, '$class'   => FALSE

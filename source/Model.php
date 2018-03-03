@@ -5,16 +5,15 @@ class Model extends \SeanMorris\Ids\Model
 	protected $_selected;
 
 	protected static
-		$byOwner = [
-			'join' => [
-				'SeanMorris\PressKit\State' => [
-					'on' => 'state'
-					, 'by' => 'owner'
-					, 'type' => 'INNER'
-				]
+	$byOwner = [
+		'join' => [
+			'SeanMorris\PressKit\State' => [
+				'on'     => 'state'
+				, 'by'   => 'owner'
+				, 'type' => 'INNER'
 			]
 		]
-	;
+	];
 
 	public function create()
 	{
@@ -43,7 +42,7 @@ class Model extends \SeanMorris\Ids\Model
 			return;
 		}
 
-		$instance->_selected = time();
+		$instance->_selected = microtime(TRUE);
 
 		/*
 		\SeanMorris\Ids\Log::debug([
@@ -100,11 +99,14 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!isset(static::$hasOne['state']))
 		{
+			\SeanMorris\Ids\Log::debug("Model lacks state.");
+
 			if($action === 'read' || $action === 'view')
 			{
 				return true;
 			}
-			return false;
+
+			return $user->hasRole('SeanMorris\Access\Role\Administrator');
 		}
 
 		$stateClass = static::$hasOne['state'];
