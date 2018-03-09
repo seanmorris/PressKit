@@ -951,7 +951,10 @@ class Controller implements \SeanMorris\Ids\Routable
 
 					if(isset($params['page']))
 					{
-						$pageNumber = (int)( ($params['page'] > 0) ? $params['page'] : 0 );
+						$pageNumber = (int)( ($params['page'] > 0)
+							? $params['page']
+							: 0
+						);
 					}
 
 					$unpagedlistParams = $listParams;
@@ -968,7 +971,7 @@ class Controller implements \SeanMorris\Ids\Routable
 					{
 						$pageNumber = $lastPage;
 
-						$listParams = $unpagedlistParams;
+						$listParams   = $unpagedlistParams;
 						$listParams[] = $pageNumber;
 						$listParams[] = static::$pageSize;
 					}
