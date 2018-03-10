@@ -17,18 +17,26 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function create()
 	{
-		\SeanMorris\Ids\Log::debug(sprintf('Trying to create %s.', get_called_class()));
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Trying to create %s.'
+			, get_called_class()
+		));
 
 		$this->ensureState();
 
 		if($this->can('create'))
 		{
-			\SeanMorris\Ids\Log::debug(sprintf('Can create %s.', get_called_class()));
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Can create %s.', get_called_class()
+			));
 
 			return parent::create();
 		}
 
-		\SeanMorris\Ids\Log::debug(sprintf('Cannot create %s.', get_called_class()));
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Cannot create %s.'
+			, get_called_class()
+		));
 
 		throw new \SeanMorris\PressKit\Exception\ModelAccessException(
 			'Access denied - Cannot create model.'
@@ -44,12 +52,10 @@ class Model extends \SeanMorris\Ids\Model
 
 		$instance->_selected = microtime(TRUE);
 
-		/*
-		\SeanMorris\Ids\Log::debug([
-			$instance->can('read')
-			, !isset($instance->state)
-		]);
-		*/
+		// \SeanMorris\Ids\Log::debug([
+		// 	$instance->can('read')
+		// 	, !isset($instance->state)
+		// ]);
 
 		if($instance->can('read') || !isset($instance->state))
 		{
@@ -157,17 +163,17 @@ class Model extends \SeanMorris\Ids\Model
 			'Checking if user[%d] "%s" can %s'
 				. PHP_EOL
 				. '%s[%d] in state %s[%d] (%d)'
-				, $user->id
-				, $user->username
-				, $action . ($point
-					? sprintf(' property $%s on', $point)
-					: NULL
-				)
-				, get_called_class()
-				, $this->id
-				, get_class($state)
-				, $state->id
-				, $state->state
+			, $user->id
+			, $user->username
+			, $action . ($point
+				? sprintf(' property $%s on', $point)
+				: NULL
+			)
+			, get_called_class()
+			, $this->id
+			, get_class($state)
+			, $state->id
+			, $state->state
 		), $allowed ? 1:0);
 
 		if($allowed && $point && isset($this->{$point}))

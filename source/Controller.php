@@ -229,7 +229,12 @@ class Controller implements \SeanMorris\Ids\Routable
 			\SeanMorris\Ids\Log::debug('Access Denied.');
 		}
 
-		throw new \SeanMorris\Ids\Http\Http404('Not found');
+		$body = sprintf(
+			'Not found: %s'
+			, htmlentities($router->path()->pathString())
+		);
+
+		throw new \SeanMorris\Ids\Http\Http404($body);
 	}
 
 	public function _preRoute($router)
@@ -390,7 +395,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		}
 	}
 
-	public function _postRoute($router, $body, $preroutePath)
+	public function _postRoute($router, $body, $preroutePath, $top = FALSE)
 	{
 		$menu = null;
 
@@ -696,7 +701,6 @@ class Controller implements \SeanMorris\Ids\Routable
 			$body = implode(PHP_EOL . PHP_EOL, $panels);
 		}
 
-
 		if(isset($params['api']) && !$router->subRouted())
 		{
 			if($params['api'] == 'html')
@@ -704,15 +708,29 @@ class Controller implements \SeanMorris\Ids\Routable
 				print $body;
 				die;
 			}
+			else
+			{
+				$resourceClass = static::$resourceClass;
+				$resource = new $resourceClass($router);
+				// var_dump($body);die;
+				$resource->models([]);
+				$resource->body($body);
+				//\SeanMorris\Ids\Log::debug($resource);
+				echo $resource->encode($params['api']);
+				die;
+			}
 		}
-
-		if($theme && !$router->parent())
+		else
 		{
-			$body = $theme::wrap($panels, [
-				'_controller' => $this
-				, '_router'     => $router
-				, 'path'        => $router->path()->pathString()
-			] + $context);
+			if($theme && (!$router->parent() || $top))
+			{
+				$body = $theme::wrap($panels, [
+					'_controller' => $this
+					, '_router'     => $router
+					, 'messages'    => $messages
+					, 'path'        => $router->path()->pathString()
+				] + $context);
+			}
 		}
 
 		return $body;
@@ -1152,12 +1170,12 @@ class Controller implements \SeanMorris\Ids\Routable
 					return FALSE;
 				}
 
-				$model->consume($skeleton);
-
 				$modelSaveStatus = FALSE;
 
 				try
 				{
+					$model->consume($skeleton);
+
 					if($newModel = $model->create())
 					{
 						$this->model = $model = $newModel;
@@ -1237,7 +1255,23 @@ class Controller implements \SeanMorris\Ids\Routable
 				catch(\SeanMorris\PressKit\Exception\ModelAccessException $e)
 				{
 					$messages->addFlash(
-						new \SeanMorris\Message\ErrorMessage($e->getMessage())
+						new \SeanMorris\Message\ErrorMessage(
+							$e->getMessage()
+						)
+					);
+				}
+				catch(\Exception $e)
+				{
+					$errorHash = strtoupper(md5(print_r($e, 1)));
+
+					\SeanMorris\Ids\Log::warn($errorHash);
+					\SeanMorris\Ids\Log::logException($e);
+
+					$messages->addFlash(
+						new \SeanMorris\Message\ErrorMessage(sprintf(
+							'Unknown error occurred - %s.'
+							, $errorHash
+						))
 					);
 				}
 			}

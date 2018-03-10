@@ -142,6 +142,7 @@ class Resource
 			case $object instanceof \SeanMorris\PressKit\Model:
 
 				$value = $object->toApi($depth);
+
 				foreach($value as $k => &$v)
 				{
 					if($depth <= 0)
@@ -155,7 +156,7 @@ class Resource
 						continue;
 					}
 
-					if(is_object($vv = $object->getSubject($k))/*$vv = $object->getSubject($k)*/)
+					if(is_object($vv = $object->getSubject($k)))
 					{
 						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth-1);
 						// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
@@ -169,7 +170,7 @@ class Resource
 						}*/
 						
 					}
-					else if(is_array($vv = $object->getSubjects($k))/*$vv = $object->getSubjects($k)*/)
+					else if(is_array($vv = $object->getSubjects($k)))
 					{
 						$v  = [];
 
@@ -185,6 +186,12 @@ class Resource
 					, 'update' => $object->can('update')
 					, 'delete' => $object->can('delete')
 				];
+
+				break;
+
+			case $object instanceof \SeanMorris\PressKit\State:
+
+				$value = $object->unconsume(0);
 
 				break;
 		}
@@ -214,6 +221,11 @@ class Resource
 		return \xmlrpc_encode($this->toStructure($type));
 	}
 
+	public function toYaml($type = 'yaml')
+	{
+		return yaml_emit($this->toStructure($type));
+	}
+
 	public function toHtml()
 	{
 		return $this->controller->_renderList($this->router);
@@ -225,6 +237,11 @@ class Resource
 		{
 			header('Content-Type: application/xml');
 			return $this->toXml($type);
+		}
+		elseif($type == 'yaml')
+		{
+			header('Content-Type: text/yaml');
+			return $this->toYaml($type);
 		}
 		else
 		{
