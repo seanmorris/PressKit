@@ -1141,6 +1141,14 @@ class Controller implements \SeanMorris\Ids\Routable
 				$model = new $modelClass;
 				$skeleton = $form->getValues();
 
+				\SeanMorris\Ids\Log::debug(
+					sprintf(
+						'Got skeleton for model of type %s.'
+						, $modelClass
+					)
+					, $skeleton
+				);
+
 				if($stateClass = $model->canHaveOne('state'))
 				{
 					if(is_a('SeanMorris\PressKit\State', $stateClass, true))

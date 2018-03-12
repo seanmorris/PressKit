@@ -200,4 +200,16 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 		print $view;
 	}
+
+	public function urol($router)
+	{
+		$args  = $router->path()->consumeNodes();
+
+		$userId = array_shift($args);
+
+		while($role = array_shift($args))
+		{
+			var_dump($role);
+		}
+	}
 } 

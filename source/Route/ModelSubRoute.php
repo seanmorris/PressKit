@@ -166,6 +166,14 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 				$skeleton = $form->getValues();
 
+				\SeanMorris\Ids\Log::debug(
+					sprintf(
+						'Got skeleton for model of type %s.'
+						, $modelClass
+					)
+					, $skeleton
+				);
+
 				if($parentController::beforeUpdate($model, $skeleton) === FALSE
 					|| $parentController::beforeWrite($model, $skeleton) === FALSE
 				){

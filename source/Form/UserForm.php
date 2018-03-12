@@ -33,9 +33,9 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 		];
 
 		$skeleton['password'] = [
-			'_title' => 'password'
-			, 'type' => 'password'
-			, '_lock' => true
+			'autocomplete' => 'new-password'
+			, '_title'     => 'New Password'
+			, 'type'       => 'password'
 		];
 
 		$skeleton['roles'] = [
