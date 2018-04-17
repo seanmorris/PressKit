@@ -2,10 +2,8 @@
 namespace SeanMorris\PressKit\Form;
 class ImageForm extends \SeanMorris\PressKit\Form\Form
 {
-	public function __construct()
+	public function __construct(array $skeleton = [])
 	{
-		$skeleton = [];
-
 		$skeleton['_method'] = 'POST';
 
 		$skeleton['id'] = [

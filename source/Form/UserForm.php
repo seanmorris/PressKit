@@ -2,10 +2,8 @@
 namespace SeanMorris\PressKit\Form;
 class UserForm extends \SeanMorris\PressKit\Form\Form
 {
-	public function __construct()
+	public function __construct($skeleton = [])
 	{
-		$skeleton = [];
-
 		$skeleton['_method'] = 'POST';
 
 		$skeleton['id'] = [

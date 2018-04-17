@@ -86,7 +86,6 @@ class State extends \SeanMorris\Ids\Model
 	{
 		$pointCheck = substr($point, 0, 1) == '$';
 		
-		/*
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if user can %s%s %s during state %s'
 			, $action
@@ -96,7 +95,6 @@ class State extends \SeanMorris\Ids\Model
 			, get_class($this)
 			, $this->state
 		), $user);
-		*/
 
 		if(!isset(static::$states[$this->state][$point])
 			&& $parent = static::getParent($this)
@@ -114,23 +112,22 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if($pointCheck && $action === 'read')
 			{
-				// \SeanMorris\Ids\Log::debug('Can.');
+				\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 
-			// \SeanMorris\Ids\Log::debug('Cannot.');
+			\SeanMorris\Ids\Log::debug('Cannot.');
 			return FALSE;
 		}
 
 		$role = static::$states[$this->state][$point];
-		/*
+		
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Role needed for %s %s:', $action, $point)
 			, $role
 			, 'Current State'
 			, $this
 		);
-		*/
 
 		if($pointCheck)
 		{
@@ -141,7 +138,7 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if(!isset($role[0], $role[1]))
 			{
-				// \SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return false;
 			}
 
@@ -172,18 +169,18 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if($role == 1)
 			{
-				// \SeanMorris\Ids\Log::debug('Can.');
+				\SeanMorris\Ids\Log::debug('Can.');
 				return TRUE;
 			}
 			else if($role == 0)
 			{
-				// \SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return FALSE;
 			}
 
 			if($role < 0)
 			{
-				// \SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot.');
 				return FALSE;
 			}
 		}
@@ -202,11 +199,11 @@ class State extends \SeanMorris\Ids\Model
 
 		if($user->hasRole($role))
 		{
-			// \SeanMorris\Ids\Log::debug('Can.');
+			\SeanMorris\Ids\Log::debug('Can.');
 			return true;
 		}
 
-		// \SeanMorris\Ids\Log::debug('Cannot.');
+		\SeanMorris\Ids\Log::debug('Cannot.');
 
 		return false;
 	}

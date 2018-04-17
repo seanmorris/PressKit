@@ -82,9 +82,14 @@ class Model extends \SeanMorris\Ids\Model
 			return parent::update();
 		}
 
-		throw new \SeanMorris\PressKit\Exception\ModelAccessException(
+		$exception = new \SeanMorris\PressKit\Exception\ModelAccessException(
 			'Access denied - Cannot update model.'
 		);
+
+		\SeanMorris\Ids\Log::logException($exception);
+
+		throw $exception;
+		
 	}
 
 	public function delete()
@@ -220,9 +225,17 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function getSubject($column = NULL, $override = FALSE)
 	{
-		if( isset(static::$hasOne['state'])
+		if($column == 'state'
+			&& isset(static::$hasOne['state'])
 			&& !is_subclass_of(static::$hasOne['state'], '\SeanMorris\PressKit\State')
 		){
+			if(!$this->can('read', $column) && !$override)
+			{
+				return FALSE;
+			}
+		}
+		else if($column !== 'state')
+		{
 			if(!$this->can('read', $column) && !$override)
 			{
 				return FALSE;

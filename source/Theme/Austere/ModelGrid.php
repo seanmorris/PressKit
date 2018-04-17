@@ -35,6 +35,14 @@ class ModelGrid extends Grid
 		}
 
 		$rows = [];
+
+		foreach($this->vars['columns'] as &$columnName)
+		{
+			if($columnName === 'title')
+			{
+				$columnName = $controller->_titleField() ?? 'title';
+			}
+		}
 		
 		foreach($objects as $object)
 		{

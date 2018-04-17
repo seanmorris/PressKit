@@ -849,7 +849,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$parentModel = current($parentModels);
 
-				$node = $router->path()->getNode(-1);
+				$node = $path->getNode(-1);
 
 				$objectClass = $parentModel::getSubjectClass($node);
 
@@ -935,7 +935,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				}
 
 				$listParams = [];
-				$listType = $path->getNode();
+				$listType = $path->getNode(-1);
 
 				if($listType && isset(static::$list[$listType]))
 				{
