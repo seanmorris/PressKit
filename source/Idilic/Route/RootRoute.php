@@ -177,6 +177,23 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		}
 	}
 
+	public function relationshipCleanup()
+	{
+		$relLoader = \SeanMorris\Ids\Relationship::loadByNull();
+		$i = 0;
+
+		foreach($relLoader() as $rel)
+		{
+			if(!$rel->ownerObject || !$rel->subjectObject)
+			{
+				$rel->delete();
+				$i++;
+			}
+		}
+
+		var_dump($i);
+	}
+
 	public function uinfo($router)
 	{
 		$args  = $router->path()->consumeNodes();
@@ -212,4 +229,4 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			var_dump($role);
 		}
 	}
-} 
+}
