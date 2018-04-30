@@ -397,6 +397,11 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	public function _postRoute($router, $body, $preroutePath, $top = FALSE)
 	{
+		if($body instanceof \SeanMorris\Ids\Http\Http303)
+		{
+			return;
+		}
+
 		$menu = null;
 
 		if(!$router->parent())
@@ -664,7 +669,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			$stack = $theme::resolveFirst('stack');
 
 			$messages = NULL;
-			
+
 			if(!$router->parent())
 			{
 				$messages = (string) \SeanMorris\Message\MessageHandler::get()->render();
