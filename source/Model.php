@@ -265,7 +265,7 @@ class Model extends \SeanMorris\Ids\Model
 		if(!$override)
 		{
 			$remove = [];
-			foreach ($skeleton as $column => &$value)
+			foreach($skeleton as $column => &$value)
 			{
 				//\SeanMorris\Ids\Log::debug('COLUMN:' . $column, $this->can('write', $column) ? 1:0);
 				if(!$this->can('write', $column))
@@ -281,7 +281,8 @@ class Model extends \SeanMorris\Ids\Model
 				, $remove
 			);
 
-			foreach ($remove as $key) {
+			foreach($remove as $key)
+			{
 				unset($skeleton[$key]);
 			}
 		}
@@ -310,7 +311,8 @@ class Model extends \SeanMorris\Ids\Model
 			}
 		}
 
-		foreach ($remove as $key) {
+		foreach($remove as $key)
+		{
 			unset($skeleton[$key]);
 		}
 
