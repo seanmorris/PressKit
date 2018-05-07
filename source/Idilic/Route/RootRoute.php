@@ -218,6 +218,34 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		print $view;
 	}
 
+	public function upwd($router)
+	{
+		$args  = $router->path()->consumeNodes();
+
+		$userId   = array_shift($args);
+		$password = array_shift($args);
+
+		if(!$user = \SeanMorris\Access\User::loadOneById($userId))
+		{
+			$user = \SeanMorris\Access\User::loadOneByUsername($userId);
+		}
+
+		$user->consume(['password' => $password], TRUE);
+		$user->save();
+
+		if(!$user)
+		{
+			printf('User "%s" not found.', $userId);
+			return;
+		}
+
+		$view = new \SeanMorris\PressKit\Idilic\View\UserInfo([
+			'user' => $user
+		]);
+
+		print $view;
+	}
+
 	public function urol($router)
 	{
 		$args  = $router->path()->consumeNodes();
