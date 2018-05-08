@@ -247,7 +247,7 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function addSubject($property, $subject, $override = FALSE)
 	{
-		if($this->can('add', $property) || $override)
+		if($override || $this->can('add', $property))
 		{
 			return parent::addSubject($property, $subject);
 		}
