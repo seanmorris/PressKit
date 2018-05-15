@@ -46,7 +46,7 @@ __halt_compiler();
 				<div class="navbar-inner">
 					<a class="brand" href="/">seanmorr.is</a>
 					<div class = "menu rightAlign">
-						<?php echo $menu; ?>
+						<?php echo $menu ?? NULL; ?>
 					</div>
 				</div>
 			</div>

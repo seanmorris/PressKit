@@ -1316,6 +1316,24 @@ class Controller implements \SeanMorris\Ids\Routable
 			$this->context['title'] = 'Creating ' . array_pop($classParts);
 		}
 
+		$params = $router->request()->params();
+
+		if(isset($params['api']) && !$router->subRouted())
+		{
+			if($params['api'] == 'html')
+			{
+			}
+			else if($params['api'])
+			{
+				$resourceClass = static::$resourceClass;
+				$resource = new $resourceClass($router);
+				$resource->body($form->toStructure());
+				// \SeanMorris\Ids\Log::debug($resource);
+				echo $resource->encode($params['api']);
+				die;
+			}
+		}
+
 		$formTheme = $this->formTheme;
 
 		return $form->render($formTheme);
