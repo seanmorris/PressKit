@@ -766,6 +766,8 @@ class Controller implements \SeanMorris\Ids\Routable
 			return FALSE;
 		}
 
+		$form = NULL;
+
 		$modelClass = $this->modelClass;
 
 		$params = $router->request()->params();
@@ -1105,6 +1107,10 @@ class Controller implements \SeanMorris\Ids\Routable
 				if(!$this->models) {
 					$resource->body([]);
 				}
+				if($form)
+				{
+					$resource->meta('form', $form->toStructure());
+				}
 				//\SeanMorris\Ids\Log::debug($resource);
 				echo $resource->encode($params['api']);
 				die;
@@ -1327,7 +1333,10 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$resourceClass = static::$resourceClass;
 				$resource = new $resourceClass($router);
-				$resource->body($form->toStructure());
+				if($form)
+				{
+					$resource->meta('form', $form->toStructure());
+				}
 				// \SeanMorris\Ids\Log::debug($resource);
 				echo $resource->encode($params['api']);
 				die;

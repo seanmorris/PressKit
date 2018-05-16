@@ -271,7 +271,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 
 				$resource = new $resourceClass($router);
 
-				$resource->body($form->toStructure());
+				$resource->meta('form', $form->toStructure());
 
 				echo $resource->encode($get['api']);
 				die;
