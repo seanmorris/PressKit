@@ -32,8 +32,7 @@ class Image extends \SeanMorris\PressKit\Model
 			'state'				=> 'SeanMorris\PressKit\State\ImageState'
 		]
 		, $byNull = [
-			'with'    => ['state' => 'byNull']
-			, 'order' => ['id' => 'ASC']
+			'order' => ['id' => 'ASC']
 			, 'with'  => ['state' => 'byNull']
 		]
 		, $byFullSized = [
@@ -43,8 +42,8 @@ class Image extends \SeanMorris\PressKit\Model
 		]
 		, $byId = [
 			'where'   => [['id' => '?']]
-			, 'with'  => ['state' => 'byNull']
 			, 'order' => ['id' => 'ASC']
+			, 'with'  => ['state' => 'byNull']
 		]
 		, $byUrl = [
 			'where'  => [['url' => '?']]

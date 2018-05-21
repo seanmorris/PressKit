@@ -122,25 +122,59 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		return $name;
 	}
 
-	public function stateCleanUp()
+	public function stateCleanUp($router)
 	{
-		$models = [
-			'SeanMorris\PressKit\Post'
-			, 'SeanMorris\Access\User'
-		];
+		$args  = $router->path()->consumeNodes();
+
+		$namespace = array_shift($args);
+
+		$namespace = preg_replace('/\//', '\\', $namespace) . '\\';
+
+		$classes = \SeanMorris\Ids\Meta::classes('SeanMorris\Ids\Model');
+
+		$models = array_filter($classes, function($class) use($namespace){
+			if(is_a($class, 'SeanMorris\PressKit\State', TRUE))
+			{
+				return FALSE;
+			}
+			return substr($class, 0, strlen($namespace)) == $namespace;
+		});
 
 		foreach($models as $class)
 		{
-			$generator = $class::generateByNull();
+			if(!$stateClass = $class::canHaveOne('state'))
+			{
+				continue;
+			}
+
+			printf(
+				'Checking models of class %s' . PHP_EOL
+					. "\t" . 'Should have states of class %s' . PHP_EOL
+				, $class
+				, $stateClass
+			);
+
+			$generator = $class::generate();
 
 			foreach($generator() as $model)
 			{
-				if(!$stateClass = $model->canHaveOne('state'))
-				{
-					continue;
-				}
+				printf(
+					"\t\t" . 'Checking model %d of class %s' . PHP_EOL
+					, $model->id
+					, $class
+				);
 
-				$state = $model->getSubject('state');
+				if($state = $model->getSubject('state'))
+				{
+					printf(
+						"\t\t" . 'Model %d of class %s' . PHP_EOL
+							. "\t\t" . 'has a state of class %s' . PHP_EOL
+							. PHP_EOL
+						, $model->id
+						, $class
+						, get_class($state)
+					);
+				}
 
 				if(!$state || !$state instanceof $stateClass)
 				{
