@@ -118,6 +118,8 @@ class ModelGrid extends Grid
 		$this->vars['prevPageLink'] = NULL;
 		$this->vars['nextPageLink'] = NULL;
 
+		$this->vars['page'] = $this->vars['page'] ?? 0;
+
 		if($this->vars['page'] > 0)
 		{
 			$this->vars['prevPageLink'] = sprintf(
