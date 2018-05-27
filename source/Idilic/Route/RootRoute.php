@@ -304,9 +304,9 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 		$userId = array_shift($args);
 
-		if(!$user = \SeanMorris\Access\User::loadOneById($userId))
+		if(!$user = \SeanMorris\Access\User::loadOneSubmodelById($userId))
 		{
-			$user = \SeanMorris\Access\User::loadOneByUsername($userId);
+			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
 
 		if(!$user)
@@ -329,9 +329,9 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		$userId   = array_shift($args);
 		$password = array_shift($args);
 
-		if(!$user = \SeanMorris\Access\User::loadOneById($userId))
+		if(!$user = \SeanMorris\Access\User::loadOneSubmodelById($userId))
 		{
-			$user = \SeanMorris\Access\User::loadOneByUsername($userId);
+			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
 
 		$user->consume(['password' => $password], TRUE);
