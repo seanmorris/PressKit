@@ -134,6 +134,8 @@ class State extends \SeanMorris\Ids\Model
 			$role = $role[$action];
 		}
 
+		$isOwner = FALSE;
+
 		if(is_array($role))
 		{
 			if(!isset($role[0], $role[1]))
@@ -150,14 +152,17 @@ class State extends \SeanMorris\Ids\Model
 			}
 
 			$owner && \SeanMorris\Ids\Log::debug(sprintf(
-				'Checking if user "%s" is owner... %d'
+				'Checking if user[%d] "%s" is owner user[#%d]... %d'
+				, $user->id
 				, $user->username
+				, $owner->id
 				, $owner->isSame($user)
 			));
 
 			if($owner && $owner->isSame($user))
 			{
-				$role = $role[0];
+				$role    = $role[0];
+				$isOwner = TRUE;
 			}
 			else
 			{

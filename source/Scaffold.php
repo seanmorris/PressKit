@@ -207,7 +207,7 @@ class Scaffold extends Model
 		return \SeanMorris\Ids\Database::get($database);
 	}
 
-	protected static function table()
+	public static function table()
 	{
 		if(isset(static::$descriptor))
 		{

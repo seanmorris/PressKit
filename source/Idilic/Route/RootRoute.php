@@ -228,6 +228,76 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		var_dump($i);
 	}
 
+	public function subclassCleanup()
+	{
+		$db = \SeanMorris\Ids\Database::get('main');
+
+		$classes = \SeanMorris\Ids\Meta::classes('SeanMorris\Ids\Model');
+		$heights = [];
+		foreach($classes as $class)
+		{
+			$height = [];
+			$_class = $class;
+
+			do
+			{
+				$tableProp = new \ReflectionProperty($_class, 'table');
+
+				if($_class !== $tableProp->class)
+				{
+					continue;
+				}
+
+				if(!$_class::table())
+				{
+					continue;
+				}
+
+				$height[] = $_class;
+			}
+			while($_class = get_parent_class($_class));
+
+			if(count($height) < 2)
+			{
+				continue;
+			}
+
+			$heights[$class] = $height;
+		}
+
+		foreach($heights as $class => $chain)
+		{
+			for($i = count($chain)-1; $i >= 0; $i--)
+			{
+				if(!isset($chain[$i-1]))
+				{
+					continue;
+				}
+
+				$select = $db->prepare(sprintf(
+					"SELECT a.id FROM `%s` a\n\tLEFT JOIN `%s` b\n\tON a.id = b.id\nWHERE b.id IS NULL\n"
+					, $chain[$i-1]::table()
+					, $chain[$i]::table()
+				));
+
+				$select->execute();
+
+				while($row = $select->fetchObject())
+				{
+					$delete = $db->prepare($deleteString = sprintf(
+						'DELETE FROM `%s` WHERE id = %d'
+						, $chain[$i-1]::table()
+						, $row->id
+					));
+
+					print $deleteString . PHP_EOL;
+
+					$delete->execute();
+				}
+			}
+		}
+	}
+
 	public function uinfo($router)
 	{
 		$args  = $router->path()->consumeNodes();
