@@ -977,20 +977,10 @@
             }
         },
         "10": {
-            "Cache": {
+            "PressKitImage": {
                 "fields": {
-                    "id": {
-                        "Field": "id",
-                        "Type": "int(11)",
-                        "Collation": null,
-                        "Null": "NO",
-                        "Key": "PRI",
-                        "Default": null,
-                        "Extra": "auto_increment",
-                        "Comment": ""
-                    },
-                    "class": {
-                        "Field": "class",
+                    "title": {
+                        "Field": "title",
                         "Type": "varchar(255)",
                         "Collation": "latin1_swedish_ci",
                         "Null": "NO",
@@ -998,104 +988,16 @@
                         "Default": null,
                         "Extra": "",
                         "Comment": ""
-                    },
-                    "name": {
-                        "Field": "name",
-                        "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "bucket": {
-                        "Field": "bucket",
-                        "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
-                        "Null": "YES",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "expiry": {
-                        "Field": "expiry",
-                        "Type": "int(11)",
-                        "Collation": null,
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "content": {
-                        "Field": "content",
-                        "Type": "longtext",
-                        "Collation": "latin1_swedish_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    }
-                },
-                "keys": {
-                    "PRIMARY": {
-                        "1": {
-                            "Table": "Cache",
-                            "Non_unique": "0",
-                            "Key_name": "PRIMARY",
-                            "Seq_in_index": "1",
-                            "Column_name": "id",
-                            "Collation": "A",
-                            "Sub_part": null,
-                            "Packed": null,
-                            "Null": "",
-                            "Index_type": "BTREE",
-                            "Comment": "",
-                            "Index_comment": ""
-                        }
                     }
                 }
             },
-            "PressKitRelationship": {
+            "StateFlowState": {
                 "fields": {
-                    "class": {
-                        "Field": "class",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "ownerClass": {
-                        "Field": "ownerClass",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "MUL",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "property": {
-                        "Field": "property",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "subjectClass": {
-                        "Field": "subjectClass",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
+                    "owner": {
+                        "Field": "owner",
+                        "Type": "int(11)",
+                        "Collation": null,
+                        "Null": "YES",
                         "Key": "MUL",
                         "Default": null,
                         "Extra": "",
@@ -1105,31 +1007,15 @@
                 "keys": {
                     "owner": {
                         "1": {
-                            "Table": "PressKitRelationship",
+                            "Table": "StateFlowState",
                             "Non_unique": "1",
                             "Key_name": "owner",
                             "Seq_in_index": "1",
-                            "Column_name": "ownerClass",
+                            "Column_name": "owner",
                             "Collation": "A",
-                            "Sub_part": "191",
+                            "Sub_part": null,
                             "Packed": null,
-                            "Null": "",
-                            "Index_type": "BTREE",
-                            "Comment": "",
-                            "Index_comment": ""
-                        }
-                    },
-                    "subjectClass": {
-                        "1": {
-                            "Table": "PressKitRelationship",
-                            "Non_unique": "1",
-                            "Key_name": "subjectClass",
-                            "Seq_in_index": "1",
-                            "Column_name": "subjectClass",
-                            "Collation": "A",
-                            "Sub_part": "191",
-                            "Packed": null,
-                            "Null": "",
+                            "Null": "YES",
                             "Index_type": "BTREE",
                             "Comment": "",
                             "Index_comment": ""

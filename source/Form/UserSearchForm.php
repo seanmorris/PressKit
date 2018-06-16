@@ -2,10 +2,8 @@
 namespace SeanMorris\PressKit\Form;
 class UserSearchForm extends \SeanMorris\PressKit\Form\Form
 {
-	public function __construct()
+	public function __construct(array $skeleton = [])
 	{
-		$skeleton = [];
-
 		$skeleton['_method'] = 'POST';
 
 		$skeleton['id'] = [
@@ -13,7 +11,7 @@ class UserSearchForm extends \SeanMorris\PressKit\Form\Form
 		];
 
 		$skeleton['keyword'] = [
-			'_title' => 'Search Term'
+			'_title' => 'Keyword'
 			, 'type' => 'text'
 		];
 
