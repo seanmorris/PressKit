@@ -112,9 +112,9 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			\SeanMorris\Ids\Log::debug("Model lacks state.");
 
+			return true;
 			if($action === 'read' || $action === 'view')
 			{
-				return true;
 			}
 
 			return $user->hasRole('SeanMorris\Access\Role\Administrator');
