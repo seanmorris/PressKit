@@ -87,19 +87,18 @@ class Resource
 		{
 			$this->body = $this->processObjects($this->models, $type);
 			$this->meta['count'] = count($this->models);
-		}
 
-		if($this->model)
+			foreach($this->models as $object)
+			{
+				if(isset($object->publicId))
+				{
+					$objectIds[$object->publicId] = $object->publicId;
+				}
+			}
+		}
+		else if($this->model)
 		{
 			$this->body = $this->processObject($this->model, $type);
-		}
-
-		foreach($this->models as $object)
-		{
-			if(isset($object->publicId))
-			{
-				$objectIds[$object->publicId] = $object->publicId;
-			}
 		}
 
 		$messages = \SeanMorris\Message\MessageHandler::get();
