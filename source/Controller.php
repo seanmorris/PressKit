@@ -1599,7 +1599,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 
-		return FALSE;
+		return [];
 	}
 
 	public function _dynamicId($model)

@@ -15,13 +15,28 @@ abstract class Queue
 		, CHANNEL_NO_ACK    = TRUE
 		, CHANNEL_EXCLUSIVE = FALSE
 		, CHANNEL_WAIT      = FALSE
-		, BATCH_ACKS        = FALSE;
+		, BATCH_ACKS        = FALSE
+
+		, BROADCAST_QUEUE   = '::broadcast'
+		, SEND_QUEUE        = '::send';
 	protected static $channel;
 	abstract protected static function recieve($message);
 	public static function send($message)
 	{
 		$channel = static::getChannel(get_called_class());
-		$channel->basic_publish(new AMQPMessage(serialize($message)), '', get_called_class());
+		$channel->basic_publish(
+			new AMQPMessage(serialize($message))
+			, ''
+			, get_called_class() . static::SEND_QUEUE
+		);
+	}
+	public static function broadcast($message)
+	{
+		$channel = static::getChannel(get_called_class());
+		$channel->basic_publish(
+			new AMQPMessage(serialize($message))
+			, get_called_class() . static::BROADCAST_QUEUE
+		);
 	}
 	public static function manageReciept($message)
 	{
@@ -79,11 +94,18 @@ abstract class Queue
 			);
 			$channel = $connection->channel();
 			$channel->queue_declare(
-				get_called_class()
+				get_called_class() . static::SEND_QUEUE
 				, static::QUEUE_PASSIVE
 				, static::QUEUE_DURABLE
 				, static::QUEUE_EXCLUSIVE
 				, static::QUEUE_AUTO_DELETE
+			);
+			$channel->exchange_declare(
+				get_called_class() . static::BROADCAST_QUEUE
+				, 'fanout'
+				, FALSE
+				, FALSE
+				, FALSE
 			);
 			register_shutdown_function(function() use($connection, $channel){
 				$channel->close();
@@ -98,7 +120,18 @@ abstract class Queue
 		$callback = [get_called_class(), 'manageReciept'];
 		$channel = static::getChannel(get_called_class());
 		$channel->basic_consume(
-			get_called_class()
+			get_called_class() . static::SEND_QUEUE
+			, ''
+			, static::CHANNEL_LOCAL
+			, static::CHANNEL_NO_ACK
+			, static::CHANNEL_EXCLUSIVE
+			, static::CHANNEL_WAIT
+			, $callback
+		);
+		list($queue_name, ,) = $channel->queue_declare("");
+		$channel->queue_bind($queue_name, get_called_class() . static::BROADCAST_QUEUE);
+		$channel->basic_consume(
+			$queue_name
 			, ''
 			, static::CHANNEL_LOCAL
 			, static::CHANNEL_NO_ACK
