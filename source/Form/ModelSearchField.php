@@ -65,17 +65,6 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 			];
 		}
 
-		$childFields['selected'] = [
-			'class' => 'selectedModel'
-			, 'type' => 'fieldset'
-			, '-PressKit-Field' => 'indicator'
-		];
-
-		$childFields['selected']['_children']['container'] = [
-			'type' => 'html'
-			, 'value' => '<div class = "selection">test</div>'
-		];
-
 		$keywordFieldName = 'keyword';
 
 		if(isset($fieldDef['name']) && !(isset($fieldDef['_multi']) || !$fieldDef['_multi']))
@@ -99,13 +88,13 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 
 		$childFields['id'] = [
 			'_title' => 'id'
-			, 'type' => 'hidden'
+			, 'type' => 'text'
 			, '-PressKit-Field' => 'id'
 		];
 
 		$childFields['class'] = [
 			'_title' => 'class'
-			, 'type' => 'hidden'
+			, 'type' => 'text'
 			, '-PressKit-Field' => 'class'
 		];
 
@@ -113,6 +102,17 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		{
 			$childFields[$name] = $subChild;
 		}
+
+		$childFields['selected'] = [
+			'class' => 'selectedModel'
+			, 'type' => 'fieldset'
+			, '-PressKit-Field' => 'indicator'
+		];
+
+		$childFields['selected']['_children']['container'] = [
+			'type' => 'html'
+			, 'value' => '<div class = "selection">test</div>'
+		];
 
 		if(isset($fieldDef['_multi']) && $fieldDef['_multi'])
 		{

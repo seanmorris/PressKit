@@ -73,7 +73,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 
 		$children['_children']['id'] = [
 			'_title' => 'id'
-			, 'type' => 'hidden'
+			, 'type' => 'text'
 			, '-PressKit-Field' => 'id'
 		];
 

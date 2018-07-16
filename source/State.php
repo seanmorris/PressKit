@@ -85,16 +85,20 @@ class State extends \SeanMorris\Ids\Model
 	protected function _can($user, $point, $action = 'read')
 	{
 		$pointCheck = substr($point, 0, 1) == '$';
+
+		$userArray = $user->unconsume(0, TRUE);
 		
 		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if user can %s%s %s during state %s'
+			'Checking if %s[%d] can %s%s on %s[%d]'
+			, get_class($user)
+			, $userArray['id']
 			, $action
 			,  ($pointCheck
 				? sprintf(' (on %s)', $point)
 				: NULL)
 			, get_class($this)
 			, $this->state
-		), $user);
+		));
 
 		if(!isset(static::$states[$this->state][$point])
 			&& $parent = static::getParent($this)

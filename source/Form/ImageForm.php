@@ -6,14 +6,6 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 	{
 		$skeleton['_method'] = 'POST';
 
-		$skeleton['id'] = [
-			'type' => 'hidden'
-		];
-
-		$skeleton['publicId'] = [
-			'type' => 'hidden'
-		];
-
 		$skeleton['title'] = [
 			'_title' => 'Title',
 		];
@@ -23,16 +15,24 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 			'type' => 'file',
 		];
 
-		$skeleton['state'] = [
-			'_title' => 'State'
-			, '_subtitle' => 'State'
-			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
-			, '_multi' => FALSE
-		];
+		// $skeleton['state'] = [
+		// 	'_title' => 'State'
+		// 	, '_subtitle' => 'State'
+		// 	, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
+		// 	, '_multi' => FALSE
+		// ];
 
 		$skeleton['submit'] = [
 			'_title' => 'Submit',
 			'type' => 'submit',
+		];
+
+		$skeleton['id'] = [
+			'type' => 'hidden'
+		];
+
+		$skeleton['publicId'] = [
+			'type' => 'hidden'
 		];
 
 		parent::__construct($skeleton);

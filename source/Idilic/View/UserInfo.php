@@ -10,6 +10,10 @@ Information for user[<?=$user->id;?>] "<?=$user->username;?>":
 
 	Username:	<?=$user->username;?>
 
+	Is Admin?:	<?=$user->hasRole('\SeanMorris\Access\Role\Administrator')
+		? 'yes'
+		: 'no';?>
+
 	Public Id:	<?=$user->publicId;?>
 	
 	Created:	<?=$user->created;?>

@@ -6,13 +6,14 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected static
 	$byOwner = [
-		'join' => [
-			'SeanMorris\PressKit\State' => [
-				'on'     => 'state'
-				, 'by'   => 'owner'
-				, 'type' => 'INNER'
-			]
-		]
+		'with' => ['state' => 'byOwner']
+		// 'join' => [
+		// 	'SeanMorris\PressKit\State' => [
+		// 		'on'     => 'state'
+		// 		, 'by'   => 'owner'
+		// 		, 'type' => 'INNER'
+		// 	]
+		// ]
 	];
 
 	public function create()
@@ -122,6 +123,7 @@ class Model extends \SeanMorris\Ids\Model
 
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
+
 		/*
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Checking %s(%d) has a state... ', get_called_class(), $this->id)
@@ -132,6 +134,12 @@ class Model extends \SeanMorris\Ids\Model
 		if(!$state)
 		{
 			$state = $this->ensureState();
+
+			if(is_array($state))
+			{
+				\SeanMorris\Ids\Log::error($state);
+				die;
+			}
 
 			if(!$state)
 			{
@@ -161,7 +169,6 @@ class Model extends \SeanMorris\Ids\Model
 		else
 		{
 			$allowed = $state->can($user, $action);
-
 		}
 
 		\SeanMorris\Ids\Log::debug(sprintf(
@@ -319,11 +326,11 @@ class Model extends \SeanMorris\Ids\Model
 		return $skeleton;
 	}
 
-	protected function ensureState()
+	protected function ensureState($force = FALSE)
 	{
 		if(isset(static::$hasOne['state'])
 			&& static::$hasOne['state']
-			&& !$this->state
+			&& (!$this->state || $force)
 		){
 			\SeanMorris\Ids\Log::debug(
 				'Creating new state '
@@ -356,12 +363,15 @@ class Model extends \SeanMorris\Ids\Model
 		}
 		*/
 
-		// \SeanMorris\Ids\Log::debug('Trying to __get ' . $name);
+		\SeanMorris\Ids\Log::debug('Trying to __get ' . $name);
 
 		if(!$this->can('read', $name))
 		{
+			\SeanMorris\Ids\Log::debug('Nope.');
 			return;
 		}
+
+		\SeanMorris\Ids\Log::debug('ok.');
 
 		return parent::__get($name);
 	}

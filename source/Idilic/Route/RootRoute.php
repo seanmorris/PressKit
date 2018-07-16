@@ -334,8 +334,14 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
 
+		if(!$password)
+		{
+			\SeanMorris\Ids\Idilic\Cli::error("Password:");
+			$password = \SeanMorris\Ids\Idilic\Cli::in();
+		}
+
 		$user->consume(['password' => $password], TRUE);
-		$user->save();
+		$user->forcesave();
 
 		if(!$user)
 		{

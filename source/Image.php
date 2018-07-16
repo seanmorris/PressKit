@@ -11,6 +11,8 @@ class Image extends \SeanMorris\PressKit\Model
 		, $title
 		, $url
 		, $state
+		, $original
+		, $crop
 		, $_content
 	;
 
@@ -53,16 +55,24 @@ class Image extends \SeanMorris\PressKit\Model
 			'where'  => [['publicId' => 'UNHEX(?)']]
 			, 'with' => ['state' => 'byNull']
 		]
-		, $byAll = []
-		, $byModerated = [
-			'join' => [
-				'SeanMorris\PressKit\State' => [
-					'on' => 'state'
-					, 'by' => 'moderated'
-					, 'type' => 'LEFT'
-				]
+		, $byCropsAndIds = [
+			'where'   => [
+				['original' => '?', 'IN', '%s', 'id', FALSE]
+				, ['crop'   => '?', 'IN', '%s', 'crop', FALSE]
+				// , ['deleted' => '1', '!=',]
 			]
 			, 'with' => ['state' => 'byNull']
+		]
+		, $byAll = []
+		, $byModerated = [
+			'with' => ['state' => 'byNull']
+			// , 'join' => [
+			// 	'SeanMorris\PressKit\State' => [
+			// 		'on' => 'state'
+			// 		, 'by' => 'moderated'
+			// 		, 'type' => 'LEFT'
+			// 	]
+			// ]
 		]
 		, $bySearch = [
 			'named' => TRUE
