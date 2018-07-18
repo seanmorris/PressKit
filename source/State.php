@@ -43,13 +43,18 @@ class State extends \SeanMorris\Ids\Model
 		]
 		, $byId = [
 			'where' => [['id' => '?']]
+			, 'index' => ['class']
+		]
+		, $byNull = [
+			'index' => ['class']
 		]
 		, $byModerated = [
 			'where' => ['AND' => [['state' => 0, '>']]]
 			// Also good: 'where' => [['state' => '0', '>']]
 		]
 		, $byOwner = [
-			'where' => [['owner' => '?']]
+			'where'   => [['owner' => '?']]
+			, 'index' => ['class']
 		]
 		, $byStateNamed = [
 			'named' => TRUE

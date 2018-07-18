@@ -21,7 +21,7 @@ class Migration
 
 		if(!$all)
 		{
-			return array_filter(
+			$classes = array_filter(
 				static::classify($classes)
 				, function($class) use($current, $package)
 				{
@@ -38,6 +38,10 @@ class Migration
 				}
 			);
 		}
+
+		usort($classes, function($a, $b) {
+			return $a->version <=> $b->version;
+		});
 
 		return $classes;
 	}

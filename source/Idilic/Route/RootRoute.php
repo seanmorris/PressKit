@@ -423,12 +423,20 @@ class RootRoute implements \SeanMorris\Ids\Routable
 					$package->setVar('migration:' . $migration->namespace, -1);
 				}
 
+				\SeanMorris\Ids\Idilic\Cli::error($migration->class . '... ');
+
 				if(($migration->class)::apply() === TRUE)
 				{
 					$currentPackage = $package->setVar(
 						'migration:' . $migration->namespace
 						, $migration->version
 					);
+
+					\SeanMorris\Ids\Idilic\Cli::error("[ Ok. ]\n");
+				}
+				else
+				{
+					\SeanMorris\Ids\Idilic\Cli::error("[ Error. ]\n");
 				}
 			}
 			, $migrations
