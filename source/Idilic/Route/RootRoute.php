@@ -367,4 +367,71 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			var_dump($role);
 		}
 	}
+
+	public function migrate($router)
+	{
+		$migrations = \SeanMorris\PressKit\Migration::list();
+
+		$args = $router->path()->consumeNodes();
+		$real = array_shift($args);
+
+		if(!$real)
+		{
+			printf(
+				"The following migrations will be applied:\n%s\n"
+				, implode(PHP_EOL, array_map(
+					function($migration)
+					{
+						return sprintf(
+							"[%05d] %s\n\tfrom %s"
+							, $migration->version
+							, $migration->short
+							, $migration->namespace
+						);
+					}
+					, $migrations
+				))
+			);
+
+			while(1)
+			{
+				$answer = \SeanMorris\Ids\Idilic\Cli::question(
+					'Apply the above migrations? (y/n)'
+				);
+
+				if($answer === 'y')
+				{
+					break;
+				}
+
+				if($answer === 'n')
+				{
+					return;
+				}
+			}
+		}
+
+		$package = \SeanMorris\Ids\Package::getRoot();
+
+		array_map(
+			function($migration) use($package)
+			{
+				$currentPackage = $package->getVar('migration:' . $migration->namespace);
+
+				if($currentPackage === NULL)
+				{
+					$package->setVar('migration:' . $migration->namespace, -1);
+				}
+
+				if(($migration->class)::apply() === TRUE)
+				{
+					$currentPackage = $package->setVar(
+						'migration:' . $migration->namespace
+						, $migration->version
+					);
+				}
+			}
+			, $migrations
+		);
+	}	
 }
