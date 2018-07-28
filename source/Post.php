@@ -41,7 +41,7 @@ class Post extends \SeanMorris\PressKit\Model
 		, $hasMany = [
 			'comments' => 'SeanMorris\PressKit\Comment'
 			//, 'comments2' => 'SeanMorris\PressKit\Comment'
-			, 'images' => 'SeanMorris\PressKit\Image'
+			, 'images' => 'SeanMorris\LetsVuew\Image\Model'
 		]
 		, $byPublicId = [
 			'where' => [['publicId' => 'UNHEX(?)']]
@@ -55,13 +55,13 @@ class Post extends \SeanMorris\PressKit\Model
 					, ['body' => '?', 'LIKE', '%%%s%%', 'keyword', FALSE]
 				]
 			]
-			, 'join' => [
-				'SeanMorris\PressKit\State' => [
-					'on' => 'state'
-					, 'by' => 'stateNamed'
-					, 'type' => 'INNER'
-				]
-			]
+			// , 'join' => [
+			// 	'SeanMorris\PressKit\State' => [
+			// 		'on' => 'state'
+			// 		, 'by' => 'stateNamed'
+			// 		, 'type' => 'INNER'
+			// 	]
+			// ]
 		]
 		, $byModerated = [
 			'join' => [
