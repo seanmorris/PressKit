@@ -158,8 +158,10 @@ class Form extends \SeanMorris\Form\Form
 
 				$fieldValue = $field->value();
 
-				if(is_scalar($fieldValue) || is_null($fieldValue))
-				{
+				if(is_scalar($fieldValue)
+					|| is_null($fieldValue)
+					|| $field instanceof \SeanMorris\Form\FileField
+				){
 					$structure->$name->value = $fieldValue;
 				}
 				else
