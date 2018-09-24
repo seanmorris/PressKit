@@ -124,14 +124,16 @@ class Model extends \SeanMorris\Ids\Model
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
 
-		/*
 		\SeanMorris\Ids\Log::debug(
-			sprintf('Checking %s(%d) has a state... ', get_called_class(), $this->id)
+			sprintf(
+				'Checking %s(%d) has a state... '
+				, get_called_class()
+				, $this->id
+			)
 			, $state
 		);
-		*/
 
-		if(!$state)
+		if(!$state || !is_object($state))
 		{
 			$state = $this->ensureState();
 
@@ -141,9 +143,14 @@ class Model extends \SeanMorris\Ids\Model
 				die;
 			}
 
-			if(!$state)
+			if(!$state || !is_object($state))
 			{
-				\SeanMorris\Ids\Log::error(sprintf('Cannot load state for %s(%d).', get_called_class(), $this->id));
+				\SeanMorris\Ids\Log::error(sprintf(
+					'Cannot load state for %s(%d).'
+					, get_called_class()
+					, $this->id
+				));
+
 				return FALSE;
 			}
 		}
@@ -328,9 +335,12 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected function ensureState($force = FALSE)
 	{
+		\SeanMorris\Ids\Log::debug(
+			'ENSURE'
+		);
 		if(isset(static::$hasOne['state'])
 			&& static::$hasOne['state']
-			&& (!$this->state || $force)
+			&& ((!$this->state || !is_object($this->state)) || $force)
 		){
 			\SeanMorris\Ids\Log::debug(
 				'Creating new state '
@@ -344,8 +354,14 @@ class Model extends \SeanMorris\Ids\Model
 			$state->consume([
 				'owner' => $owner ? $owner->id : NULL
 			]);
-			$state->save();
-			$this->state = $state->id;
+
+			if($this->id)
+			{
+				$state->save();
+				// $this->state = $state->id;
+			}
+
+			$this->state = $state;
 			$this->id && $this->forceSave();
 
 			return $state;

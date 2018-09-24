@@ -321,24 +321,111 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			}
 			else
 			{
-				$messages->addFlash(
-					new \SeanMorris\Message\AlertMessage('Record NOT deleted.')
-				);
+				// $messages->addFlash(
+				// 	new \SeanMorris\Message\AlertMessage('Record NOT deleted.')
+				// );
 
-				throw new \SeanMorris\Ids\Http\Http303(
-					$router->path()->pathString(1)
-				);
+				// throw new \SeanMorris\Ids\Http\Http303(
+				// 	$router->path()->pathString(1)
+				// );
 			}
 		}
 
 		$formTheme = $this->formTheme;
 		$formVals = $form->getValues();
 		$formPostVals = $form->getValues();
+
+		$get = $router->request()->get();
+		$parentController = $router->parent()->routes();
+
+		if(isset($get['api']) && !$router->subRouted())
+		{
+			if($get['api'] == 'html')
+			{
+				print $form->render($formTheme);
+			}
+			else if($get['api'])
+			{
+				$resourceClass = $parentController::$resourceClass
+					?? static::$resourceClass;
+
+				$resource = new $resourceClass($router);
+
+				$resource->meta('form', $form->toStructure());
+				$resource->model($model);
+
+				echo $resource->encode($get['api']);
+				die;
+			}
+		}
+
 		$return = $form->render($formTheme);
 
 		$this->context['title'] = 'Delete ' . $model->title;
 
 		return $return;
+	}
+
+	public function moderate($router)
+	{
+		if(!$model = $this->getModel($router))
+		{
+			return FALSE;
+		}
+
+		if(!$model::canHaveOne('state'))
+		{
+			return FALSE;
+		}
+
+		$state = $model->getSubject('state');
+
+		$skeleton = [];
+		$skeleton['state'] = [
+			'_title' => 'State'
+			, '_subtitle' => 'State'
+			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
+			, '_multi' => FALSE
+		];
+
+		$skeleton['submit'] = [
+			'_title' => 'Submit'
+			, 'type' => 'submit'
+		];
+
+		$post = $router->request()->post();
+
+		if($post && $post['state'] ?? FALSE)
+		{
+			$state->consume($post['state']);
+			$state->save();
+		}
+
+		$form = new \SeanMorris\PressKit\Form\Form($skeleton);
+
+		$form->setValues($model->unconsume(2));
+
+		$formTheme = $this->formTheme;
+		$formVals = $form->getValues();
+		$formPostVals = $form->getValues();
+		// $return = $form->render($formTheme);
+
+		$get = $router->request()->get();
+
+		$parentController = $router->parent()->routes();
+
+		$resourceClass = $parentController::$resourceClass
+			?? static::$resourceClass;
+
+		$resource = new $resourceClass($router);
+
+		$resource->meta('form', $form->toStructure());
+		$resource->model($model);
+
+		echo $resource->encode($get['api']);
+		die;
+
+		return $form;
 	}
 
 	public function owners($router)

@@ -118,6 +118,7 @@ class Resource
 			, 'meta'		=> $this->meta
 			, 'body'		=> $this->body
 			, 'navigation'	=> $this->navigation
+			, 'sessionId'   => session_id()
 		];
 	}
 

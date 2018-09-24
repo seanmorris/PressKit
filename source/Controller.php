@@ -29,7 +29,7 @@ class Controller implements \SeanMorris\Ids\Routable
 		, $pageSize = 10
 		, $pageSpread = NULL
 		, $loadBy = NULL
-		, $listBy = 'byNull'
+		, $listBy = NULL
 		, $searchBy = 'bySearch'
 		, $menusBuilt = []
 		, $menus = []
@@ -958,11 +958,20 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$listBy = 'ByModerated';
 
+				$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
+
+				if(!$modelClass::hasSelector($listBy)
+					|| $user->hasRole('SeanMorris\Access\Role\Administrator')
+				){
+					$listBy = 'ByNull';
+				}
+
 				if(static::$listBy)
 				{
 					$listBy = ucwords(static::$listBy);
-					$countBy = 'count' . $listBy;
 				}
+
+				$countBy = 'count' . $listBy;
 
 				$listParams = [];
 				$listType = $path->getNode(-1);

@@ -241,7 +241,7 @@
                         "Field": "title",
                         "Type": "varchar(255)",
                         "Collation": "latin1_swedish_ci",
-                        "Null": "NO",
+                        "Null": "YES",
                         "Key": "",
                         "Default": null,
                         "Extra": "",
@@ -253,7 +253,7 @@
                         "Collation": "latin1_swedish_ci",
                         "Null": "NO",
                         "Key": "",
-                        "Default": "",
+                        "Default": null,
                         "Extra": "",
                         "Comment": ""
                     },
@@ -518,7 +518,7 @@
                     "class": {
                         "Field": "class",
                         "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
+                        "Collation": "utf8mb4_general_ci",
                         "Null": "NO",
                         "Key": "",
                         "Default": null,
@@ -528,7 +528,7 @@
                     "ownerClass": {
                         "Field": "ownerClass",
                         "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
+                        "Collation": "utf8mb4_general_ci",
                         "Null": "NO",
                         "Key": "MUL",
                         "Default": null,
@@ -548,7 +548,7 @@
                     "property": {
                         "Field": "property",
                         "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
+                        "Collation": "utf8mb4_general_ci",
                         "Null": "NO",
                         "Key": "",
                         "Default": null,
@@ -558,7 +558,7 @@
                     "subjectClass": {
                         "Field": "subjectClass",
                         "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
+                        "Collation": "utf8mb4_general_ci",
                         "Null": "NO",
                         "Key": "MUL",
                         "Default": null,
@@ -594,6 +594,64 @@
                             "Key_name": "PRIMARY",
                             "Seq_in_index": "1",
                             "Column_name": "id",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        }
+                    },
+                    "relationship": {
+                        "1": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "1",
+                            "Column_name": "ownerClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "2": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "2",
+                            "Column_name": "ownerId",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "3": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "3",
+                            "Column_name": "subjectClass",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "4": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "4",
+                            "Column_name": "subjectId",
                             "Collation": "A",
                             "Sub_part": null,
                             "Packed": null,
@@ -727,7 +785,7 @@
                             "Seq_in_index": "1",
                             "Column_name": "ownerClass",
                             "Collation": "A",
-                            "Sub_part": "191",
+                            "Sub_part": null,
                             "Packed": null,
                             "Null": "",
                             "Index_type": "BTREE",
@@ -757,7 +815,7 @@
                             "Seq_in_index": "1",
                             "Column_name": "subjectClass",
                             "Collation": "A",
-                            "Sub_part": "191",
+                            "Sub_part": null,
                             "Packed": null,
                             "Null": "",
                             "Index_type": "BTREE",
@@ -882,66 +940,6 @@
                             "Comment": "",
                             "Index_comment": ""
                         }
-                    }
-                }
-            }
-        },
-        "1": {
-            "PressKitImage": {
-                "fields": {
-                    "title": {
-                        "Field": "title",
-                        "Type": "varchar(255)",
-                        "Collation": "latin1_swedish_ci",
-                        "Null": "YES",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    }
-                }
-            },
-            "PressKitRelationship": {
-                "fields": {
-                    "class": {
-                        "Field": "class",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "ownerClass": {
-                        "Field": "ownerClass",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "MUL",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "property": {
-                        "Field": "property",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
-                    },
-                    "subjectClass": {
-                        "Field": "subjectClass",
-                        "Type": "varchar(255)",
-                        "Collation": "utf8mb4_general_ci",
-                        "Null": "NO",
-                        "Key": "MUL",
-                        "Default": null,
-                        "Extra": "",
-                        "Comment": ""
                     }
                 }
             }

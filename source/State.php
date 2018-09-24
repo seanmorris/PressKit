@@ -18,14 +18,15 @@ class State extends \SeanMorris\Ids\Model
 				, 'delete'	 => FALSE
 			]
 		]
-		, $transitions	= [
-			0 => [
-				1 => 32
-			]
-			, 1 => [
-				0 => -1
-			]
-		]
+		, $transitions	= []
+		// , $transitions	= [
+		// 	0 => [
+		// 		1 => 32
+		// 	]
+		// 	, 1 => [
+		// 		0 => -1
+		// 	]
+		// ]
 
 		, $hasOne = [
 			'owner' => 'SeanMorris\Access\User'
@@ -252,11 +253,26 @@ class State extends \SeanMorris\Ids\Model
 				return $super;
 			}
 
-			return false;
+			if($user->hasRole('\SeanMorris\Access\Role\Administrator'))
+			{
+				return TRUE;
+			}
+			else
+			{
+				return FALSE;
+			}
+
 		}
 		elseif(!isset(static::$transitions[$this->state][$to]))
 		{
-			return false;
+			if($user->hasRole('\SeanMorris\Access\Role\Administrator'))
+			{
+				return TRUE;
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 
 		$role = static::$transitions[$this->state][$to];
@@ -265,7 +281,7 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if(!isset($role[0], $role[1]))
 			{
-				return false;
+				return FALSE;
 			}
 
 			if($this->owner == $user->publicId)
@@ -288,15 +304,15 @@ class State extends \SeanMorris\Ids\Model
 
 		if($role < 0)
 		{
-			return false;
+			return FALSE;
 		}
 
 		if($user->hasRole($role))
 		{
-			return true;
+			return TRUE;
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	protected static function getParent($state)
@@ -340,8 +356,13 @@ class State extends \SeanMorris\Ids\Model
 		}
 	}
 
-	public function unconsume($children = 0)
+	public function unconsume($children = NULL)
 	{
-		return parent::unconsume(1);
+		if($children === NULL)
+		{
+			return parent::unconsume(1);			
+		}
+
+		return parent::unconsume($children);
 	}
 }
