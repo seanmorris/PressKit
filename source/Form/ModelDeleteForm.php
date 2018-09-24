@@ -15,7 +15,7 @@ class ModelDeleteForm extends \SeanMorris\PressKit\Form\Form
 
 		$skeleton['del']['_children']['delete'] = [
 			'_title' => NULL,
-			'type' => 'radios',
+			'type' => 'select',
 			'value' => '0',
 			'_options' => [
 				'Yes'  => 1
