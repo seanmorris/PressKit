@@ -81,11 +81,15 @@ class Resource
 		unset($this->navigation['view']);
 	}
 
-	protected function toStructure($type)
+	protected function toStructure($type, $depth = 3)
 	{
 		if($this->models)
 		{
-			$this->body = $this->processObjects($this->models, $type);
+			$this->body = $this->processObjects(
+				$this->models
+				, $type
+				, $depth
+			);
 			$this->meta['count'] = count($this->models);
 
 			foreach($this->models as $object)
@@ -131,7 +135,7 @@ class Resource
 			// if($parent === NULL && $index === NULL)
 			if($parent === NULL)
 			{
-				$depth = 3;
+				$depth = 2;
 			}
 		}
 
@@ -211,19 +215,19 @@ class Resource
 		);
 	}
 
-	public function toJson($type = 'json')
+	public function toJson($type = 'json', $depth = 3)
 	{
-		return json_encode($this->toStructure($type), JSON_PRETTY_PRINT);
+		return json_encode($this->toStructure($type, $depth), JSON_PRETTY_PRINT);
 	}
 
-	public function toXml($type = 'xml')
+	public function toXml($type = 'xml', $depth = 3)
 	{
-		return \xmlrpc_encode($this->toStructure($type));
+		return \xmlrpc_encode($this->toStructure($type, $depth));
 	}
 
-	public function toYaml($type = 'yaml')
+	public function toYaml($type = 'yaml', $depth = 3)
 	{
-		return yaml_emit($this->toStructure($type));
+		return yaml_emit($this->toStructure($type, $depth));
 	}
 
 	public function toHtml()
@@ -231,22 +235,22 @@ class Resource
 		return $this->controller->_renderList($this->router);
 	}
 
-	public function encode($type)
+	public function encode($type, $depth = 3)
 	{
 		if($type == 'xml')
 		{
 			header('Content-Type: application/xml');
-			return $this->toXml($type);
+			return $this->toXml($type, $depth);
 		}
 		elseif($type == 'yaml')
 		{
 			header('Content-Type: text/yaml');
-			return $this->toYaml($type);
+			return $this->toYaml($type, $depth);
 		}
 		else
 		{
 			header('Content-Type: application/json');
-			return $this->toJson($type);
+			return $this->toJson($type, $depth);
 		}
 	}
 
