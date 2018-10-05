@@ -107,31 +107,39 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
-		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
+		$user    = \SeanMorris\Access\Route\AccessRoute::_currentUser();
+		$isAdmin = $user->hasRole('SeanMorris\Access\Role\Administrator');
+
+		if($isAdmin)
+		{
+			return TRUE;
+		}
 
 		if(!isset(static::$hasOne['state']))
 		{
-			\SeanMorris\Ids\Log::debug("Model lacks state.");
+			$isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
 
-			return true;
-			if($action === 'read' || $action === 'view')
+			// \SeanMorris\Ids\Log::debug("Model lacks state.");
+
+			if($isAdmin || $isEditor || $action === 'read' || $action === 'view')
 			{
+				return true;
 			}
 
-			return $user->hasRole('SeanMorris\Access\Role\Administrator');
+			return $isAdmin;
 		}
 
 		$stateClass = static::$hasOne['state'];
 		$state = $this->getSubject('state');
 
-		\SeanMorris\Ids\Log::debug(
-			sprintf(
-				'Checking %s(%d) has a state... '
-				, get_called_class()
-				, $this->id
-			)
-			, $state
-		);
+		// \SeanMorris\Ids\Log::debug(
+		// 	sprintf(
+		// 		'Checking %s(%d) has a state... '
+		// 		, get_called_class()
+		// 		, $this->id
+		// 	)
+		// 	, $state
+		// );
 
 		if(!$state || !is_object($state))
 		{
@@ -178,27 +186,27 @@ class Model extends \SeanMorris\Ids\Model
 			$allowed = $state->can($user, $action);
 		}
 
-		\SeanMorris\Ids\Log::debug(sprintf(
-			'Checking if user[%d] "%s" can %s'
-				. PHP_EOL
-				. '%s[%d] in state %s[%d] (%d)'
-			, $user->id
-			, $user->username
-			, $action . ($point
-				? sprintf(' property $%s on', $point)
-				: NULL
-			)
-			, get_called_class()
-			, $this->id
-			, get_class($state)
-			, $state->id
-			, $state->state
-		), $allowed ? 1:0);
+		// \SeanMorris\Ids\Log::debug(sprintf(
+		// 	'Checking if user[%d] "%s" can %s'
+		// 		. PHP_EOL
+		// 		. '%s[%d] in state %s[%d] (%d)'
+		// 	, $user->id
+		// 	, $user->username
+		// 	, $action . ($point
+		// 		? sprintf(' property $%s on', $point)
+		// 		: NULL
+		// 	)
+		// 	, get_called_class()
+		// 	, $this->id
+		// 	, get_class($state)
+		// 	, $state->id
+		// 	, $state->state
+		// ), $allowed ? 1:0);
 
-		if($allowed && $point && isset($this->{$point}))
-		{
-			\SeanMorris\Ids\Log::debug('Content:', $this->{$point});
-		}
+		// if($allowed && $point && isset($this->{$point}))
+		// {
+		// 	\SeanMorris\Ids\Log::debug('Content:', $this->{$point});
+		// }
 
 		return $allowed;
 	}
@@ -379,15 +387,15 @@ class Model extends \SeanMorris\Ids\Model
 		}
 		*/
 
-		\SeanMorris\Ids\Log::debug('Trying to __get ' . $name);
+		// \SeanMorris\Ids\Log::debug('Trying to __get ' . $name);
 
 		if(!$this->can('read', $name))
 		{
-			\SeanMorris\Ids\Log::debug('Nope.');
+			// \SeanMorris\Ids\Log::debug('Nope.');
 			return;
 		}
 
-		\SeanMorris\Ids\Log::debug('ok.');
+		// \SeanMorris\Ids\Log::debug('ok.');
 
 		return parent::__get($name);
 	}
