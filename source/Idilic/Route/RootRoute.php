@@ -441,5 +441,196 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			}
 			, $migrations
 		);
-	}	
+	}
+
+	public function sitemap($router, ...$args)
+	{
+		$entrypoint = \SeanMorris\Ids\Settings::read('entrypoint');
+		$rootRoute  = new $entrypoint;
+		$cmdArgs   = $router->path()->consumeNodes();
+
+		// '127.0.0.1:3333'
+
+		$domain = array_shift($cmdArgs);
+		$models = $cmdArgs;
+
+		$xmlWriter = new \XMLWriter();
+		$xmlWriter->openMemory();
+		$xmlWriter->setIndent(true);
+		$xmlWriter->startDocument('1.0', 'UTF-8');
+		$xmlWriter->startElement('urlset');
+
+		$staticUrls = [
+			'/'
+			, '/login'
+			, '/register'
+		];
+
+		foreach($staticUrls as $staticUrl)
+		{
+			$xmlWriter->startElement('url');
+			$xmlWriter->writeElement('loc', sprintf(
+				'%s%s'
+				, $domain
+				, $staticUrl
+			));
+			$xmlWriter->endElement();
+		}
+
+		fwrite(STDOUT, $xmlWriter->flush(true));
+
+		$entries   = 0;
+		$flushOn   = 1000;
+
+		foreach($models as $modelClass)
+		{
+			$url = sprintf(
+				'%s%s'
+				, $domain
+				, $rootRoute->_pathTo($modelClass)
+			);
+
+			fwrite(STDERR, $url . PHP_EOL);
+
+			$xmlWriter->startElement('url');
+			$xmlWriter->writeElement('loc', $url);
+			$xmlWriter->endElement();
+
+			static::all(
+				$modelClass
+				, $router
+				, function($model, $done = FALSE) use(
+					$rootRoute
+					, $xmlWriter
+					, $flushOn
+					, $domain
+					, &$entries
+				){
+					if($done)
+					{
+						return;
+					}
+
+					$state = $model->getSubject('state');
+
+					if(!$state || $state->state <= 0)
+					{
+						return;
+					}
+
+					$path = (new \SeanMorris\Ids\Path(
+
+						$rootRoute->_pathTo($model)
+
+					))->append($model->publicId);
+
+					$url = sprintf(
+						'%s%s'
+						, $domain
+						, $path->string()
+					);
+
+					fwrite(STDERR, $url . PHP_EOL);
+
+					$xmlWriter->startElement('url');
+					$xmlWriter->writeElement('loc', $url);
+					$xmlWriter->writeElement('lastmod', date(
+						'Y-m-d', $model->updated ?? $model->created
+					));
+					$xmlWriter->endElement();
+
+					if(++$entries > $flushOn)
+					{
+						fwrite(STDOUT, $xmlWriter->flush(true));
+						$entries = 0;
+					}
+				}
+			);
+		}
+
+
+		$xmlWriter->endElement();
+
+		fwrite(STDOUT, $xmlWriter->flush(true));
+	}
+
+		protected static function all(
+		$class
+		, $router
+		, callable $callback
+		, $selector = []
+		, callable $done = NULL
+	){
+		$args    = $router->path()->consumeNodes();
+
+		$lastId   = (int) (array_shift($args) ?? 0);
+		$pageSize = (int) (array_shift($args) ?? 0);
+		$max      = (int) (array_shift($args) ?? 0);
+
+		if(!$selector)
+		{
+			$selector = ['byNull' => []];
+		}
+
+		$processed = 0;
+
+		foreach($selector as $by => $args)
+		{
+			$pageArgs   = $args;
+			$pageArgs[] = $lastId;
+			$pageArgs[] = $pageSize;
+
+			$by[0] = strtoupper($by[0]);
+
+			$selectorFunction = 'generateCursor' . $by;
+
+			$models = $class::$selectorFunction(...$pageArgs);
+
+			while(true)
+			{
+				$loaded = FALSE;
+
+				foreach($models() as $model)
+				{
+					$loaded = TRUE;
+
+					fwrite(STDERR, $model->id . PHP_EOL);
+
+					$callback($model);
+
+					if($max)
+					{
+						if(++$processed >= $max)
+						{
+							break 3;
+						}
+					}
+				}
+
+				$callback(NULL, $class, $selectorFunction);
+
+				if(!$loaded)
+				{
+					break;
+				}
+
+				$lastId = $model->id;
+
+				\SeanMorris\Ids\Model::clearCache(TRUE);
+
+				$pageArgs   = $args;
+				$pageArgs[] = $lastId;
+				$pageArgs[] = $pageSize;
+				
+				$models = $class::$selectorFunction(...$pageArgs);
+
+				break;
+			}
+		}
+
+		if($done)
+		{
+			$done();
+		}
+	}
 }
