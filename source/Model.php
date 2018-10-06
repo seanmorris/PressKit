@@ -237,12 +237,12 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function getSubjects($column, $override = FALSE)
 	{
-		if(!$this->can('read', $column) && !$override)
+		if(!$override && !$this->can('read', $column))
 		{
 			return [];
 		}
 
-		return parent::getSubjects($column);
+		return parent::getSubjects($column, $override);
 	}
 
 	public function getSubject($column = NULL, $override = FALSE)
