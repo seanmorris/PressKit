@@ -153,6 +153,16 @@ class RootRoute implements \SeanMorris\Ids\Routable
 				continue;
 			}
 
+			if($class == 'SeanMorris\TheWhtRbt\Event')
+			{
+				continue;
+			}
+
+			if($class == 'SeanMorris\TheWhtRbt\Location')
+			{
+				continue;
+			}
+
 			printf(
 				'Checking models of class %s' . PHP_EOL
 					. "\t" . 'Should have states of class %s' . PHP_EOL
@@ -160,7 +170,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 				, $stateClass
 			);
 
-			$generator = $class::generateByNull();
+			$generator = $class::generateFlatByNull();
 
 			foreach($generator() as $model)
 			{
@@ -184,11 +194,6 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 				if(!$state || !$state instanceof $stateClass)
 				{
-					$stateSkeleton = [
-						'state' => 0
-						, 'owner' => 0
-					];
-
 					if($state)
 					{
 						$stateSkeleton = $state->unconsume();
@@ -196,13 +201,21 @@ class RootRoute implements \SeanMorris\Ids\Routable
 						unset($stateSkeleton['id']);
 					}
 
-					$state = new $stateClass;
+					if(!$state)
+					{
+						$stateSkeleton = [
+							'state' => 0
+							, 'owner' => 0
+						];
+
+						$state = new $stateClass;
+					}
 
 					$state->consume($stateSkeleton);
 
 					$state->save();
 
-					$model->consume(['state' => $state->id], TRUE);
+					$model->addSubject('state', $state, TRUE);
 
 					$model->save();
 
