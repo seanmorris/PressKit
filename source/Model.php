@@ -93,9 +93,9 @@ class Model extends \SeanMorris\Ids\Model
 		
 	}
 
-	public function delete()
+	public function delete($override = FALSE)
 	{
-		if($this->can('delete'))
+		if($override || $this->can('delete'))
 		{
 			return parent::delete();
 		}

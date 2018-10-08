@@ -17,10 +17,14 @@ abstract class Queue
 		, CHANNEL_WAIT      = FALSE
 		, BATCH_ACKS        = FALSE
 
+		, PREFETCH_COUNT    = 1
+		, PREFETCH_SIZE     = 0
+
 		, BROADCAST_QUEUE   = '::broadcast'
 		, SEND_QUEUE        = '::send';
 	protected static $channel;
 	abstract protected static function recieve($message);
+	public static function init(){}
 	public static function send($message)
 	{
 		$channel = static::getChannel(get_called_class());
@@ -40,9 +44,10 @@ abstract class Queue
 	}
 	public static function manageReciept($message)
 	{
+		$result = static::recieve(unserialize($message->body), $message);
+
 		if(!static::CHANNEL_NO_ACK)
 		{
-			$result = static::recieve(unserialize($message->body), $message);
 			if($result === FALSE)
 			{	
 				$message->delivery_info['channel']->basic_nack(
@@ -93,6 +98,11 @@ abstract class Queue
 				, $servers->{static::RABBIT_MQ_SERVER}->{'pass'}
 			);
 			$channel = $connection->channel();
+			$channel->basic_qos(
+				static::PREFETCH_SIZE
+				, static::PREFETCH_COUNT
+				, FALSE
+			);
 			$channel->queue_declare(
 				get_called_class() . static::SEND_QUEUE
 				, static::QUEUE_PASSIVE
@@ -118,6 +128,7 @@ abstract class Queue
 	public static function listen()
 	{
 		$callback = [get_called_class(), 'manageReciept'];
+		static::init();
 		$channel = static::getChannel(get_called_class());
 		$channel->basic_consume(
 			get_called_class() . static::SEND_QUEUE

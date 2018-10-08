@@ -15,6 +15,8 @@ class Resource
 		, $models = []
 	;
 
+	protected static $depth = 3;
+
 	public function __construct($router, $more = [], $code = 0)
 	{
 		$controller = $router->routes();
@@ -81,7 +83,7 @@ class Resource
 		unset($this->navigation['view']);
 	}
 
-	protected function toStructure($type, $depth = 3)
+	protected function toStructure($type, $depth = NULL)
 	{
 		if($this->models)
 		{
@@ -135,7 +137,7 @@ class Resource
 			// if($parent === NULL && $index === NULL)
 			if($parent === NULL)
 			{
-				$depth = 2;
+				$depth = static::$depth;
 			}
 		}
 
@@ -215,17 +217,17 @@ class Resource
 		);
 	}
 
-	public function toJson($type = 'json', $depth = 3)
+	public function toJson($type = 'json', $depth = NULL)
 	{
 		return json_encode($this->toStructure($type, $depth), JSON_PRETTY_PRINT);
 	}
 
-	public function toXml($type = 'xml', $depth = 3)
+	public function toXml($type = 'xml', $depth = NULL)
 	{
 		return \xmlrpc_encode($this->toStructure($type, $depth));
 	}
 
-	public function toYaml($type = 'yaml', $depth = 3)
+	public function toYaml($type = 'yaml', $depth = NULL)
 	{
 		return yaml_emit($this->toStructure($type, $depth));
 	}
@@ -235,7 +237,7 @@ class Resource
 		return $this->controller->_renderList($this->router);
 	}
 
-	public function encode($type, $depth = 3)
+	public function encode($type, $depth = NULL)
 	{
 		if($type == 'xml')
 		{

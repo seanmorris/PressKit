@@ -24,7 +24,7 @@ class Cache extends \SeanMorris\PressKit\Model
 	{
 		if($instance->expiry > 0 && $instance->expiry <= time())
 		{
-			$instance->delete();
+			$instance->delete(TRUE);
 
 			return FALSE;
 		}

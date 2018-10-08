@@ -137,7 +137,13 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			{
 				return FALSE;
 			}
-			return substr($class, 0, strlen($namespace)) == $namespace;
+
+			if($namespace && $namespace != '\\')
+			{
+				return substr($class, 0, strlen($namespace)) == $namespace;
+			}
+
+			return TRUE;
 		});
 
 		foreach($models as $class)
@@ -154,7 +160,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 				, $stateClass
 			);
 
-			$generator = $class::generate();
+			$generator = $class::generateByNull();
 
 			foreach($generator() as $model)
 			{
@@ -295,6 +301,26 @@ class RootRoute implements \SeanMorris\Ids\Routable
 					$delete->execute();
 				}
 			}
+		}
+	}
+
+	public function rebuildTables()
+	{
+		$db = \SeanMorris\Ids\Database::get('main');
+
+		$tableQuery = $db->prepare('SHOW TABLES');
+
+		$tableQuery->execute();
+
+		while($table = $tableQuery->fetchColumn())
+		{
+			printf("Rebuilding %s...\n", $table);
+			$rebuildQuery = $db->prepare($rebuildString = sprintf(
+				'ALTER TABLE `%s` ENGINE = InnoDB;'
+				, $table
+			));
+
+			$rebuildQuery->execute();
 		}
 	}
 
