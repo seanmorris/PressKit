@@ -219,7 +219,16 @@ class Resource
 
 	public function toJson($type = 'json', $depth = NULL)
 	{
-		return json_encode($this->toStructure($type, $depth), JSON_PRETTY_PRINT);
+		$struct = $this->toStructure($type, $depth);
+		$res = json_encode($struct, JSON_PRETTY_PRINT);
+
+		if($res === FALSE)
+		{
+			\SeanMorris\Ids\Log::error($struct, json_last_error_msg());
+			return;
+		}
+
+		return $res;
 	}
 
 	public function toXml($type = 'xml', $depth = NULL)

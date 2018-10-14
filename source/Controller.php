@@ -1143,8 +1143,9 @@ class Controller implements \SeanMorris\Ids\Routable
 				{
 					$resource->meta('form', $form->toStructure());
 				}
-				//\SeanMorris\Ids\Log::debug($resource);
-				echo $resource->encode($params['api']);
+				// \SeanMorris\Ids\Log::debug($resource);
+				\SeanMorris\Ids\Log::debug('wow.', $params['api']);
+				print $resource->encode($params['api']);
 				die;
 			}
 		}

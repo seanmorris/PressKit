@@ -471,11 +471,11 @@ class RootRoute implements \SeanMorris\Ids\Routable
 						, $migration->version
 					);
 
-					\SeanMorris\Ids\Idilic\Cli::error("[ Ok. ]\n");
+					\SeanMorris\Ids\Idilic\Cli::error("[ Ok ]\n");
 				}
 				else
 				{
-					\SeanMorris\Ids\Idilic\Cli::error("[ Error. ]\n");
+					\SeanMorris\Ids\Idilic\Cli::error("[ Error ]\n");
 				}
 			}
 			, $migrations
