@@ -446,6 +446,52 @@ class Model extends \SeanMorris\Ids\Model
 		}
 	}
 
+	protected static function solrClient()
+	{
+		static $solrSettings, $solrClient;
+
+		if(!$solrSettings)
+		{
+			$solrSettings = \SeanMorris\Ids\Settings::read('solr');
+			$solrSettings = json_decode(json_encode($solrSettings), true);
+			$solrClient = new \Solarium\Client($solrSettings);
+		}
+
+		return $solrClient;
+	}
+
+	public static function solrUpdateStart()
+	{
+		$solrClient = static::solrClient();
+
+		return $solrClient->createUpdate();
+	}
+
+	public static function solrUpdateCommit($update)
+	{
+		$solrClient = static::solrClient();
+
+		try
+		{
+			$result = $solrClient->update($update);
+		}
+		catch(\Solarium\Exception\HttpException $exception)
+		{
+			if($exception->getMessage() !== 'OK')
+			{
+				\SeanMorris\ids\Log::error($exception);
+			}
+			else
+			{
+				\SeanMorris\ids\Log::warn($exception);
+			}
+
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
 	public function toApi($depth = 0)
 	{
 		return $this->unconsume($depth);
