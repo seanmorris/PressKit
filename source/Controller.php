@@ -1052,6 +1052,52 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		$list = NULL;
 
+		if(isset($params['api']))
+		{
+			$pagerLinksKeys = array_map(
+				function($page) use($path)
+				{
+					return sprintf('Page %d', $page +1);
+				}
+				, $pagerLinks
+			);
+
+			$pagerLinks = array_map(
+				function($page) use($path)
+				{
+					return sprintf('%s?page=%s', $path->pathString(), $page);
+				}
+				, $pagerLinks
+			);
+
+			$pagerLinks = array_combine($pagerLinksKeys, $pagerLinks);
+
+			if($params['api'] == 'html' && !$router->subRouted())
+			{
+				echo $list;
+				die;
+			}
+			else if(isset($params['api']) && !$router->subRouted())
+			{
+				$resourceClass = static::$resourceClass;
+				$resource = new $resourceClass(
+					$router
+					, ['navigation' => $pagerLinks]
+				);
+				if(!$this->models) {
+					$resource->body([]);
+				}
+				if($form)
+				{
+					$resource->meta('form', $form->toStructure());
+				}
+				// \SeanMorris\Ids\Log::debug($resource);
+				\SeanMorris\Ids\Log::debug('wow.', $params['api']);
+				print $resource->encode($params['api']);
+				die;
+			}
+		}
+
 		if($theme = $this->_getTheme($router))
 		{
 			$objectClass = $objects ? get_class(current($objects)) : $objectClass;
@@ -1102,52 +1148,6 @@ class Controller implements \SeanMorris\Ids\Routable
 				, 'query'         => $_GET
 				, '__debug'       => TRUE
 			] + $this->context);
-		}
-
-		if(isset($params['api']))
-		{
-			$pagerLinksKeys = array_map(
-				function($page) use($path)
-				{
-					return sprintf('Page %d', $page +1);
-				}
-				, $pagerLinks
-			);
-
-			$pagerLinks = array_map(
-				function($page) use($path)
-				{
-					return sprintf('%s?page=%s', $path->pathString(), $page);
-				}
-				, $pagerLinks
-			);
-
-			$pagerLinks = array_combine($pagerLinksKeys, $pagerLinks);
-			
-			if($params['api'] == 'html' && !$router->subRouted())
-			{
-				echo $list;
-				die;
-			}
-			else if(isset($params['api']) && !$router->subRouted())
-			{
-				$resourceClass = static::$resourceClass;
-				$resource = new $resourceClass(
-					$router
-					, ['navigation' => $pagerLinks]
-				);
-				if(!$this->models) {
-					$resource->body([]);
-				}
-				if($form)
-				{
-					$resource->meta('form', $form->toStructure());
-				}
-				// \SeanMorris\Ids\Log::debug($resource);
-				\SeanMorris\Ids\Log::debug('wow.', $params['api']);
-				print $resource->encode($params['api']);
-				die;
-			}
 		}
 
 		return $formRendered . $list;
