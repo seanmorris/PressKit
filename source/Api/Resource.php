@@ -107,6 +107,16 @@ class Resource
 			$this->body = $this->processObject($this->model, $type);
 		}
 
+		$this->meta('currentUser', FALSE);
+
+		if($user = \SeanMorris\Access\Route\AccessRoute::_currentUser())
+		{
+			$this->meta(
+				'currentUser'
+				, $user->toApi(1)
+			);
+		}
+
 		$messages = \SeanMorris\Message\MessageHandler::get();
 
 		$this->messages += array_map(
