@@ -53,12 +53,12 @@ class Model extends \SeanMorris\Ids\Model
 
 		$instance->_selected = microtime(TRUE);
 
-		// \SeanMorris\Ids\Log::debug([
-		// 	$instance->can('read')
-		// 	, !isset($instance->state)
-		// ]);
+		\SeanMorris\Ids\Log::debug([
+			$instance
+		]);
 
-		if($instance->can('read') || !isset($instance->state))
+		// if( !$instance->can('read') ||$instance->canHaveOne('state')
+		if(!$instance->canHaveOne('state') || $instance->can('read'))
 		{
 			return $instance;
 		}
