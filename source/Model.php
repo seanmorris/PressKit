@@ -263,14 +263,14 @@ class Model extends \SeanMorris\Ids\Model
 			&& isset(static::$hasOne['state'])
 			&& !is_subclass_of(static::$hasOne['state'], '\SeanMorris\PressKit\State')
 		){
-			if(!$this->can('read', $column) && !$override)
+			if(!$override && !$this->can('read', $column))
 			{
 				return FALSE;
 			}
 		}
 		else if($column !== 'state')
 		{
-			if(!$this->can('read', $column) && !$override)
+			if(!$override && !$this->can('read', $column))
 			{
 				return FALSE;
 			}
