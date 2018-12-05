@@ -57,7 +57,6 @@ class Model extends \SeanMorris\Ids\Model
 			$instance
 		]);
 
-		// if( !$instance->can('read') ||$instance->canHaveOne('state')
 		if(!$instance->canHaveOne('state') || $instance->can('read'))
 		{
 			return $instance;
