@@ -317,6 +317,29 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		}
 	}
 
+	public function roleCleanup()
+	{
+		$userGen = \SeanMorris\Access\User::generateSubmodel();
+
+		foreach($userGen() as $user)
+		{
+			$user = $user::loadOneById($user->id);
+
+			$roles = $user->getSubjects('roles');
+
+			$newRoles = [];
+
+			foreach($roles as $role)
+			{
+				$newRoles[get_class($role)] = $role;
+			}
+
+			$user->consume(['roles' => array_values($newRoles)]);
+
+			$user->save();
+		}
+	}
+
 	public function rebuildTables()
 	{
 		$db = \SeanMorris\Ids\Database::get('main');
@@ -348,11 +371,15 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
 
+		$user = $user::loadOneById($user->id);
+
 		if(!$user)
 		{
 			printf('User "%s" not found.', $userId);
 			return;
 		}
+
+		// var_dump($user->getSubjects('roles', TRUE));
 
 		$view = new \SeanMorris\PressKit\Idilic\View\UserInfo([
 			'user' => $user
@@ -372,6 +399,8 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		{
 			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
+
+		$user = $user::loadOneById($user->id);
 
 		if(!$password)
 		{
@@ -401,10 +430,41 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 		$userId = array_shift($args);
 
-		while($role = array_shift($args))
+		if(!$user = \SeanMorris\Access\User::loadOneSubmodelById($userId))
 		{
-			var_dump($role);
+			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
+
+		$user = $user::loadOneById($user->id);
+
+		if(!$user)
+		{
+			printf('User "%s" not found.', $userId);
+			return;
+		}
+
+		while($roleClass = array_shift($args))
+		{
+			$role = new $roleClass;
+
+			$role->consume([
+				'grantedBy' => 1
+			], TRUE);
+
+			$role->forceSave();
+
+			$user->addSubject('roles', $role, TRUE);
+		}
+
+		\SeanMorris\Ids\Log::debug('Saving user!');
+
+		$user->forceSave();
+
+		\SeanMorris\Ids\Log::debug('Saving user done!');
+
+		print new \SeanMorris\PressKit\Idilic\View\UserInfo([
+			'user' => $user
+		]);
 	}
 
 	public function migrate($router)

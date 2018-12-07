@@ -187,11 +187,14 @@ class Resource
 					}
 				}
 
-				$value['_permissions'] = [
-					'read'     => $object->can('read')
-					, 'update' => $object->can('update')
-					, 'delete' => $object->can('delete')
-				];
+				if(is_a($object->canHaveOne('state'), 'SeanMorris\PressKit\State', true))
+				{
+					$value['_permissions'] = [
+						'read'     => $object->can('read')
+						, 'update' => $object->can('update')
+						, 'delete' => $object->can('delete')
+					];
+				}
 
 				break;
 
@@ -220,6 +223,7 @@ class Resource
 	public function toJson($type = 'json', $depth = NULL)
 	{
 		$struct = $this->toStructure($type, $depth);
+		
 		$res = json_encode($struct, JSON_PRETTY_PRINT);
 
 		if($res === FALSE)
@@ -234,6 +238,15 @@ class Resource
 	public function toXml($type = 'xml', $depth = NULL)
 	{
 		return \xmlrpc_encode($this->toStructure($type, $depth));
+	}
+
+
+	public function toBob($type = 'bob', $depth = NULL)
+	{
+		$struct = $this->toStructure($type, $depth);
+		
+		// return \SeanMorris\Bob\Bank::encode(['a'=>1,'b'=>2]);
+		return \SeanMorris\Bob\Bank::encode($struct);
 	}
 
 	public function toYaml($type = 'yaml', $depth = NULL)
@@ -263,6 +276,11 @@ class Resource
 		{
 			header('Content-Type: application/xml');
 			return $this->toXml($type, $depth);
+		}
+		elseif($type == 'bob')
+		{
+			header('Content-Type: application/octet-stream');
+			return $this->toBob($type, $depth);
 		}
 		elseif($type == 'yaml')
 		{

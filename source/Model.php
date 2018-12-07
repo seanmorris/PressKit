@@ -107,6 +107,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
+		if(php_sapi_name() == 'cli')
+		{
+			return true;
+		}
+
 		$user    = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 		$isAdmin = $user->hasRole('SeanMorris\Access\Role\Administrator');
 
@@ -117,6 +122,8 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!isset(static::$hasOne['state']))
 		{
+			return TRUE;
+
 			$isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
 
 			// \SeanMorris\Ids\Log::debug("Model lacks state.");
@@ -213,6 +220,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	public static function canStatic($action)
 	{
+		if(php_sapi_name() == 'cli')
+		{
+			return true;
+		}
+
 		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 
 		\SeanMorris\Ids\Log::debug(sprintf(
@@ -444,6 +456,52 @@ class Model extends \SeanMorris\Ids\Model
 
 			return (object) $resp;
 		}
+	}
+
+	protected static function solrClient()
+	{
+		static $solrSettings, $solrClient;
+
+		if(!$solrSettings)
+		{
+			$solrSettings = \SeanMorris\Ids\Settings::read('solr');
+			$solrSettings = json_decode(json_encode($solrSettings), true);
+			$solrClient = new \Solarium\Client($solrSettings);
+		}
+
+		return $solrClient;
+	}
+
+	public static function solrUpdateStart()
+	{
+		$solrClient = static::solrClient();
+
+		return $solrClient->createUpdate();
+	}
+
+	public static function solrUpdateCommit($update)
+	{
+		$solrClient = static::solrClient();
+
+		try
+		{
+			$result = $solrClient->update($update);
+		}
+		catch(\Solarium\Exception\HttpException $exception)
+		{
+			if($exception->getMessage() !== 'OK')
+			{
+				\SeanMorris\ids\Log::error($exception);
+			}
+			else
+			{
+				\SeanMorris\ids\Log::warn($exception);
+			}
+
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 	public function toApi($depth = 0)

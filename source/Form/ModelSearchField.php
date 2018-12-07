@@ -5,7 +5,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 	public function __construct($fieldDef, $form)
 	{
 		$fieldDef['type'] = 'fieldset';
-		
+
 		$fieldDef['_multi'] = isset($fieldDef['_multi'])
 			? $fieldDef['_multi']
 			: FALSE
@@ -76,7 +76,7 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 		{
 			$keywordFieldName = $fieldDef['_keywordField'];
 		}
-		
+
 		$childFields[$keywordFieldName] = [
 			'_title' => 'Search'
 			, 'type' => 'text'
@@ -119,10 +119,19 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 			$childFields['remove'] = [
 				'value' => 'Remove'
 				, 'type' => 'button'
-				, '-button' => 'PressKit.FieldSetWidget.remove'		
+				, '-button' => 'PressKit.FieldSetWidget.remove'
 			];
 		}
 
 		parent::__construct($fieldDef, $form);
+	}
+
+	public function attrs()
+	{
+		$attrs = parent::attrs();
+
+		$attrs['data-endpoint'] = $this->fieldDef['_searchEndpoint'];
+
+		return $attrs;
 	}
 }
