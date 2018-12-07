@@ -238,7 +238,18 @@ class Resource
 
 	public function toYaml($type = 'yaml', $depth = NULL)
 	{
-		return yaml_emit($this->toStructure($type, $depth));
+		$struct  = $this->toStructure($type, $depth);
+		$toArray = function($x) use(&$toArray)
+		{
+			return is_scalar($x)
+				? $x
+				: array_map($toArray, (array) $x);
+		};
+
+		return yaml_emit(
+			$toArray($struct)
+			, YAML_UTF8_ENCODING
+		);
 	}
 
 	public function toHtml()
