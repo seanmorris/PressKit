@@ -120,7 +120,9 @@ class Image extends \SeanMorris\PressKit\Model
 
 	protected function store($tmpFile)
 	{
-		$originalName = $tmpFile->originalName();
+		$originalName = is_string($tmpFile)
+			? $tmpFile
+			: $tmpFile->originalName();
 
 		preg_match(
 			'/\.(gif|png|jpe?g)$/'
@@ -228,7 +230,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 		$exif = exif_read_data($this->location());
 
-		switch ($exif['Orientation'])
+		switch ($exif['Orientation'] ?? 0)
 		{
 			case 3:
 				$orientedImage = imagerotate($orientedImage, 180, 0);
