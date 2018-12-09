@@ -99,8 +99,12 @@ class Image extends \SeanMorris\PressKit\Model
 		if(isset($skeleton['image']))
 		{
 			$tmpFile = $skeleton['image'];
-		
-			if($tmpFile && !($tmpFile instanceof \SeanMorris\Ids\Disk\File))
+
+			if(is_string($skeleton['image']) && !is_numeric($skeleton['image']))
+			{
+				$instance->url = $skeleton['url'] = $skeleton['image'];
+			}
+			else if($tmpFile && !($tmpFile instanceof \SeanMorris\Ids\Disk\File))
 			{
 				return FALSE;
 			}
@@ -151,6 +155,11 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		$this->url = $newUrl;
+
+		if($m[1] === 'jpg' || $m[1] === 'jpeg')
+		{
+			$this->orient();
+		}
 	}
 
 	protected function remove()
@@ -158,7 +167,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 	}
 
-	public function content()
+	public function location()
 	{
 		if($this->_content)
 		{
@@ -167,9 +176,81 @@ class Image extends \SeanMorris\PressKit\Model
 
 		$publicDir = \SeanMorris\Ids\Settings::read('public');
 
-		$filename = $publicDir . $image->url;
+		return $publicDir . $this->url;
+	}
 
-		return file_get_contents($filename);
+	public function content()
+	{
+		return file_get_contents($this->location());
+	}
+
+
+	protected function orient()
+	{
+		\SeanMorris\Ids\Log::debug('Orienting...', $this);
+
+		if(!$image = $this->content())
+		{
+			return;
+		}
+
+		try
+		{
+			list($originalWidth, $originalHeight,)
+				 = $info
+				 = getimagesizefromstring($image);
+
+			$imageOriginal = imagecreatefromstring($image);
+		}
+		catch (\Exception $e)
+		{
+			\SeanMorris\Ids\Log::warn('Cannot orient image', $this);
+			\SeanMorris\Ids\Log::logException($e);
+			return;
+		}
+
+		$file = new \SeanMorris\Ids\Disk\File(
+			$this->location()
+		);
+
+		$orientedImage = imagecreatetruecolor(
+			$originalWidth
+			, $originalHeight
+		);
+
+		imagecopyresampled(
+			$orientedImage
+			, $imageOriginal
+			, 0, 0, 0, 0
+			, $originalWidth, $originalHeight
+			, $originalWidth, $originalHeight
+		);
+
+		$exif = exif_read_data($this->location());
+
+		switch ($exif['Orientation'])
+		{
+			case 3:
+				$orientedImage = imagerotate($orientedImage, 180, 0);
+				break;
+
+			case 6:
+				$orientedImage = imagerotate($orientedImage, -90, 0);
+				break;
+
+			case 8:
+				$orientedImage = imagerotate($orientedImage, 90, 0);
+				break;
+		}
+
+		ob_start();
+		imagejpeg($orientedImage);
+		$imageData = ob_get_contents();
+		ob_end_clean();
+
+		$file->write($imageData, false);
+
+		\SeanMorris\Ids\Log::debug('Oriented', $this);
 	}
 
 	public function scaled($width, $height)
