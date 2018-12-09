@@ -420,6 +420,15 @@ class Controller implements \SeanMorris\Ids\Routable
 
 	public function _postRoute($router, $body, $preroutePath, $top = FALSE)
 	{
+		if($body instanceof \SeanMorris\PressKit\Api\Resource)
+		{
+			if(!$router->parent())
+			{
+				return $body->encode($_GET['api'] ?? 'json');
+			}
+			return $body;
+		}
+
 		if($body instanceof \SeanMorris\Ids\Http\Http303)
 		{
 			return;

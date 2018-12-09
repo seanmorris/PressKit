@@ -381,8 +381,11 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		$state = $model->getSubject('state');
 
 		$skeleton = [];
+
+		$skeleton['_method'] = 'POST';
+
 		$skeleton['state'] = [
-			'_title' => 'State'
+			'_title' => ''
 			, '_subtitle' => 'State'
 			, '_class' => 'SeanMorris\PressKit\Form\StateReferenceField'
 			, '_multi' => FALSE

@@ -21,7 +21,7 @@ class StateReferenceField extends \SeanMorris\Form\Fieldset
 		$fieldDef['_children']['id'] = [
 			'_title' => 'Id'
 			, 'value' => ''
-			, 'type' => 'text'
+			, 'type' => 'hidden'
 		];
 
 		$user = \SeanMorris\Access\Route\AccessRoute::_currentUser();
