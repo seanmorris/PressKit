@@ -265,6 +265,18 @@ class Image extends \SeanMorris\PressKit\Model
 
 	public function scaled($width, $height)
 	{
+		preg_match(
+			'/\.(gif|png|jpe?g)$/'
+			, $this->url
+			, $m
+		);
+
+		if(!$m)
+		{
+			\SeanMorris\Ids\Log::warn('Not a scalable image.');
+			return FALSE;
+		}
+
 		if(!$image = $this->content())
 		{
 			return;
