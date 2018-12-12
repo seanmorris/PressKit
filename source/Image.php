@@ -55,6 +55,14 @@ class Image extends \SeanMorris\PressKit\Model
 			'where'  => [['publicId' => 'UNHEX(?)']]
 			, 'with' => ['state' => 'byNull']
 		]
+		, $byCrop = [
+			'where' => [
+				['original' => '?']
+				, ['crop'   => '?']
+				// , ['deleted' => '1', '!=',]
+			]
+			, 'with' => ['state' => 'byNull']
+		]
 		, $byCropsAndIds = [
 			'where'   => [
 				['original' => '?', 'IN', '%s', 'id', FALSE]

@@ -353,6 +353,11 @@ class Model extends \SeanMorris\Ids\Model
 
 		foreach($remove as $key)
 		{
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Removing disallowed key %s'
+				, $key
+			));
+
 			unset($skeleton[$key]);
 		}
 
