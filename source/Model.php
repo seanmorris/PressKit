@@ -51,11 +51,18 @@ class Model extends \SeanMorris\Ids\Model
 			return;
 		}
 
-		$instance->_selected = microtime(TRUE);
+		$trace = debug_backtrace(TRUE);
 
-		\SeanMorris\Ids\Log::debug([
-			$instance
-		]);
+		foreach($trace as $frame)
+		{
+			if(isset($frame['class']) && is_a($frame['class'], get_class(), TRUE)
+				&& isset($frame['function']) && $frame['function'] === 'can'
+			){
+				return $instance;
+			}
+		}
+
+		$instance->_selected = microtime(TRUE);
 
 		if(!$instance->canHaveOne('state') || $instance->can('read'))
 		{
