@@ -99,9 +99,11 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			{
 				$resourceClass = $parentController::$resourceClass ?? static::$resourceClass;
 				$resource = new $resourceClass($router);
+				$resource->model($this->getModel($router));
 				//\SeanMorris\Ids\Log::debug($resource);
-				echo $resource->encode($params['api']);
-				die;
+				// echo $resource->encode($params['api']);
+				// die;
+				return $resource;
 			}
 		}
 
