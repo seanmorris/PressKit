@@ -330,4 +330,9 @@ class Resource
 	{
 		$this->model = $model;
 	}
+
+	public function __toString()
+	{
+		return $this->encode($_GET['api'] ?? 'json');
+	}
 }
