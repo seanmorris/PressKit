@@ -32,11 +32,13 @@ class Resource
 		{
 			$this->body = $more['body'];
 		}
-		else if($models = $controller->_models())
+		else if($controller instanceof \SeanMorris\PressKitController
+			&& $models = $controller->_models())
 		{
 			$this->models($models);
 		}
-		else if($model = $controller->_model())
+		else if($controller instanceof \SeanMorris\PressKitController
+			&& $model = $controller->_model())
 		{
 			$this->model($model);
 		}
@@ -59,16 +61,18 @@ class Resource
 			}
 		}
 
-		if($controller->routes)
-		{
+		if($controller instanceof \SeanMorris\PressKitController
+			&& $controller->routes
+		){
 			foreach($controller->routes as $path => $class)
 			{
 				$this->navigation[$path] = sprintf('/%s/%s', $currentPath, $path);
 			}
 		}
 
-		if($controller->subRoutes)
-		{
+		if($controller instanceof \SeanMorris\PressKitController
+			&& $controller->subRoutes
+		){
 			foreach($controller->subRoutes as $path => $class)
 			{
 				$this->navigation[$path] = sprintf('/%s/%s', $currentPath, $path);
@@ -234,7 +238,7 @@ class Resource
 	{
 		$struct = $this->toStructure($type, $depth);
 		
-		$res = json_encode($struct, JSON_PRETTY_PRINT);
+		$res = json_encode($struct);
 
 		if($res === FALSE)
 		{
@@ -289,7 +293,7 @@ class Resource
 		}
 		elseif($type == 'bob')
 		{
-			header('Content-Type: application/octet-stream');
+			// header('Content-Type: application/octet-stream');
 			return $this->toBob($type, $depth);
 		}
 		elseif($type == 'yaml')
