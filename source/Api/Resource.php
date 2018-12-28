@@ -335,4 +335,9 @@ class Resource
 		$this->body = $this->processObject($model);
 		// $this->model = $model;
 	}
+
+	public function __toString()
+	{
+		return $this->encode($_GET['api'] ?? 'json');
+	}
 }
