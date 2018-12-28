@@ -455,7 +455,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				]);
 			}
 		}
-		else if(is_array($body) && is_object(current($body)))
+		else if($theme && is_array($body) && is_object(current($body)))
 		{
 			$viewClass = $theme::resolveFirst(current($body), NULL, 'list');
 
@@ -733,11 +733,6 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 		}
 		
-		if(is_array($panels))
-		{
-			$body = implode(PHP_EOL . PHP_EOL, $panels);
-		}
-
 		if(isset($params['api']) && !$router->subRouted())
 		{
 			if($params['api'] == 'html')
@@ -749,16 +744,32 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$resourceClass = static::$resourceClass;
 				$resource = new $resourceClass($router);
-				// var_dump($body);die;
-				$resource->models([]);
-				$resource->body($body);
-				//\SeanMorris\Ids\Log::debug($resource);
+
+				// var_dump($this->model);die;
+				if($this->models)
+				{
+					$resource->models($this->models);
+				}
+				else if($this->model)
+				{
+					$resource->model($this->model);
+				}
+				else
+				{
+					$resource->body($body);
+				}
+
 				echo $resource->encode($params['api']);
 				die;
 			}
 		}
 		else
 		{
+			if(is_array($panels))
+			{
+				$body = implode(PHP_EOL . PHP_EOL, $panels);
+			}
+
 			if($theme && (!$router->parent() || $top))
 			{
 				$body = $theme::wrap($panels, [
@@ -1089,20 +1100,28 @@ class Controller implements \SeanMorris\Ids\Routable
 			else if(isset($params['api']) && !$router->subRouted())
 			{
 				$resourceClass = static::$resourceClass;
+
 				$resource = new $resourceClass(
 					$router
 					, ['navigation' => $pagerLinks]
 				);
-				if(!$this->models) {
+
+				if(!$this->models)
+				{
 					$resource->body([]);
 				}
+				else
+				{
+					$resource->models($this->models);
+				}
+
 				if($form)
 				{
 					$resource->meta('form', $form->toStructure());
 				}
-				// \SeanMorris\Ids\Log::debug($resource);
-				\SeanMorris\Ids\Log::debug('wow.', $params['api']);
+
 				print $resource->encode($params['api']);
+
 				die;
 			}
 		}
@@ -1374,13 +1393,16 @@ class Controller implements \SeanMorris\Ids\Routable
 			else if($params['api'])
 			{
 				$resourceClass = static::$resourceClass;
+
 				$resource = new $resourceClass($router);
+
 				if($form)
 				{
 					$resource->meta('form', $form->toStructure());
 				}
-				// \SeanMorris\Ids\Log::debug($resource);
+
 				echo $resource->encode($params['api']);
+
 				die;
 			}
 		}

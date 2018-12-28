@@ -10,7 +10,7 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 			'_title' => 'Title',
 		];
 
-		$skeleton['image'] = [
+		$skeleton['image'] = $skeleton['image'] + [
 			'_title' => 'Image File',
 			'type' => 'file',
 		];
@@ -36,5 +36,32 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 		];
 
 		parent::__construct($skeleton);
+	}
+
+	public function create($router, $submitPost = TRUE)
+	{
+		$formClass = $this->_getForm('edit');
+		$form      = new $formClass;
+
+		$form = new $formClass([
+			'_action' => '/' .  $router->request()->uri()
+			, '_router'		=> $router
+			, '_controller'	=> $this
+		]);
+
+		if($submitPost && $params = array_replace_recursive($router->request()->post(), $router->request()->files()))
+		{
+			if($form->validate($params))
+			{
+				$modelClass = $this->modelClass;
+				$model = new $modelClass;
+				$skeleton = $form->getValues();
+
+				var_dump($skeleton);
+				die;
+			}
+		}
+
+		die;
 	}
 }

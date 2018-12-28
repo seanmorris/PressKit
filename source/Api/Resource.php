@@ -327,11 +327,12 @@ class Resource
 
 	public function models($models)
 	{
-		$this->models = $models;		
+		$this->body = $this->processObjects($models);
 	}
 
 	public function model($model)
 	{
-		$this->model = $model;
+		$this->body = $this->processObject($model);
+		// $this->model = $model;
 	}
 }
