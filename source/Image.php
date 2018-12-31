@@ -518,7 +518,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 		else
 		{
-			$height = $height * $ratio;
+			$height = $height * (1/$ratio);
 		}
 
 		if(!$scaledImage = $original->scaled($width, $height))
