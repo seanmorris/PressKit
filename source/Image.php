@@ -549,7 +549,7 @@ class Image extends \SeanMorris\PressKit\Model
 		$crop->consume([
 			'title'      => $original->title
 			, 'original' => $original->id
-			, 'crop'     => $size
+			, 'fit'      => $size
 		], TRUE);
 
 		$crop->store($tmpFile);
