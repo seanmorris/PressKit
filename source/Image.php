@@ -13,6 +13,7 @@ class Image extends \SeanMorris\PressKit\Model
 		, $state
 		, $original
 		, $crop
+		, $fit
 		, $_content
 	;
 
@@ -38,7 +39,10 @@ class Image extends \SeanMorris\PressKit\Model
 			, 'with'  => ['state' => 'byNull']
 		]
 		, $byFullSized = [
-			'where'   => [['crop' => 'NULL', 'IS']]
+			'where'   => [
+				['crop' => 'NULL', 'IS']
+				, ['fit'  => 'NULL', 'IS']
+			]
 			, 'order' => ['id' => 'ASC']
 			, 'with'  => ['state' => 'byNull']
 		]
@@ -71,6 +75,22 @@ class Image extends \SeanMorris\PressKit\Model
 			]
 			, 'with' => ['state' => 'byNull']
 		]
+		, $byFit = [
+			'where' => [
+				['original' => '?']
+				, ['fit'    => '?']
+				// , ['deleted' => '1', '!=',]
+			]
+			, 'with' => ['state' => 'byNull']
+		]
+		, $byFitsAndIds = [
+			'where'   => [
+				['original' => '?', 'IN', '%s', 'id', FALSE]
+				, ['fit'    => '?', 'IN', '%s', 'fit', FALSE]
+				// , ['deleted' => '1', '!=',]
+			]
+			, 'with' => ['state' => 'byNull']
+		]
 		, $byAll = []
 		, $byModerated = [
 			'with' => ['state' => 'byNull']
@@ -97,7 +117,7 @@ class Image extends \SeanMorris\PressKit\Model
 			'cga'     => [320, 200]
 			, 'vga'     => [680, 480]
 			, 'hd'      => [1920, 1080]
-		]	
+		]
 	;
 
 	protected static function beforeConsume($instance, &$skeleton)
@@ -191,6 +211,10 @@ class Image extends \SeanMorris\PressKit\Model
 
 	public function content()
 	{
+		if(!file_exists($this->location()))
+		{
+			return FALSE;
+		}
 		return file_get_contents($this->location());
 	}
 
@@ -317,7 +341,7 @@ class Image extends \SeanMorris\PressKit\Model
 			$sampleHeight = $originalWidth / $newRatio;
 			$sampleWidth  = $originalWidth;
 
-			$sampleTop    = 0;
+			$sampleTop    = ($originalHeight / 2) - ($sampleHeight / 2);
 			$sampleLeft   = 0;
 		}
 
@@ -386,6 +410,115 @@ class Image extends \SeanMorris\PressKit\Model
 		else
 		{
 			return FALSE;
+		}
+
+		if(!$scaledImage = $original->scaled($width, $height))
+		{
+			return FALSE;
+		}
+
+		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
+		$tmpFile->write($scaledImage);
+
+		if(!preg_match('/\.(gif|png|jpe?g)$/', $original->url, $m))
+		{
+			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $original);
+			return;
+		}
+
+		$newName = sprintf(
+			'%s.%s.%dx%d.%s'
+			, $original->publicId
+			, $original->updated
+			, $width
+			, $height
+			, $m[1]
+		);
+
+		$crop = new static;
+
+		$crop->consume([
+			'title'      => $original->title
+			, 'original' => $original->id
+			, 'crop'     => $size
+		], TRUE);
+
+		$crop->store($tmpFile);
+
+		$crop->forceSave();
+
+		return $crop;
+	}
+
+	public function fit($size, $useExisting = TRUE)
+	{
+		$original = $this;
+
+		while($this->original)
+		{
+			if(!$original = static::getOneById($this->original))
+			{
+				return;
+			}
+		}
+
+		if(1 || $useExisting)
+		{
+			\SeanMorris\Ids\Log::debug(sprintf(
+				'Checking for existing FIT "%s" for image #%d.'
+				, $size
+				, $original->id
+			));
+
+			if($existingFit = static::loadOneByFit($original->id, $size))
+			{
+				\SeanMorris\Ids\Log::debug('Existing fit found.');
+				return $existingCrop;
+			}
+		}
+
+		if(isset($size))
+		{
+			if(isset(static::$crops[ $size ]))
+			{
+				list($width, $height) = static::$crops[ $size ];
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			return FALSE;
+		}
+
+		if(!$image = $this->content())
+		{
+			return;
+		}
+
+		try
+		{
+			list($originalWidth, $originalHeight,)
+				 = $info
+				 = getimagesizefromstring($image);
+		}
+		catch (\Exception $e)
+		{
+			\SeanMorris\Ids\Log::warn('Cannot scale image', $this);
+			return;
+		}
+
+		$ratio = $originalWidth / $originalHeight;
+
+		if($originalWidth > $originalHeight)
+		{
+			$width = $width * $ratio;
+		}
+		else
+		{
+			$height = $height * $ratio;
 		}
 
 		if(!$scaledImage = $original->scaled($width, $height))
