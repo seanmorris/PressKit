@@ -512,7 +512,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 		if($originalHeight == 0)
 		{
-			return;
+			return $this;
 		}
 
 		$ratio = $originalWidth / $originalHeight;
