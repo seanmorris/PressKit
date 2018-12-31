@@ -923,6 +923,22 @@
                     }
                 }
             }
+        },
+        "2": {
+            "PressKitImage": {
+                "fields": {
+                    "fit": {
+                        "Field": "fit",
+                        "Type": "varchar(255)",
+                        "Collation": "latin1_swedish_ci",
+                        "Null": "YES",
+                        "Key": "",
+                        "Default": null,
+                        "Extra": "",
+                        "Comment": ""
+                    }
+                }
+            }
         }
     }
 }
