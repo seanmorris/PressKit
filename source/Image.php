@@ -473,7 +473,7 @@ class Image extends \SeanMorris\PressKit\Model
 			if($existingFit = static::loadOneByFit($original->id, $size))
 			{
 				\SeanMorris\Ids\Log::debug('Existing fit found.');
-				return $existingCrop;
+				return $existingFit;
 			}
 		}
 
