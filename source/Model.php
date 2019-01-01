@@ -469,6 +469,31 @@ class Model extends \SeanMorris\Ids\Model
 		}
 	}
 
+	public function solrDocument($update)
+	{
+		$solrClient = static::solrClient();
+		$document   = $update->createDocument();
+
+		$document->id           = $this->id;
+		$document->publicId     = $this->publicId;
+		$document->title        = $this->title;
+		$document->content_type = get_class($this);
+
+		return $document;
+	}
+
+	public function solrStore()
+	{
+		$update   = static::solrUpdateStart();
+		$document = $this->solrDocument($update);
+
+		$update->addDocument($document);
+
+		$update->addCommit();
+
+		return static::solrUpdateCommit($update);
+	}
+
 	protected static function solrClient()
 	{
 		static $solrSettings, $solrClient;
