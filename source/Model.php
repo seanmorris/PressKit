@@ -125,7 +125,7 @@ class Model extends \SeanMorris\Ids\Model
 	{
 		if($this->_stub)
 		{
-			return;
+			return true;
 		}
 
 		if(php_sapi_name() == 'cli')
