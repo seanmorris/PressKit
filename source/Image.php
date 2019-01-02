@@ -588,9 +588,17 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		if(is_string($skeleton))
 		{
-			return parent::instantiateStub((object)[
-				'url' => $skeleton
-			]);
+			if($skeletonObject = json_decode($skeleton))
+			{
+				// var_dump($skeletonObject);
+				$skeleton = $skeletonObject;
+			}
+			else
+			{
+				return parent::instantiateStub((object)[
+					'url' => $skeleton
+				]);
+			}
 		}
 
 		return parent::instantiateStub($skeleton);
