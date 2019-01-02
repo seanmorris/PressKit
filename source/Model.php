@@ -403,7 +403,7 @@ class Model extends \SeanMorris\Ids\Model
 			}
 
 			$this->state = $state;
-			$this->id && $this->forceSave();
+			$this->id && $this->postUpdate();
 
 			return $state;
 		}
