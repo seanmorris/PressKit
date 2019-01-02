@@ -123,6 +123,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
+		if($this->_stub)
+		{
+			return;
+		}
+
 		if(php_sapi_name() == 'cli')
 		{
 			return true;
