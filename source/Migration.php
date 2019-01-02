@@ -5,7 +5,9 @@ class Migration
 	public static function list($all = FALSE)
 	{
 		$package = \SeanMorris\Ids\Package::getRoot();
+
 		$current = $package->getVar('migration');
+
 		$classes = \SeanMorris\Ids\Meta::classes(static::class);
 
 		$classes = array_filter($classes, function($class) {

@@ -3,16 +3,18 @@ namespace SeanMorris\PressKit\Api;
 class Resource
 {
 	protected
-		$code = 0
-		, $body = NULL
-		, $meta = NULL
+		$code         = 0
+		, $body       = NULL
+		, $meta       = NULL
 		, $navigation = []
-		, $messages = []
+		, $messages   = []
 		, $controller = NULL
-		, $router = NULL
+		, $router     = NULL
 
-		, $model = []
-		, $models = []
+		, $model      = []
+		, $models     = []
+
+		, $lightLoad = false
 	;
 
 	protected static $depth = 3;
@@ -161,7 +163,7 @@ class Resource
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
 
-				$value = $object->toApi($depth);
+				$value = $object->toApi($this->lightLoad ? 0 : $depth);
 
 				foreach($value as $k => &$v)
 				{
@@ -176,7 +178,7 @@ class Resource
 						continue;
 					}
 
-					if(is_object($vv = $object->getSubject($k)))
+					if(!$this->lightLoad && is_object($vv = $object->getSubject($k)))
 					{
 						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth-1);
 						// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
@@ -190,7 +192,7 @@ class Resource
 						}*/
 						
 					}
-					else if(is_array($vv = $object->getSubjects($k)))
+					else if(!$this->lightLoad && is_array($vv = $object->getSubjects($k)))
 					{
 						$v  = [];
 
@@ -334,6 +336,11 @@ class Resource
 	{
 		$this->body = $this->processObject($model);
 		// $this->model = $model;
+	}
+
+	public function lightLoad($set = true)
+	{
+		$this->lightLoad = $set;
 	}
 
 	public function __toString()

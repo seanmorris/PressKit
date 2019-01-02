@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
-	protected $_selected;
+	protected $_selected, $_stub = false;
 
 	protected static
 	$byOwner = [
@@ -18,6 +18,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function create()
 	{
+		if($this->_stub)
+		{
+			return;
+		}
+
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Trying to create %s.'
 			, get_called_class()
@@ -84,6 +89,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function update()
 	{
+		if($this->_stub)
+		{
+			return;
+		}
+
 		if($this->can('update'))
 		{
 			return parent::update();
@@ -453,7 +463,7 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		$res = $client->request('GET', sprintf(
-			'http://%s:%d%sselect/?%s'
+			'http://%s:%d%s/select/?%s'
 			, $solrSettings->host
 			, $solrSettings->port
 			, $solrSettings->path
@@ -543,5 +553,47 @@ class Model extends \SeanMorris\Ids\Model
 	public function toApi($depth = 0)
 	{
 		return $this->unconsume($depth);
+	}
+
+	protected static function instantiateStub($skeleton)
+	{
+		$stub = new static;
+
+		$stub->_stub = true;
+
+		foreach($stub as $property => $value)
+		{
+			if(!isset($skeleton->{$property}))
+			{
+				continue;
+			}
+
+			if(is_scalar($skeleton->{$property}))
+			{
+				$stub->{$property} = $skeleton->{$property};
+			}
+			else if($skeleton->{$property} && in_array($property, [
+				'publicId', 'title'
+			])){
+				$stub->{$property} = current($skeleton->{$property});
+
+				continue;
+			}
+
+			if(!is_scalar($skeleton->{$property}))
+			{
+				if(!$subjectClass = $stub->canHaveMany($property))
+				{
+					continue;
+				}
+
+				foreach($skeleton->{$property} as $subvalue)
+				{
+					$stub->{$property}[] = $subjectClass::instantiateStub($subvalue);
+				}
+			}
+		}
+
+		return $stub;
 	}
 }

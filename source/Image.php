@@ -583,4 +583,16 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		return static::$crops;
 	}
+
+	protected static function instantiateStub($skeleton)
+	{
+		if(is_string($skeleton))
+		{
+			return parent::instantiateStub((object)[
+				'url' => $skeleton
+			]);
+		}
+
+		return parent::instantiateStub($skeleton);
+	}
 }
