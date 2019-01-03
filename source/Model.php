@@ -69,12 +69,19 @@ class Model extends \SeanMorris\Ids\Model
 
 		$instance->_selected = microtime(TRUE);
 
-		if(!$instance->canHaveOne('state') || $instance->can('read'))
+		if($instance->canHaveOne('state') && !$instance->can('read'))
 		{
-			return $instance;
+			\SeanMorris\Ids\Log::debug(
+				\SeanMorris\Ids\Log::color(
+					'Permission check failed'
+					, 'red'
+					, 'black'
+				)
+			);
+			return FALSE;
 		}
 
-		return FALSE;
+		return $instance;
 	}
 
 	public function forceSave()
@@ -454,7 +461,7 @@ class Model extends \SeanMorris\Ids\Model
 			$args = [
 				'wt'             => 'json'
 				, 'version'      => 2.2
-				, 'content_type' => get_called_class()
+				// , 'content_type' => get_called_class()
 			]                // Non overrideable defaults
 			+ $args          // Supplied args
 			+ ['rows' => 10] // Overrideable defaults
@@ -467,13 +474,15 @@ class Model extends \SeanMorris\Ids\Model
 			return FALSE;
 		}
 
-		$res = $client->request('GET', sprintf(
+		$url = sprintf(
 			'http://%s:%d%s/select/?%s'
 			, $solrSettings->host
 			, $solrSettings->port
 			, $solrSettings->path
 			, $queryString
-		));
+		);
+
+		$res = $client->request('GET', $url);
 
 		if($res->getStatusCode() == 200)
 		{
