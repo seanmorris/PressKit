@@ -329,13 +329,14 @@ class Resource
 
 	public function models($models)
 	{
-		$this->body = $this->processObjects($models);
+		// $this->body = $this->processObjects($models);
+		$this->models = $models;
 	}
 
 	public function model($model)
 	{
-		$this->body = $this->processObject($model);
-		// $this->model = $model;
+		// $this->body = $this->processObject($model);
+		$this->model = $model;
 	}
 
 	public function lightLoad($set = true)
