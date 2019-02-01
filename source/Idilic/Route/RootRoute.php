@@ -371,9 +371,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			$user = \SeanMorris\Access\User::loadOneSubmodelByUsername($userId);
 		}
 
-		$user = $user::loadOneById($user->id);
-
-		if(!$user)
+		if(!$user || !$user = $user::loadOneById($user->id))
 		{
 			printf('User "%s" not found.', $userId);
 			return;
