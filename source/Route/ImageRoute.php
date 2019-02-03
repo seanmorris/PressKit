@@ -35,7 +35,33 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 				]
 			]
 		]
+		, $list = ['images' => [
+			'function' => 'byUrl'
+			, 'params' => 'params'
+		]]
 	;
+
+	public function index($router)
+	{
+		$get = $router->request()->get();
+
+		if($get['url'] ?? FALSE)
+		{
+			static::$listBy = 'byUrl';
+		}
+
+		return parent::index($router);
+	}
+
+	protected static function params()
+	{
+		if($_GET['url'] ?? FALSE)
+		{
+			return [$_GET['url']];
+		}
+
+		return [];
+	}
 
 	public function create($router, $submitPost = TRUE)
 	{

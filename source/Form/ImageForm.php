@@ -10,7 +10,7 @@ class ImageForm extends \SeanMorris\PressKit\Form\Form
 			'_title' => 'Title',
 		];
 
-		$skeleton['image'] = $skeleton['image'] + [
+		$skeleton['image'] = ($skeleton['image'] ?? []) + [
 			'_title' => 'Image File',
 			'type' => 'file',
 		];

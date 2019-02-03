@@ -152,6 +152,11 @@ class Image extends \SeanMorris\PressKit\Model
 			? $tmpFile
 			: $tmpFile->originalName();
 
+		if(is_string($tmpFile))
+		{
+			$tmpFile = new \SeanMorris\Ids\Disk\File($tmpFile);
+		}
+
 		preg_match(
 			'/\.(gif|png|jpe?g)$/'
 			, $originalName
