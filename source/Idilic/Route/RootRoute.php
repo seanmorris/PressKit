@@ -230,6 +230,21 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		}
 	}
 
+	public function userStateCleanup()
+	{
+		$generator = \SeanMorris\Access\User::generateSubmodels();
+
+		foreach($generator() as $user)
+		{
+			$state = $user->getSubject('state');
+			$state->consume([
+				'owner' => $user
+			], TRUE);
+
+			$state->save();
+		}
+	}
+
 	public function relationshipCleanup()
 	{
 		$relLoader = \SeanMorris\Ids\Relationship::loadByNull();

@@ -334,7 +334,7 @@ class State extends \SeanMorris\Ids\Model
 
 	public function consume($skeleton, $override = false)
 	{
-		if($override)
+		if($override && isset($skeleton['state']))
 		{
 			$this->state = $skeleton['state'];
 		}
