@@ -10,6 +10,7 @@ class Resource
 		, $messages   = []
 		, $controller = NULL
 		, $router     = NULL
+		, $time       = NULL
 
 		, $model      = []
 		, $models     = []
@@ -140,7 +141,8 @@ class Resource
 			, 'meta'		=> $this->meta
 			, 'body'		=> $this->body
 			, 'navigation'	=> $this->navigation
-			, 'sessionId'   => session_id()
+			, 'time'        => round(microtime(true) - START, 4)
+			// , 'sessionId'   => session_id()
 		];
 	}
 
