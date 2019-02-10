@@ -73,11 +73,15 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			\SeanMorris\Ids\Log::debug(
 				\SeanMorris\Ids\Log::color(
-					'Permission check failed'
+					sprintf(
+						'Permission check failed for %s'
+						, get_class($instance)
+					)
 					, 'red'
 					, 'black'
 				)
 			);
+
 			return FALSE;
 		}
 
@@ -461,7 +465,7 @@ class Model extends \SeanMorris\Ids\Model
 			$args = [
 				'wt'             => 'json'
 				, 'version'      => 2.2
-				// , 'content_type' => get_called_class()
+				, 'content_type' => get_called_class()
 			]                // Non overrideable defaults
 			+ $args          // Supplied args
 			+ ['rows' => 10] // Overrideable defaults
@@ -506,12 +510,107 @@ class Model extends \SeanMorris\Ids\Model
 		return $document;
 	}
 
+	public static function solrClear(array $args = [])
+	{
+		// $queryString = http_build_query(
+		// 	$args = [
+		// 		'wt'             => 'json'
+		// 		, 'version'      => 2.2
+		// 		, 'content_type' => get_called_class()
+		// 	]                // Non overrideable defaults
+		// 	+ $args          // Supplied args
+		// 	+ ['rows' => 10] // Overrideable defaults
+		// );
+
+		$args = $args ? $args : ['*'=>'*'];
+
+		$queryString = implode(';', array_map(
+			function($key, $arg)
+			{
+				return sprintf('%s:%s', $key, $arg);
+			}
+			, array_keys($args)
+			, $args
+		));
+
+		$client = new \GuzzleHttp\Client();
+
+		if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
+		{
+			return FALSE;
+		}
+
+		$url = sprintf(
+			'http://%s:%d%s/update'
+			, $solrSettings->host
+			, $solrSettings->port
+			, $solrSettings->path
+		);
+
+		// $url = sprintf(
+		// 	'http://%s:%d%s/update?stream.body=%s'
+		// 	, $solrSettings->host
+		// 	, $solrSettings->port
+		// 	, $solrSettings->path
+		// 	, urlencode(sprintf(
+		// 		'<delete><query>%s</query></delete>'
+		// 		, $queryString
+		// 	))
+		// );
+
+		$queryString = sprintf(
+			'<delete><query>%s</query></delete>'
+			, $queryString
+		);
+
+		$res = $client->post($url, [
+			'body'      => $queryString
+			, 'headers' => [
+				'Content-Type' => 'text/xml;charset=utf-8'
+			]
+		]);
+
+		$res = $client->post($url, [
+			'body'      => '<commit/>'
+			, 'headers' => [
+				'Content-Type' => 'text/xml;charset=utf-8'
+			]
+		]);
+
+		if($res->getStatusCode() == 200)
+		{
+			$resp = json_decode($res->getBody());
+
+			return (object) $resp;
+		}
+	}
+
 	public function solrStore()
 	{
 		$update   = static::solrUpdateStart();
 		$document = $this->solrDocument($update);
 
 		$update->addDocument($document);
+
+		$update->addCommit();
+
+		return static::solrUpdateCommit($update);
+	}
+
+	public function solrDelete()
+	{
+		$update   = static::solrUpdateStart();
+		$document = $this->solrDocument($update);
+
+		$query = sprintf(
+			'id:%d AND content_type:"%s"'
+			, $this->id
+			, addSlashes(get_called_class())
+		);
+
+		// var_dump($query);die;
+
+		$update->addDeleteQuery($query);
 
 		$update->addCommit();
 
