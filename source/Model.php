@@ -463,17 +463,20 @@ class Model extends \SeanMorris\Ids\Model
 	{
 		$queryString = http_build_query(
 			$args = [
-				'wt'             => 'json'
-				, 'version'      => 2.2
-				, 'content_type' => get_called_class()
+				'wt'               => 'json'
+				, 'version'        => 2.2
+				, 'content_type_t' => get_called_class()
 			]                // Non overrideable defaults
 			+ $args          // Supplied args
 			+ ['rows' => 10] // Overrideable defaults
 		);
 
-		$client = new \GuzzleHttp\Client();
+		$client       = new \GuzzleHttp\Client();
+		$class        = get_called_class();
+		$solrSettings = static::solrSettings();
+		$solrSettings = $solrSettings->endpoint->main;
 
-		if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
+		if(!$solrSettings)
 		{
 			return FALSE;
 		}
@@ -505,7 +508,7 @@ class Model extends \SeanMorris\Ids\Model
 		$document->id           = $this->id;
 		$document->publicId     = $this->publicId;
 		$document->title        = $this->title;
-		$document->content_type = get_class($this);
+		$document->content_type_t = get_class($this);
 
 		return $document;
 	}
@@ -516,7 +519,7 @@ class Model extends \SeanMorris\Ids\Model
 		// 	$args = [
 		// 		'wt'             => 'json'
 		// 		, 'version'      => 2.2
-		// 		, 'content_type' => get_called_class()
+		// 		, 'content_type_t' => get_called_class()
 		// 	]                // Non overrideable defaults
 		// 	+ $args          // Supplied args
 		// 	+ ['rows' => 10] // Overrideable defaults
@@ -535,7 +538,11 @@ class Model extends \SeanMorris\Ids\Model
 
 		$client = new \GuzzleHttp\Client();
 
-		if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
+		$solrSettings = static::solrSettings();
+
+		$solrSettings = $solrSettings->endpoint->main;
+
+		if(!$solrSettings)
 		{
 			return FALSE;
 		}
@@ -603,7 +610,7 @@ class Model extends \SeanMorris\Ids\Model
 		$document = $this->solrDocument($update);
 
 		$query = sprintf(
-			'id:%d AND content_type:"%s"'
+			'id:%d AND content_type_t:"%s"'
 			, $this->id
 			, addSlashes(get_called_class())
 		);
@@ -617,14 +624,43 @@ class Model extends \SeanMorris\Ids\Model
 		return static::solrUpdateCommit($update);
 	}
 
+	protected static function solrSettings()
+	{
+		$class = get_called_class();
+
+		$solrSettings = FALSE;
+
+		while($class)
+		{
+			if($solrSettings = \SeanMorris\Ids\Settings::read(
+				'solr-cores'
+				, $class
+			)){
+				break;
+			}
+
+			$class = get_parent_class($class);
+
+		}
+
+		if(!$solrSettings)
+		{
+			if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
+			{
+				return FALSE;
+			}
+		}
+
+		return $solrSettings;
+	}
+
 	protected static function solrClient()
 	{
 		static $solrSettings, $solrClient;
 
 		if(!$solrSettings)
 		{
-			$solrSettings = \SeanMorris\Ids\Settings::read('solr');
-			$solrSettings = json_decode(json_encode($solrSettings), true);
+			$solrSettings = static::solrSettings();
 			$solrClient = new \Solarium\Client($solrSettings);
 		}
 
