@@ -165,7 +165,8 @@ class Resource
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
 
-				$value = $object->toApi($this->lightLoad ? 0 : $depth);
+				// $value = $object->toApi($this->lightLoad ? 0 : $depth);
+				$value = $object->toApi($depth);
 
 				foreach($value as $k => &$v)
 				{
@@ -177,6 +178,11 @@ class Resource
 					if(!($subjectClass = $object::getSubjectClass($k))
 						|| ($skipSubjects[$k] ?? FALSE)
 					) {
+						continue;
+					}
+
+					if($this->lightLoad)
+					{
 						continue;
 					}
 

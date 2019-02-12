@@ -461,11 +461,23 @@ class Model extends \SeanMorris\Ids\Model
 
 	public static function solrSearch(array $args = [])
 	{
+		$contentTypeString = sprintf(
+			'content_type_t:%s'
+			, addSlashes(get_called_class())
+		);
+		if($args['q'] ?? FALSE)
+		{
+			$args['q'] .= ' AND ' . $contentTypeString;
+		}
+		else
+		{
+			$args['q'] = $contentTypeString;
+		}
+
 		$queryString = http_build_query(
 			$args = [
 				'wt'               => 'json'
 				, 'version'        => 2.2
-				, 'content_type_t' => get_called_class()
 			]                // Non overrideable defaults
 			+ $args          // Supplied args
 			+ ['rows' => 10] // Overrideable defaults
@@ -489,14 +501,29 @@ class Model extends \SeanMorris\Ids\Model
 			, $queryString
 		);
 
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Solr Search URL: %s'
+			, $url
+		));
+
 		$res = $client->request('GET', $url);
 
 		if($res->getStatusCode() == 200)
 		{
 			$resp = json_decode($res->getBody());
-			$resp = (array) $resp->response;
 
-			return (object) $resp;
+			$resp = (object) $resp->response;
+
+			$stubs = [];
+
+			foreach($resp->docs as $doc)
+			{
+				$stubs[] = static::instantiateStub($doc);
+			}
+
+			$resp->docs = $stubs;
+
+			return  $resp;
 		}
 	}
 
@@ -731,6 +758,15 @@ class Model extends \SeanMorris\Ids\Model
 
 			if(!is_scalar($skeleton->{$property}))
 			{
+				if($subjectClass = $stub->canHaveOne($property))
+				{
+					$stub->{$property} = $subjectClass::instantiateStub(reset(
+						$skeleton->{$property}
+					));
+
+					continue;
+				}
+
 				if(!$subjectClass = $stub->canHaveMany($property))
 				{
 					continue;
