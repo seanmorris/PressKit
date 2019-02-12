@@ -92,8 +92,8 @@ class State extends \SeanMorris\Ids\Model
 	{
 		$pointCheck = substr($point, 0, 1) == '$';
 
-		$userArray = $user->unconsume(0, TRUE);
-		
+		$userArray = $user->unconsume(FALSE, TRUE);
+
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if %s[%d] can %s%s on %s[%d]'
 			, get_class($user)
@@ -131,7 +131,7 @@ class State extends \SeanMorris\Ids\Model
 		}
 
 		$role = static::$states[$this->state][$point];
-		
+
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Role needed for %s %s:', $action, $point)
 			, $role
@@ -365,7 +365,7 @@ class State extends \SeanMorris\Ids\Model
 	{
 		if($children === NULL)
 		{
-			return parent::unconsume(1);			
+			return parent::unconsume(1);
 		}
 
 		return parent::unconsume($children);

@@ -222,9 +222,11 @@ class Resource
 
 				break;
 
+			case $object instanceof \SeanMorris\Access\State\UserState:
+				$depth = 0;
 			case $object instanceof \SeanMorris\PressKit\State:
 
-				$value = $object->unconsume(0);
+				$value = $object->unconsume($depth);
 
 				break;
 		}

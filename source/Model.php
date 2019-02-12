@@ -624,6 +624,12 @@ class Model extends \SeanMorris\Ids\Model
 		$update   = static::solrUpdateStart();
 		$document = $this->solrDocument($update);
 
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Storing %s::[%d] in Solr...'
+			, get_class($this)
+			, $this->id
+		), $document);
+
 		$update->addDocument($document);
 
 		$update->addCommit();

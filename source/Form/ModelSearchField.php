@@ -103,16 +103,16 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 			$childFields[$name] = $subChild;
 		}
 
-		$childFields['selected'] = [
-			'class' => 'selectedModel'
-			, 'type' => 'fieldset'
-			, '-PressKit-Field' => 'indicator'
-		];
+		// $childFields['selected'] = ($childFields['selected'] ?? []) + [
+		// 	'class' => 'selectedModel'
+		// 	, 'type' => 'fieldset'
+		// 	, '-PressKit-Field' => 'indicator'
+		// ];
 
-		$childFields['selected']['_children']['container'] = [
-			'type' => 'html'
-			, 'value' => '<div class = "selection">test</div>'
-		];
+		// $childFields['selected']['_children']['container'] = [
+		// 	'type' => 'html'
+		// 	, 'value' => '<div class = "selection">test</div>'
+		// ];
 
 		if(isset($fieldDef['_multi']) && $fieldDef['_multi'])
 		{

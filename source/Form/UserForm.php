@@ -4,6 +4,18 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 {
 	public function __construct($skeleton = [])
 	{
+		$skeleton += static::skeleton($skeleton);
+
+		$skeleton['submit'] = [
+			'_title' => 'Submit',
+			'type' => 'submit',
+		];
+
+		parent::__construct($skeleton);
+	}
+
+	protected static function skeleton($skeleton = [])
+	{
 		$skeleton['_method'] = 'POST';
 
 		$skeleton['id'] = [
@@ -36,6 +48,12 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			, 'type'       => 'password'
 		];
 
+		$skeleton['confirm_password'] = [
+			'autocomplete' => 'new-password'
+			, '_title'     => 'Confirm Password'
+			, 'type'       => 'password'
+		];
+
 		$skeleton['roles'] = [
 			'_title' => 'Roles'
 			, '_subtitle' => 'Role'
@@ -44,13 +62,9 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			, '_titlePoint' => 'class'
 			, '_array' => TRUE
 			, '_multi' => TRUE
+			, '_access' => 'SeanMorris\Access\Role\Administrator'
 		];
 
-		$skeleton['submit'] = [
-			'_title' => 'Submit',
-			'type' => 'submit',
-		];
-		
-		parent::__construct($skeleton);
+		return $skeleton;
 	}
 }

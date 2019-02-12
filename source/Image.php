@@ -124,12 +124,20 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		$tmpFile = NULL;
 
+		if(array_key_exists('url', $skeleton) && !$skeleton['url'] && $instance->url)
+		{
+			$skeleton['url'] = $instance->url;
+		}
+
 		if(isset($skeleton['image']))
 		{
 			$tmpFile = $skeleton['image'];
 
-			if(is_string($skeleton['image']) && !is_numeric($skeleton['image']))
-			{
+			if(isset($skeleton['image'])
+				&& $skeleton['image']
+				&& is_string($skeleton['image'])
+				&& !is_numeric($skeleton['image'])
+			){
 				$instance->url = $skeleton['url'] = $skeleton['image'];
 			}
 			else if($tmpFile && !($tmpFile instanceof \SeanMorris\Ids\Disk\File))
