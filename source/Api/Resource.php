@@ -213,11 +213,14 @@ class Resource
 
 				if(is_a($object->canHaveOne('state'), 'SeanMorris\PressKit\State', true))
 				{
-					$value['_permissions'] = [
-						'read'     => $object->can('read')
-						, 'update' => $object->can('update')
-						, 'delete' => $object->can('delete')
-					];
+					if($readPerm = $object->can('read'))
+					{
+						$value['_permissions'] = [
+							'read'     => $readPerm
+							, 'update' => $object->can('update')
+							, 'delete' => $object->can('delete')
+						];
+					}
 				}
 
 				break;

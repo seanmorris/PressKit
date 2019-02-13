@@ -62,7 +62,9 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 			, '_titlePoint' => 'class'
 			, '_array' => TRUE
 			, '_multi' => TRUE
-			, '_access' => 'SeanMorris\Access\Role\Administrator'
+			, '_access'  => [
+				'read' => ['SeanMorris\Access\Role\Administrator' => FALSE]
+			]
 		];
 
 		return $skeleton;

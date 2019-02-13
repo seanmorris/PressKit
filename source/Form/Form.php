@@ -44,7 +44,7 @@ class Form extends \SeanMorris\Form\Form
 				continue;
 			}
 
-			$failAlt = FALSE;
+			$failAlt = [];
 
 			if(isset($fieldDef['_access']))
 			{
@@ -69,20 +69,25 @@ class Form extends \SeanMorris\Form\Form
 						$failAlt = $writeAlt;
 					}
 				}
-			}
 
-			if($failAlt !== FALSE)
-			{
-				if(is_array($failAlt))
+				if($failAlt !== FALSE)
 				{
-					$fieldDef = array_merge($fieldDef, $failAlt);
+					if(is_array($failAlt))
+					{
+						$fieldDef = array_merge($fieldDef, $failAlt);
+					}
+					else
+					{
+						$fieldDef = [
+							'type'    => 'html'
+							, 'value' => $failAlt
+						];
+					}
 				}
 				else
 				{
-					$fieldDef = [
-						'type'    => 'html'
-						, 'value' => $failAlt
-					];
+					unset($skeleton[$name]);
+					continue;
 				}
 			}
 
@@ -113,10 +118,16 @@ class Form extends \SeanMorris\Form\Form
 		{
 			if(isset($skeleton['_access']))
 			{
-				if(isset($originalSkeleton[$fieldName]['_access'])
-					&& isset($originalSkeleton[$fieldName]['_access']['_access']['write'])
-				){
-					$role = key($originalSkeleton[$fieldName]['_access']['write']);
+				if(isset($originalSkeleton[$fieldName]['_access']))
+				{
+					if(isset($originalSkeleton[$fieldName]['_access']['_access']['write']))
+					{
+						$role = key($originalSkeleton[$fieldName]['_access']['write']);
+					}
+					else
+					{
+						$role = 'SeanMorris\Access\Role\Administrator';
+					}
 
 					if(!$user->hasRole($role))
 					{
