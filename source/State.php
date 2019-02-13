@@ -57,6 +57,13 @@ class State extends \SeanMorris\Ids\Model
 			'where'   => [['owner' => '?']]
 			, 'index' => ['class']
 		]
+		, $byOwnerNamed = [
+			'named' => TRUE
+			, 'index' => ['class']
+			, 'where' => [
+				['owner' => '?', '=', '%s', 'owner', FALSE]
+			]
+		]
 		, $byStateNamed = [
 			'named' => TRUE
 			, 'where' => [
