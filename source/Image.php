@@ -67,6 +67,13 @@ class Image extends \SeanMorris\PressKit\Model
 			]
 			, 'with' => ['state' => 'byNull']
 		]
+		, $byOriginal = [
+			'where' => [
+				['original' => '?']
+				// , ['deleted' => '1', '!=',]
+			]
+			, 'with' => ['state' => 'byNull']
+		]
 		, $byCropsAndIds = [
 			'where'   => [
 				['original' => '?', 'IN', '%s', 'id', FALSE]
@@ -154,6 +161,29 @@ class Image extends \SeanMorris\PressKit\Model
 		$instance->store($tmpFile);
 	}
 
+	protected static function afterDelete($instance)
+	{
+		$publicDir = \SeanMorris\Ids\Settings::read('public');
+		$filename  = $publicDir . $instance->url;
+		$file      = new \SeanMorris\Ids\Disk\File($filename);
+		if($file->check())
+		{
+			$file->delete();
+		}
+
+		if($instance->original)
+		{
+			return;
+		}
+
+		$crops = static::getByOriginal($instance);
+
+		foreach($crops as $crop)
+		{
+			$crop->delete();
+		}
+	}
+
 	protected function store($tmpFile)
 	{
 		$originalName = is_string($tmpFile)
@@ -177,13 +207,15 @@ class Image extends \SeanMorris\PressKit\Model
 			return FALSE;
 		}
 
+		$extension = strtolower($m[1]);
+
 		$publicDir = \SeanMorris\Ids\Settings::read('public');
 
 		$newName = sprintf(
 			'/Static/Dynamic/%s.%s.%s'
 			, $this->publicId ?? uniqid()
 			, microtime(TRUE)
-			, $m[1]
+			, $extension
 		);
 
 		$newUrl = $newName;
@@ -199,7 +231,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 		$this->url = $newUrl;
 
-		if($m[1] === 'jpg' || $m[1] === 'jpeg')
+		if($extension === 'jpg' || $extension === 'jpeg')
 		{
 			$this->orient();
 		}
