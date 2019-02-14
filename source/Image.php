@@ -166,7 +166,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		preg_match(
-			'/\.(gif|png|jpe?g)$/'
+			'/\.(gif|png|jpe?g)$/i'
 			, $originalName
 			, $m
 		);
