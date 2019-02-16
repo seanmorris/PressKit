@@ -651,8 +651,13 @@ class Image extends \SeanMorris\PressKit\Model
 
 	protected static function beforeWrite($instance, &$skeleton)
 	{
-		if(!isset($skeleton['url']) || !$skeleton['url'])
-		{
+
+
+		if(
+			!($instance->url)
+			 && !($skeleton['image'] ?? FALSE)
+			 && !($skeleton['image'] ?? FALSE)
+		){
 			return FALSE;
 		}
 	}
