@@ -648,4 +648,12 @@ class Image extends \SeanMorris\PressKit\Model
 
 		return parent::instantiateStub($skeleton);
 	}
+
+	protected static function beforeWrite($instance, &$skeleton)
+	{
+		if(!isset($skeleton['url']) || !$skeleton['url'])
+		{
+			return FALSE;
+		}
+	}
 }
