@@ -134,7 +134,7 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
-		if($this->_stub)
+		if($this->_stub && $action == 'read')
 		{
 			return true;
 		}
@@ -532,10 +532,14 @@ class Model extends \SeanMorris\Ids\Model
 		$solrClient = static::solrClient();
 		$document   = $update->createDocument();
 
-		$document->id           = $this->id;
-		$document->publicId     = $this->publicId;
-		$document->title        = $this->title;
+		$document->id             = $this->id;
+		$document->publicId       = $this->publicId;
+		$document->title          = $this->title;
 		$document->content_type_t = get_class($this);
+
+		$document->state_i        = is_object($this->state)
+			? $this->state->id
+			: $this->state;
 
 		return $document;
 	}
@@ -739,9 +743,10 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected static function instantiateStub($skeleton)
 	{
-		$stub = new static;
+		$stub        = new static;
 
 		$stub->_stub = true;
+		$stub->state = $skeleton->state_i ?? NULL;
 
 		foreach($stub as $property => $value)
 		{
