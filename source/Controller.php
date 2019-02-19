@@ -1202,6 +1202,8 @@ class Controller implements \SeanMorris\Ids\Routable
 			, '_controller'	=> $this
 		]);
 
+		$code = 0;
+
 		if($submitPost && $params = array_replace_recursive($router->request()->post(), $router->request()->files()))
 		{
 			$messages = \SeanMorris\Message\MessageHandler::get();
@@ -1357,6 +1359,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			}
 			else
 			{
+				$code   = 1;
 				$errors = $form->errors();
 
 				foreach($errors as $error)
@@ -1394,7 +1397,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$resourceClass = static::$resourceClass;
 
-				$resource = new $resourceClass($router);
+				$resource = new $resourceClass($router,[],$code);
 
 				if($form)
 				{

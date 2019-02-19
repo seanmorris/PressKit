@@ -124,14 +124,22 @@ class Resource
 			);
 		}
 
-		$messages = \SeanMorris\Message\MessageHandler::get();
+		$messages = \SeanMorris\Message\MessageHandler::get()->flash();
+
+		foreach($messages as $message)
+		{
+			if($message instanceof \SeanMorris\Message\ErrorMessage)
+			{
+				$this->code = $this->code ? $this->code : 1;
+			}
+		}
 
 		$this->messages += array_map(
 			function($msg)
 			{
 				return $msg->text();
 			},
-			$messages->flash()
+			$messages
 		);
 
 		return (object)[
