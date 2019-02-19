@@ -134,10 +134,10 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
-		if($this->_stub && $action == 'read')
-		{
-			return true;
-		}
+		// if($this->_stub && $action == 'read')
+		// {
+		// 	return true;
+		// }
 
 		if(php_sapi_name() == 'cli')
 		{
