@@ -527,19 +527,39 @@ class Model extends \SeanMorris\Ids\Model
 		}
 	}
 
+	public function stub()
+	{
+		return (object) [
+			'id'               => $this->id
+			, 'publicId'       => $this->publicId
+			, 'title'          => $this->title
+			, 'content_type_t' => get_class($this)
+			, 'state_i'        => is_object($this->state)
+				? $this->state->id
+				: $this->state
+		];
+	}
+
 	public function solrDocument($update)
 	{
 		$solrClient = static::solrClient();
 		$document   = $update->createDocument();
 
-		$document->id             = $this->id;
-		$document->publicId       = $this->publicId;
-		$document->title          = $this->title;
-		$document->content_type_t = get_class($this);
+		$stub = $this->stub();
 
-		$document->state_i        = is_object($this->state)
-			? $this->state->id
-			: $this->state;
+		foreach($stub as $key => $value)
+		{
+			$document->{$key} = $value;
+		}
+
+		// $document->id             = $this->id;
+		// $document->publicId       = $this->publicId;
+		// $document->title          = $this->title;
+		// $document->content_type_t = get_class($this);
+
+		// $document->state_i        = is_object($this->state)
+		// 	? $this->state->id
+		// 	: $this->state;
 
 		return $document;
 	}
@@ -746,7 +766,8 @@ class Model extends \SeanMorris\Ids\Model
 		$stub        = new static;
 
 		$stub->_stub = true;
-		$stub->state = $skeleton->state_i ?? NULL;
+		$stub->state = $skeleton->state_i        ?? NULL;
+		$stub->class = $skeleton->content_type_t ?? NULL;
 
 		foreach($stub as $property => $value)
 		{
