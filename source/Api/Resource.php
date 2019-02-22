@@ -118,10 +118,13 @@ class Resource
 
 		if($user = \SeanMorris\Access\Route\AccessRoute::_currentUser())
 		{
-			$this->meta(
-				'currentUser'
-				, $user->toApi(1)
-			);
+			if($user->id)
+			{
+				$this->meta(
+					'currentUser'
+					, $user->toApi(1)
+				);
+			}
 		}
 
 		$messages = \SeanMorris\Message\MessageHandler::get()->flash();
