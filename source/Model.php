@@ -95,6 +95,8 @@ class Model extends \SeanMorris\Ids\Model
 			return parent::update();
 		}
 
+		$this->ensureState();
+
 		return parent::create();
 	}
 
@@ -168,8 +170,20 @@ class Model extends \SeanMorris\Ids\Model
 			return $isAdmin;
 		}
 
+		\SeanMorris\Ids\Log::debug($this->state);
+
+		if(!$this->id)
+		{
+			$state = $this->ensureState();
+		}
+
 		$stateClass = static::$hasOne['state'];
-		$state = $this->getSubject('state');
+		$state      = $this->state;
+
+		if(!is_object($state))
+		{
+			$state  = $this->getSubject('state');
+		}
 
 		// \SeanMorris\Ids\Log::debug(
 		// 	sprintf(
@@ -184,7 +198,7 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			\SeanMorris\Ids\Log::error($state);
 			// die;
-			// $state = $this->ensureState();
+			// ;
 
 			if(is_array($state))
 			{
@@ -197,7 +211,7 @@ class Model extends \SeanMorris\Ids\Model
 					'Cannot load state for %s(%d).'
 					, get_called_class()
 					, $this->id
-				));
+				), $action, $point);
 
 				return FALSE;
 			}
@@ -396,6 +410,12 @@ class Model extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::debug(
 			'ENSURE'
 		);
+
+		if($this->id && $this->state && !is_object($this->state))
+		{
+			$this->state = $this->getSubject('state', TRUE);
+		}
+
 		if(isset(static::$hasOne['state'])
 			&& static::$hasOne['state']
 			&& ((!$this->state || !is_object($this->state)) || $force)
@@ -416,11 +436,11 @@ class Model extends \SeanMorris\Ids\Model
 			if($this->id)
 			{
 				$state->save();
-				// $this->state = $state->id;
+				$this->state = $state->id;
 			}
 
 			$this->state = $state;
-			$this->id && $this->postUpdate();
+			// $this->id && $this->postUpdate();
 
 			return $state;
 		}
