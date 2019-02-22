@@ -147,12 +147,12 @@ class Resource
 
 		return (object)[
 			'code'			=> $this->code
-			, 'controller'	=> get_class($this->controller)
+			// , 'controller'	=> get_class($this->controller)
 			, 'messages'	=> $this->messages
 			, 'meta'		=> $this->meta
 			, 'body'		=> $this->body
 			, 'navigation'	=> $this->navigation
-			, 'time'        => round(microtime(true) - START, 4)
+			// , 'time'        => round(microtime(true) - START, 4)
 			// , 'sessionId'   => session_id()
 		];
 	}
