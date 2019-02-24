@@ -2,6 +2,7 @@
 namespace SeanMorris\PressKit;
 class Image extends \SeanMorris\PressKit\Model
 {
+	const JPEG_QUALITY = -1;
 	protected
 		$id
 		, $publicId
@@ -196,7 +197,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		preg_match(
-			'/\.(gif|png|jpe?g)$/i'
+			'/\.(gif|png|jpe?g|webp)$/i'
 			, $originalName
 			, $m
 		);
@@ -231,7 +232,9 @@ class Image extends \SeanMorris\PressKit\Model
 
 		$this->url = $newUrl;
 
-		if($extension === 'jpg' || $extension === 'jpeg')
+		$imagick = new \Imagick($this->location());
+
+		if($imagick->getImageMimeType() == 'image/jpeg')
 		{
 			$this->orient();
 		}
@@ -280,6 +283,7 @@ class Image extends \SeanMorris\PressKit\Model
 				 = getimagesizefromstring($image);
 
 			$imageOriginal = imagecreatefromstring($image);
+
 		}
 		catch (\Exception $e)
 		{
@@ -323,7 +327,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		ob_start();
-		imagejpeg($orientedImage);
+		imagejpeg($orientedImage, NULL, static::JPEG_QUALITY);
 		$imageData = ob_get_contents();
 		ob_end_clean();
 
@@ -335,7 +339,7 @@ class Image extends \SeanMorris\PressKit\Model
 	public function scaled($width, $height)
 	{
 		preg_match(
-			'/\.(gif|png|jpe?g)$/'
+			'/\.(gif|png|jpe?g|webp)$/'
 			, $this->url
 			, $m
 		);
@@ -353,59 +357,104 @@ class Image extends \SeanMorris\PressKit\Model
 
 		try
 		{
-			list($originalWidth, $originalHeight,)
-				 = $info
-				 = getimagesizefromstring($image);
+			// list($originalWidth, $originalHeight,)
+			// 	 = $info
+			// 	 = getimagesizefromstring($image);
 
-			$imageData = imagecreatefromstring($image);
+			// $imageData = imagecreatefromstring($image);
+			$imagick = new \Imagick($this->location());
+
+			$imageGeometry  = $imagick->getImageGeometry();
+
+			$originalWidth  = $imageGeometry['width']; 
+			$originalHeight = $imageGeometry['height']; 
+
+			$originalRatio  = $originalWidth/$originalHeight;
+
+			$newRatio = $width/$height;
+
+			$widthRatio = $originalWidth / $width;
+			$heightRatio = $originalHeight / $height;
+			
+			if($originalRatio > $newRatio)
+			{
+				$sampleHeight = $height;
+				$sampleWidth  = $height * $newRatio;
+
+				$sampleTop    = 0;
+				$sampleLeft   = ($width / 2) - ($sampleWidth / 2);
+			}
+			else
+			{
+				$sampleHeight = $width / $newRatio;
+				$sampleWidth  = $width;
+
+				$sampleTop    = ($height / 2) - ($sampleHeight / 2);
+				$sampleLeft   = 0;
+			}
+
+			if($width > $originalWidth || $height > $originalHeight)
+			{
+				$imagick->cropThumbnailImage($width, $height);
+			}
+			else
+			{
+				$imagick->cropImage($width, $height, $sampleLeft, $sampleTop);
+			}
+
+			$imagick->setImageFormat('jpeg');
+
+			return $imagick->getImageBlob();
 		}
 		catch (\Exception $e)
 		{
 			\SeanMorris\Ids\Log::warn('Cannot scale image', $this);
+			\SeanMorris\Ids\Log::logException($e);
+
 			return;
 		}
 
-		$resizedImageData = imagecreatetruecolor($width, $height);
+		// $resizedImageData = imagecreatetruecolor($width, $height);
 
-		$originalRatio = $originalWidth/$originalHeight;
-		$newRatio = $width/$height;
+		// $originalRatio = $originalWidth/$originalHeight;
+		// $newRatio = $width/$height;
 
-		$widthRatio = $originalWidth / $width;
-		$heightRatio = $originalHeight / $height;
+		// $widthRatio = $originalWidth / $width;
+		// $heightRatio = $originalHeight / $height;
 		
-		if($originalRatio > $newRatio)
-		{
-			$sampleHeight = $originalHeight;
-			$sampleWidth  = $originalHeight * $newRatio;
+		// if($originalRatio > $newRatio)
+		// {
+		// 	$sampleHeight = $originalHeight;
+		// 	$sampleWidth  = $originalHeight * $newRatio;
 
-			$sampleTop    = 0;
-			$sampleLeft   = ($originalWidth / 2) - ($sampleWidth / 2);
-		}
-		else
-		{
-			$sampleHeight = $originalWidth / $newRatio;
-			$sampleWidth  = $originalWidth;
+		// 	$sampleTop    = 0;
+		// 	$sampleLeft   = ($originalWidth / 2) - ($sampleWidth / 2);
+		// }
+		// else
+		// {
+		// 	$sampleHeight = $originalWidth / $newRatio;
+		// 	$sampleWidth  = $originalWidth;
 
-			$sampleTop    = ($originalHeight / 2) - ($sampleHeight / 2);
-			$sampleLeft   = 0;
-		}
+		// 	$sampleTop    = ($originalHeight / 2) - ($sampleHeight / 2);
+		// 	$sampleLeft   = 0;
+		// }
 
-		imagecopyresampled(
-			$resizedImageData
-			, $imageData
-			, 0 // dst_x
-			, 0 // dst_y
-			, $sampleLeft // src_x
-			, $sampleTop // src_y
-			, $width // dst_w
-			, $height // dst_h
-			, $sampleWidth // src_w
-			, $sampleHeight // src_h
-		);
+		// imagecopyresampled(
+		// 	$resizedImageData
+		// 	, $imageData
+		// 	, 0 // dst_x
+		// 	, 0 // dst_y
+		// 	, $sampleLeft // src_x
+		// 	, $sampleTop // src_y
+		// 	, $width // dst_w
+		// 	, $height // dst_h
+		// 	, $sampleWidth // src_w
+		// 	, $sampleHeight // src_h
+		// );
 
-		ob_start();
-		imagejpeg($resizedImageData);
-		return(ob_get_clean());
+		// ob_start();
+		// imagejpeg($resizedImageData);
+		// return(ob_get_clean());
 	}
 
 	public function crop($size, $useExisting = TRUE)
@@ -465,7 +514,7 @@ class Image extends \SeanMorris\PressKit\Model
 		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
 
-		if(!preg_match('/\.(gif|png|jpe?g)$/', $original->url, $m))
+		if(!preg_match('/\.(gif|png|jpe?g|webp)$/i', $original->url, $m))
 		{
 			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $original);
 			return;
@@ -545,41 +594,50 @@ class Image extends \SeanMorris\PressKit\Model
 
 		try
 		{
-			list($originalWidth, $originalHeight,)
-				 = $info
-				 = getimagesizefromstring($image);
+			// list($originalWidth, $originalHeight,)
+			// 	 = $info
+			// 	 = getimagesizefromstring($image);
+
+			$imagick = new \Imagick($this->location());
+
+			$imagick->scaleImage($width, $height, TRUE);
+
+			$imagick->setImageFormat('jpeg');
+
+			$scaledImage = $imagick->getImageBlob();
+
 		}
 		catch (\Exception $e)
 		{
-			\SeanMorris\Ids\Log::warn('Cannot scale image', $this);
+			\SeanMorris\Ids\Log::warn('Cannot scale to fit image', $this);
 			return;
 		}
 
-		if($originalHeight == 0)
-		{
-			return $this;
-		}
+		// if($originalHeight == 0)
+		// {
+		// 	return $this;
+		// }
 
-		$ratio = $originalWidth / $originalHeight;
+		// $ratio = $originalWidth / $originalHeight;
 
-		if($originalWidth > $originalHeight)
-		{
-			$width = $width * $ratio;
-		}
-		else
-		{
-			$height = $height * (1/$ratio);
-		}
+		// if($originalWidth > $originalHeight)
+		// {
+		// 	$width = $width * $ratio;
+		// }
+		// else
+		// {
+		// 	$height = $height * (1/$ratio);
+		// }
 
-		if(!$scaledImage = $original->scaled($width, $height))
-		{
-			return FALSE;
-		}
+		// if(!$scaledImage = $original->scaled($width, $height))
+		// {
+		// 	return FALSE;
+		// }
 
 		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
 
-		if(!preg_match('/\.(gif|png|jpe?g)$/', $original->url, $m))
+		if(!preg_match('/\.(gif|png|jpe?g|webp)$/', $original->url, $m))
 		{
 			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $original);
 			return;

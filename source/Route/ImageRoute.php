@@ -87,6 +87,11 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 
 					$image->consume(['image' => $imageFile]);
 
+					if(!$image->url)
+					{
+						continue;
+					}
+
 					if($image->save())
 					{
 						$images[] = $image;
