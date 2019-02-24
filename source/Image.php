@@ -315,17 +315,17 @@ class Image extends \SeanMorris\PressKit\Model
 
 		switch ($exif['Orientation'] ?? 0)
 		{
-			case imagick::ORIENTATION_BOTTOMRIGHT:
+			case \Imagick::ORIENTATION_BOTTOMRIGHT:
 				$image->rotateimage("#000", 180);
 				// $orientedImage = imagerotate($orientedImage, 180, 0);
 				break;
 
-			case imagick::ORIENTATION_RIGHTTOP:
+			case \Imagick::ORIENTATION_RIGHTTOP:
 				$image->rotateimage("#000", 90);
 				// $orientedImage = imagerotate($orientedImage, -90, 0);
 				break;
 
-			case imagick::ORIENTATION_LEFTBOTTOM:
+			case \Imagick::ORIENTATION_LEFTBOTTOM:
 				$image->rotateimage("#000", -90);
 				// $orientedImage = imagerotate($orientedImage, 90, 0);
 				break;
