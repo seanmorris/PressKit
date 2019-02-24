@@ -309,20 +309,25 @@ class Image extends \SeanMorris\PressKit\Model
 			, $originalWidth, $originalHeight
 		);
 
-		$exif = exif_read_data($this->location());
+		$image       = new Imagick($this->location());
+		$orientation = $image->getImageOrientation(); 
+
 
 		switch ($exif['Orientation'] ?? 0)
 		{
-			case 3:
-				$orientedImage = imagerotate($orientedImage, 180, 0);
+			case imagick::ORIENTATION_BOTTOMRIGHT:
+				$image->rotateimage("#000", 180);
+				// $orientedImage = imagerotate($orientedImage, 180, 0);
 				break;
 
-			case 6:
-				$orientedImage = imagerotate($orientedImage, -90, 0);
+			case imagick::ORIENTATION_RIGHTTOP:
+				$image->rotateimage("#000", 90);
+				// $orientedImage = imagerotate($orientedImage, -90, 0);
 				break;
 
-			case 8:
-				$orientedImage = imagerotate($orientedImage, 90, 0);
+			case imagick::ORIENTATION_LEFTBOTTOM:
+				$image->rotateimage("#000", -90);
+				// $orientedImage = imagerotate($orientedImage, 90, 0);
 				break;
 		}
 
