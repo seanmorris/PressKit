@@ -309,7 +309,7 @@ class Image extends \SeanMorris\PressKit\Model
 			, $originalWidth, $originalHeight
 		);
 
-		$image       = new Imagick($this->location());
+		$image       = new \Imagick($this->location());
 		$orientation = $image->getImageOrientation(); 
 
 
