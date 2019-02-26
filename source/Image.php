@@ -692,14 +692,24 @@ class Image extends \SeanMorris\PressKit\Model
 		return static::$crops;
 	}
 
+	public function stub()
+	{
+		$stub        = parent::stub();
+		$stub->url_s = $this->url;
+
+		return $stub;
+	}
+
 	protected static function instantiateStub($skeleton)
 	{
+		$stub = parent::instantiateStub($skeleton);
+
 		if(is_string($skeleton))
 		{
 			if($skeletonObject = json_decode($skeleton))
 			{
 				// var_dump($skeletonObject);
-				$skeleton = $skeletonObject;
+				$skeleton  = $skeletonObject;
 			}
 			else
 			{
@@ -709,7 +719,9 @@ class Image extends \SeanMorris\PressKit\Model
 			}
 		}
 
-		return parent::instantiateStub($skeleton);
+		$stub->url = $skeleton->url_s ?? NULL;
+
+		return $stub;
 	}
 
 	protected static function beforeWrite($instance, &$skeleton)
