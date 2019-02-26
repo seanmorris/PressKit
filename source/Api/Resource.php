@@ -238,9 +238,20 @@ class Resource
 
 			case $object instanceof \SeanMorris\Access\State\UserState:
 				$depth = 0;
+
 			case $object instanceof \SeanMorris\PressKit\State:
 
-				$value = $object->unconsume($depth);
+				$value = [];
+
+				if($user = \SeanMorris\Access\Route\AccessRoute::_currentUser())
+				{
+					if($object->owner === $user->id
+						|| (is_object($object->owner) && $user->id == $object->owner->id)
+						|| $user->hasRole('\SeanMorris\Access\Role\Administrator')
+					){
+						$value = $object->unconsume($depth);
+					}
+				}
 
 				break;
 		}

@@ -551,11 +551,11 @@ class Model extends \SeanMorris\Ids\Model
 	public function stub()
 	{
 		return (object) [
-			'id'               => $this->id
-			, 'publicId'       => $this->publicId
-			, 'title'          => $this->title
-			, 'content_type_t' => get_class($this)
-			, 'state_i'        => is_object($this->state)
+			'id'                  => $this->id
+			, 'publicId'          => $this->publicId
+			, 'title'             => $this->title
+			, 'content_type_t'    => get_class($this)
+			, 'state_i'           => is_object($this->state)
 				? $this->state->id
 				: $this->state
 		];
