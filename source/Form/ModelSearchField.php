@@ -130,7 +130,8 @@ class ModelSearchField extends \SeanMorris\Form\Fieldset
 	{
 		$attrs = parent::attrs();
 
-		$attrs['data-endpoint'] = $this->fieldDef['_searchEndpoint'];
+		$attrs['data-endpoint']        = $this->fieldDef['_searchEndpoint'] ?? NULL;
+		$attrs['data-create-endpoint'] = $this->fieldDef['_createEndpoint'] ?? NULL;
 
 		return $attrs;
 	}

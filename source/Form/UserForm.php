@@ -55,14 +55,15 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 		];
 
 		$skeleton['roles'] = [
-			'_title' => 'Roles'
-			, '_subtitle' => 'Role'
-			, 'type' => 'modelSearch'
+			'_title'            => 'Roles'
+			, '_subtitle'       => 'Role'
+			, 'type'            => 'modelSearch'
 			, '_searchEndpoint' => '/user/roles'
-			, '_titlePoint' => 'class'
-			, '_array' => TRUE
-			, '_multi' => TRUE
-			, '_access'  => [
+			, '_createEndpoint' => FALSE
+			, '_titlePoint'     => 'class'
+			, '_array'          => TRUE
+			, '_multi'          => TRUE
+			, '_access'         => [
 				'read' => ['SeanMorris\Access\Role\Administrator' => FALSE]
 			]
 		];
