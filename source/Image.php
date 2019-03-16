@@ -301,19 +301,20 @@ class Image extends \SeanMorris\PressKit\Model
 			, $originalHeight
 		);
 
-		imagecopyresampled(
-			$orientedImage
-			, $imageOriginal
-			, 0, 0, 0, 0
-			, $originalWidth, $originalHeight
-			, $originalWidth, $originalHeight
-		);
+		// imagecopyresampled(
+		// 	$orientedImage
+		// 	, $imageOriginal
+		// 	, 0, 0, 0, 0
+		// 	, $originalWidth, $originalHeight
+		// 	, $originalWidth, $originalHeight
+		// );
 
 		$image       = new \Imagick($this->location());
 		$orientation = $image->getImageOrientation(); 
 
+		\SeanMorris\Ids\Log::debug('Orientation:', $orientation);
 
-		switch ($exif['Orientation'] ?? 0)
+		switch ($orientation ?? 0)
 		{
 			case \Imagick::ORIENTATION_BOTTOMRIGHT:
 				$image->rotateimage("#000", 180);
@@ -331,18 +332,25 @@ class Image extends \SeanMorris\PressKit\Model
 				break;
 		}
 
-		ob_start();
-		imagejpeg($orientedImage, NULL, static::JPEG_QUALITY);
-		$imageData = ob_get_contents();
-		ob_end_clean();
+		$file->write($image->getImageBlob(), false);
 
-		$file->write($imageData, false);
+		// ob_start();
+		// imagejpeg($orientedImage, NULL, static::JPEG_QUALITY);
+		// $imageData = ob_get_contents();
+		// ob_end_clean();
+
+		// $file->write($imageData, false);
 
 		\SeanMorris\Ids\Log::debug('Oriented', $this);
 	}
 
-	public function scaled($width, $height)
+	public function scaled($width, $height, $quality = NULL)
 	{
+		if($quality === NULL)
+		{
+			$quality = static::JPEG_QUALITY;
+		}
+
 		preg_match(
 			'/\.(gif|png|jpe?g|webp)$/'
 			, $this->url
@@ -500,6 +508,11 @@ class Image extends \SeanMorris\PressKit\Model
 			if(isset(static::$crops[ $size ]))
 			{
 				list($width, $height) = static::$crops[ $size ];
+
+				if(isset(static::$crops[ $size ][2]))
+				{
+					$quality = static::$crops[ $size ][2];
+				}
 			}
 			else
 			{
@@ -599,13 +612,34 @@ class Image extends \SeanMorris\PressKit\Model
 
 		try
 		{
+			$imagick = new \Imagick($this->location());
+
 			// list($originalWidth, $originalHeight,)
 			// 	 = $info
 			// 	 = getimagesizefromstring($image);
+			
+			// $originalWidth  = $imagick->getImageWidth();
+			// $originalHeight = $imagick->getImageHeight();
 
-			$imagick = new \Imagick($this->location());
+			// if($originalWidth < $originalHeight && $width >= $height)
+			// {
+			// 	$height *= ceil($originalHeight/$originalWidth);
+			// 	// $width  *= ceil($originalHeight/$originalWidth);
+			// }
+			// else if($originalWidth > $originalHeight && $width <= $height)
+			// {
+			// 	// $height *= ceil($originalWidth/$originalHeight);
+			// 	$width  *= ceil($originalWidth/$originalHeight);
+			// }
 
-			$imagick->scaleImage($width, $height, TRUE);
+			// $imagick->scaleImage($width, $height, TRUE);
+			$imagick->cropThumbnailImage(
+				$width
+				, $height
+				// , 1
+				// , \Imagick::FILTER_CATROM
+				// , TRUE
+			);
 
 			$imagick->setImageFormat('jpeg');
 
