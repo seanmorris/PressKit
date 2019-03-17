@@ -271,43 +271,9 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		\SeanMorris\Ids\Log::debug('Orienting...', $this);
 
-		if(!$image = $this->content())
-		{
-			return;
-		}
-
-		try
-		{
-			list($originalWidth, $originalHeight,)
-				 = $info
-				 = getimagesizefromstring($image);
-
-			$imageOriginal = imagecreatefromstring($image);
-
-		}
-		catch (\Exception $e)
-		{
-			\SeanMorris\Ids\Log::warn('Cannot orient image', $this);
-			\SeanMorris\Ids\Log::logException($e);
-			return;
-		}
-
 		$file = new \SeanMorris\Ids\Disk\File(
 			$this->location()
 		);
-
-		$orientedImage = imagecreatetruecolor(
-			$originalWidth
-			, $originalHeight
-		);
-
-		// imagecopyresampled(
-		// 	$orientedImage
-		// 	, $imageOriginal
-		// 	, 0, 0, 0, 0
-		// 	, $originalWidth, $originalHeight
-		// 	, $originalWidth, $originalHeight
-		// );
 
 		$image       = new \Imagick($this->location());
 		$orientation = $image->getImageOrientation(); 
@@ -332,14 +298,9 @@ class Image extends \SeanMorris\PressKit\Model
 				break;
 		}
 
+		$image->setImageOrientation(0);
+
 		$file->write($image->getImageBlob(), false);
-
-		// ob_start();
-		// imagejpeg($orientedImage, NULL, static::JPEG_QUALITY);
-		// $imageData = ob_get_contents();
-		// ob_end_clean();
-
-		// $file->write($imageData, false);
 
 		\SeanMorris\Ids\Log::debug('Oriented', $this);
 	}
@@ -633,12 +594,12 @@ class Image extends \SeanMorris\PressKit\Model
 			// }
 
 			// $imagick->scaleImage($width, $height, TRUE);
-			$imagick->cropThumbnailImage(
+			$imagick->resizeImage(
 				$width
 				, $height
-				// , 1
-				// , \Imagick::FILTER_CATROM
-				// , TRUE
+				, 1
+				, \Imagick::FILTER_CATROM
+				, TRUE
 			);
 
 			$imagick->setImageFormat('jpeg');
