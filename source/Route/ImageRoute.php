@@ -92,7 +92,9 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 						continue;
 					}
 
-					if($image->save())
+					$image->save();
+
+					if($image->id)
 					{
 						$images[] = $image;
 					}

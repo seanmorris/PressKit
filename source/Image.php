@@ -307,6 +307,11 @@ class Image extends \SeanMorris\PressKit\Model
 
 	public function scaled($width, $height, $quality = NULL)
 	{
+		if(preg_match('/\.(gif)$/i', $this->url, $m))
+		{
+			return $this;
+		}
+
 		if($quality === NULL)
 		{
 			$quality = static::JPEG_QUALITY;
@@ -433,6 +438,11 @@ class Image extends \SeanMorris\PressKit\Model
 
 	public function crop($size, $useExisting = TRUE)
 	{
+		if(preg_match('/\.(gif)$/i', $this->url, $m))
+		{
+			return $this;
+		}
+
 		$original = $this;
 
 		while($this->original)
@@ -525,6 +535,11 @@ class Image extends \SeanMorris\PressKit\Model
 
 	public function fit($size, $useExisting = TRUE)
 	{
+		if(preg_match('/\.(gif)$/i', $this->url, $m))
+		{
+			return $this;
+		}
+
 		$original = $this;
 
 		while($this->original)
