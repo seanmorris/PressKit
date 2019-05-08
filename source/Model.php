@@ -92,12 +92,12 @@ class Model extends \SeanMorris\Ids\Model
 	{
 		static::startTransaction();
 
+		$this->ensureState();
+
 		if($this->id)
 		{
 			return parent::update();
 		}
-
-		$this->ensureState();
 
 		static::commitTransaction();
 
