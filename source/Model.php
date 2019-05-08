@@ -90,12 +90,16 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function forceSave()
 	{
+		static::startTransaction();
+
 		if($this->id)
 		{
 			return parent::update();
 		}
 
 		$this->ensureState();
+
+		static::commitTransaction();
 
 		return parent::create();
 	}
