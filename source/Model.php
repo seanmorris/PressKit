@@ -90,9 +90,9 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function forceSave()
 	{
-		static::startTransaction();
-
 		$this->ensureState();
+
+		static::startTransaction();
 
 		if($this->id)
 		{
