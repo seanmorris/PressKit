@@ -99,9 +99,11 @@ class Model extends \SeanMorris\Ids\Model
 			return parent::update();
 		}
 
+		$result = parent::create();
+
 		static::commitTransaction();
 
-		return parent::create();
+		return $result;
 	}
 
 	public function update()
