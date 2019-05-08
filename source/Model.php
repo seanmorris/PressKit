@@ -441,9 +441,9 @@ class Model extends \SeanMorris\Ids\Model
 
 			if($this->id)
 			{
-				$state->save();
-				$this->state = $state->id;
 			}
+			$state->save();
+			// $this->state = $state->id;
 
 			$this->state = $state;
 			// $this->id && $this->postUpdate();
