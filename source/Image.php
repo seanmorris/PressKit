@@ -56,6 +56,10 @@ class Image extends \SeanMorris\PressKit\Model
 			'where'  => [['url' => '?']]
 			, 'with' => ['state' => 'byNull']
 		]
+		, $byUrlLike = [
+			'where'  => [['url'  => '?', 'LIKE']]
+			// , 'with' => ['state' => 'byNull']
+		]
 		, $byPublicId = [
 			'where'  => [['publicId' => 'UNHEX(?)']]
 			, 'with' => ['state' => 'byNull']
@@ -318,7 +322,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		preg_match(
-			'/\.(gif|png|jpe?g|webp)$/'
+			'/\.(gif|png|jpe?g|webp)$/i'
 			, $this->url
 			, $m
 		);
@@ -652,7 +656,7 @@ class Image extends \SeanMorris\PressKit\Model
 		$tmpFile = new \SeanMorris\Ids\Disk\File('/tmp/' . uniqid(), $original->url);
 		$tmpFile->write($scaledImage);
 
-		if(!preg_match('/\.(gif|png|jpe?g|webp)$/', $original->url, $m))
+		if(!preg_match('/\.(gif|png|jpe?g|webp)$/i', $original->url, $m))
 		{
 			\SeanMorris\Ids\Log::warn('Cannot crop image without extension.', $original);
 			return;
