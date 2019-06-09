@@ -740,8 +740,10 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!$solrSettings)
 		{
-			$solrSettings = static::solrSettings();
-			$solrClient = new \Solarium\Client($solrSettings);
+			if($solrSettings = static::solrSettings())
+			{
+				$solrClient = new \Solarium\Client($solrSettings);
+			}
 		}
 
 		return $solrClient;
