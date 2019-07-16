@@ -199,7 +199,7 @@ class Resource
 
 					if(!$this->lightLoad && is_object($vv = $object->getSubject($k)))
 					{
-						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth-1);
+						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth - 1);
 						// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
 						// {
 						// 	$v = $this->processObject($vv, $type, $k, $object, $k, $depth-1);
