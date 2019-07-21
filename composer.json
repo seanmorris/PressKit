@@ -12,7 +12,7 @@
         "seanmorris/theme": ">=1",
         "seanmorris/form": "dev-master",
         "seanmorris/message": "dev-master",
-        "seanmorris/kallisti": "dev-master",
+        "seanmorris/kallisti": "dev-master"
     },
     "autoload": {
         "psr-4": {
