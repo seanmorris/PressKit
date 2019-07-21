@@ -43,7 +43,11 @@ class State extends \SeanMorris\Ids\Model
 			'publicId' => 'UNHEX(%s)'
 		]
 		, $byId = [
-			'where' => [['id' => '?']]
+			'where'   => [['id' => '?']]
+			, 'index' => ['class']
+		]
+		, $byIds = [
+			'where'   => [['id' => '?', 'IN', '%s', 'id', FALSE]]
 			, 'index' => ['class']
 		]
 		, $byNull = [
