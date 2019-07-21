@@ -552,6 +552,34 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function stub()
 	{
+		// $structure = [];
+
+		// $structure[ get_class($this) ] = [$this->publicId];
+
+		// foreach($this->getProperties() as $property)
+		// {
+		// 	if(!$manyClass = $this->canHaveMany($property))
+		// 	{
+		// 		continue;
+		// 	}
+
+		// 	$subjects = $this->getSubjects($property, TRUE);
+
+		// 	$subjectIds = array_map(
+		// 		function($subject)
+		// 		{
+		// 			return $subject->publicId;
+		// 		}
+		// 		, $subjects
+		// 	);
+
+		// 	$structure[ $manyClass] = $subjectIds;
+		// }
+
+		// var_dump($structure);
+
+		// die;
+
 		return (object) [
 			'id'                  => $this->id
 			, 'publicId'          => $this->publicId
@@ -788,6 +816,11 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected static function instantiateStub($skeleton)
 	{
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Instantiating stub for %s'
+			, get_called_class()
+		), $skeleton);
+
 		$stub        = new static;
 
 		$stub->_stub = true;
@@ -837,5 +870,110 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		return $stub;
+	}
+
+	public function childIds($depth = 10)
+	{
+		// $structure = [get_called_class() => [$this->id]];
+
+		$structure = [];
+
+		if(!$depth)
+		{
+			return $structure;
+		}
+
+		foreach($this->getProperties() as $property)
+		{
+			if($oneClass = $this->canHaveOne($property))
+			{
+				if($subject = $this->getSubject($property, TRUE))
+				{
+					$structure[$oneClass][] = $subject->id;
+
+					if($stateClass = $subject->canHaveOne('state'))
+					{
+						if(!($structure[$stateClass] ?? FALSE))
+						{
+							$structure[$stateClass] = [];
+						}
+
+						$stateId = $subject->state;
+
+						if(is_object($stateId))
+						{
+							$stateId = $stateId->id;
+						}
+
+						$structure[$stateClass][] = $stateId;
+					}
+
+					if(is_callable([$subject, 'childIds']))
+					{
+						$structure = array_merge_recursive(
+							$structure
+							, $subject->childIds($depth - 1)
+						);
+					}					
+				}
+			}
+
+			if($manyClass = $this->canHaveMany($property))
+			{
+				if(!($structure[$manyClass] ?? FALSE))
+				{
+					$structure[$manyClass] = [];
+				}
+
+				$subjects = $this->getSubjects($property, TRUE);
+
+				foreach($subjects as $subject)
+				{
+					$structure[$manyClass][] = $subject->id;
+
+					if($stateClass = $subject->canHaveOne('state'))
+					{
+						if(!($structure[$stateClass] ?? FALSE))
+						{
+							$structure[$stateClass] = [];
+						}
+
+						$stateId = $subject->state;
+
+						if(is_object($stateId))
+						{
+							$stateId = $stateId->id;
+						}
+
+						$structure[$stateClass][] = $stateId;
+					}
+
+					if(is_callable([$subject, 'childIds']))
+					{
+						$structure = array_merge_recursive(
+							$structure
+							, $subject->childIds($depth - 1)
+						);
+					}
+				}
+			}
+		}
+
+		$structure = array_map('array_unique', $structure);
+
+		// if($structure[get_called_class()])
+		// {
+		// 	$index = array_search(
+		// 		$this->id
+		// 		, $structure[get_called_class()]
+		// 	);
+
+		// 	if($index !== FALSE)
+		// 	{
+		// 		unset($structure[get_called_class()][$index]);
+		// 	}
+		// }
+
+		return $structure;
 	}
 }
