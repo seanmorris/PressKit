@@ -85,6 +85,15 @@ class Model extends \SeanMorris\Ids\Model
 			return FALSE;
 		}
 
+		Listener::publish(
+			sprintf(
+				'model:loaded:%s:%d'
+				, get_class($instance)
+				, $instance->id
+			)
+			, $instance
+		);
+
 		return $instance;
 	}
 
@@ -111,7 +120,28 @@ class Model extends \SeanMorris\Ids\Model
 
 		if($this->can('update'))
 		{
-			return parent::update();
+			Listener::publish(
+				sprintf(
+					'model:beforeUpdate:%s:%s'
+					, get_class($this)
+					, $this->id
+				)
+				, $this
+			);
+
+			$result = parent::update();
+
+			Listener::publish(
+				sprintf(
+					'model:afterUpdate:%s:%s'
+					, get_class($this)
+					, $this->id
+				)
+				, $this
+				, $result
+			);
+
+			return $result;
 		}
 
 		$exception = new \SeanMorris\PressKit\Exception\ModelAccessException(
@@ -872,7 +902,7 @@ class Model extends \SeanMorris\Ids\Model
 		return $stub;
 	}
 
-	public function childIds($depth = 10)
+	public function childIds($depth = 4)
 	{
 		// $structure = [get_called_class() => [$this->id]];
 
@@ -975,5 +1005,38 @@ class Model extends \SeanMorris\Ids\Model
 		// }
 
 		return $structure;
+	}
+
+	public function redisStore()
+	{
+		$owner = $this->getSubject('owner', TRUE);
+
+		$setKey = sprintf(
+			'z-notifications;%s;uid:%d'
+			, get_called_class()
+			, $owner->id
+		);
+
+		$hashKey = sprintf(
+			'h-notifications;%s;uid:%d'
+			, get_called_class()
+			, $owner->id
+		);
+
+		$redis = \SeanMorris\Ids\Settings::get('redis');
+
+		$redis->zadd(
+			$setKey
+			, -$this->incremented
+			, (int) $this->id
+		);
+
+		$redis->hset(
+			$hashKey
+			, (int) $this->id
+			, $source = json_encode($this->stub())
+		);
+
+		return TRUE;
 	}
 }
