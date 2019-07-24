@@ -614,6 +614,7 @@ class Model extends \SeanMorris\Ids\Model
 			'id'                  => $this->id
 			, 'publicId'          => $this->publicId
 			, 'title'             => $this->title
+			, '_selected_i'       => $this->_selected
 			, 'content_type_t'    => get_class($this)
 			, 'state_i'           => is_object($this->state)
 				? $this->state->id
