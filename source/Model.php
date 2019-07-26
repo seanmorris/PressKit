@@ -610,15 +610,20 @@ class Model extends \SeanMorris\Ids\Model
 
 		// die;
 
+		$state = $this->getSubject('state', TRUE);
+
 		return (object) [
 			'id'                  => $this->id
 			, 'publicId'          => $this->publicId
 			, 'title'             => $this->title
-			, '_selected_i'       => $this->_selected
+			, '_selected_f'       => $this->_selected
 			, 'content_type_t'    => get_class($this)
-			, 'state_i'           => is_object($this->state)
-				? $this->state->id
-				: $this->state
+			, 'state_i'           => is_object($state)
+				? $state->id
+				: $state
+			, 'state_s'           => is_object($state)
+				? json_encode($state->unconsume(0))
+				: NULL
 		];
 	}
 
