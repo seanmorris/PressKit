@@ -6,8 +6,8 @@ class Package extends \SeanMorris\Ids\Package
 		$assetManager = 'SeanMorris\Rhino\AssetManager'
 		, $tables = [
 			'main' => [
-				// 'Cache'
-				'PressKitPost'
+				'Cache'
+				, 'PressKitPost'
 				, 'PressKitImage'
 				, 'PressKitComment'
 				, 'PressKitRelationship'
