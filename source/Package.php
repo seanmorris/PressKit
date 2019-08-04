@@ -10,6 +10,7 @@ class Package extends \SeanMorris\Ids\Package
 				, 'PressKitPost'
 				, 'PressKitImage'
 				, 'PressKitComment'
+				, 'PressKitMigration'
 				, 'PressKitRelationship'
 				, 'StateFlowState'
 			]

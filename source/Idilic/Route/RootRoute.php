@@ -539,6 +539,17 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 				if(($migration->class)::apply() === TRUE)
 				{
+					$migrationRecord = new \SeanMorris\PressKit\MigrationRecord;
+
+					$migrationRecord->consume([
+						'migration' => $migration->short
+						, 'applied' => time()
+						, 'package' => $migration->namespace
+						, 'version' => $migration->version
+					]);
+
+					$migrationRecord->save();
+
 					$currentPackage = $package->setVar(
 						'migration:' . $migration->namespace
 						, $migration->version

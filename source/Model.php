@@ -636,7 +636,7 @@ class Model extends \SeanMorris\Ids\Model
 
 		foreach($stub as $key => $value)
 		{
-			$document->{$key} = $value;
+			$document->addField($key, $value);
 		}
 
 		// $document->id             = $this->id;
