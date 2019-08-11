@@ -659,12 +659,40 @@
                             "Index_type": "BTREE",
                             "Comment": "",
                             "Index_comment": ""
+                        },
+                        "5": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "5",
+                            "Column_name": "property",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
+                        },
+                        "6": {
+                            "Table": "PressKitRelationship",
+                            "Non_unique": "0",
+                            "Key_name": "relationship",
+                            "Seq_in_index": "6",
+                            "Column_name": "delta",
+                            "Collation": "A",
+                            "Sub_part": null,
+                            "Packed": null,
+                            "Null": "",
+                            "Index_type": "BTREE",
+                            "Comment": "",
+                            "Index_comment": ""
                         }
                     },
                     "ownerClass": {
                         "1": {
                             "Table": "PressKitRelationship",
-                            "Non_unique": "0",
+                            "Non_unique": "1",
                             "Key_name": "ownerClass",
                             "Seq_in_index": "1",
                             "Column_name": "ownerClass",
@@ -678,7 +706,7 @@
                         },
                         "2": {
                             "Table": "PressKitRelationship",
-                            "Non_unique": "0",
+                            "Non_unique": "1",
                             "Key_name": "ownerClass",
                             "Seq_in_index": "2",
                             "Column_name": "ownerId",
@@ -692,7 +720,7 @@
                         },
                         "3": {
                             "Table": "PressKitRelationship",
-                            "Non_unique": "0",
+                            "Non_unique": "1",
                             "Key_name": "ownerClass",
                             "Seq_in_index": "3",
                             "Column_name": "subjectClass",
@@ -706,7 +734,7 @@
                         },
                         "4": {
                             "Table": "PressKitRelationship",
-                            "Non_unique": "0",
+                            "Non_unique": "1",
                             "Key_name": "ownerClass",
                             "Seq_in_index": "4",
                             "Column_name": "subjectId",
