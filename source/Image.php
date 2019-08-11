@@ -271,15 +271,18 @@ class Image extends \SeanMorris\PressKit\Model
 	}
 
 
-	protected function orient()
+	protected function orient(\SeanMorris\Ids\Disk\File $file = NULL)
 	{
 		\SeanMorris\Ids\Log::debug('Orienting...', $this);
 
-		$file = new \SeanMorris\Ids\Disk\File(
-			$this->location()
-		);
+		if(!$file)
+		{
+			$file = new \SeanMorris\Ids\Disk\File(
+				$this->location()
+			);
+		}
 
-		$image       = new \Imagick($this->location());
+		$image       = new \Imagick($file->name());
 		$orientation = $image->getImageOrientation(); 
 
 		\SeanMorris\Ids\Log::debug('Orientation:', $orientation);
