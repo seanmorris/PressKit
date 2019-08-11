@@ -1305,6 +1305,8 @@ class Controller implements \SeanMorris\Ids\Routable
 						static::afterCreate($model, $skeleton);
 						static::afterWrite($model, $skeleton);
 
+						$this->model = $model;
+
 						$messages->addFlash(
 							new \SeanMorris\Message\SuccessMessage('Update successful!')
 						);
@@ -1404,9 +1406,11 @@ class Controller implements \SeanMorris\Ids\Routable
 					$resource->meta('form', $form->toStructure());
 				}
 
-				echo $resource->encode($params['api']);
+				// echo $resource->encode($params['api']);
 
-				die;
+				// die;
+
+				return $resource;
 			}
 		}
 

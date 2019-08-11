@@ -14,7 +14,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		]
 	;
 
-	protected function __construct(\SeanMorris\PressKit\Controller $controller)
+	public function __construct(\SeanMorris\PressKit\Controller $controller)
 	{
 		$this->routes = $controller->modelRoutes;
 		$this->subRoutes = $controller->modelSubRoutes;

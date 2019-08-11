@@ -538,7 +538,12 @@ class Model extends \SeanMorris\Ids\Model
 
 		$client       = new \GuzzleHttp\Client();
 		$class        = get_called_class();
-		$solrSettings = static::solrSettings();
+
+		if(!$solrSettings = static::solrSettings())
+		{
+			throw new Exception('No solr settings found.');
+		}
+
 		$solrSettings = $solrSettings->endpoint->main;
 
 		if(!$solrSettings)
