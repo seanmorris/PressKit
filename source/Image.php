@@ -475,6 +475,11 @@ class Image extends \SeanMorris\PressKit\Model
 			}
 		}
 
+		if($useExisting === 2)
+		{
+			return FALSE;
+		}
+
 		\SeanMorris\Ids\Log::debug(sprintf(
 			'Creating new crop "%s" for image %d.'
 			, $size
@@ -570,6 +575,11 @@ class Image extends \SeanMorris\PressKit\Model
 				\SeanMorris\Ids\Log::debug('Existing fit found.');
 				return $existingFit;
 			}
+		}
+
+		if($useExisting === 2)
+		{
+			return FALSE;
 		}
 
 		if(isset($size))
