@@ -677,7 +677,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		fwrite(STDOUT, $xmlWriter->flush(true));
 	}
 
-		protected static function all(
+	protected static function all(
 		$class
 		, $router
 		, callable $callback
@@ -755,5 +755,21 @@ class RootRoute implements \SeanMorris\Ids\Routable
 		{
 			$done();
 		}
+	}
+
+	public function queueDaemon($router)
+	{
+		[$class,] = $router->path()->consumeNodes();
+
+		if(!is_subclass_of($class, '\SeanMorris\Ids\Queue'))
+		{
+			throw new Exception(sprintf(
+				"Provided class does not inherit: %s\n\t%s"
+				, '\SeanMorris\Ids\Queue'
+				, $class
+			));
+		}
+
+		$class::listen();
 	}
 }
