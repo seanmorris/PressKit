@@ -68,6 +68,30 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		$instance->_selected = microtime(TRUE);
+		$tester = $instance;
+
+		if($stateClass = $instance->canHaveOne('state'))
+		{
+			if($stateSkeleton = $stateClass::subSkeleton($skeleton))
+			{
+				if($stateClass::beforeRead(NULL, $stateSkeleton) === FALSE)
+				{
+					return;
+				}
+
+				$state = $stateClass::instantiate($skeleton);
+
+				if($stateClass::afterRead($state, $stateSkeleton) === FALSE)
+				{
+					return;
+				}
+
+				if($state)
+				{
+					$instance->state = $state;
+				}
+			}
+		}
 
 		if($instance->canHaveOne('state') && !$instance->can('read'))
 		{
@@ -151,7 +175,7 @@ class Model extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::logException($exception);
 
 		throw $exception;
-		
+
 	}
 
 	public function delete($override = FALSE)
@@ -955,7 +979,7 @@ class Model extends \SeanMorris\Ids\Model
 							$structure
 							, $subject->childIds($depth - 1)
 						);
-					}					
+					}
 				}
 			}
 
