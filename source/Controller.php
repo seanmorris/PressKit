@@ -191,8 +191,14 @@ class Controller implements \SeanMorris\Ids\Routable
 
 				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains[$index]));
 				header('Access-Control-Allow-Credentials: true');
-				header('Access-Control-Allow-Methods: GET,POST');
+				header('Access-Control-Allow-Methods: GET,POST,HEAD,OPTIONS');
 				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+			}
+
+			if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+			{
+				header('HTTP/1.1 200 OK');
+				die;
 			}
 		}
 
@@ -732,7 +738,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				return $stack;
 			}
 		}
-		
+
 		if(isset($params['api']) && !$router->subRouted())
 		{
 			if($params['api'] == 'html')
@@ -953,7 +959,7 @@ class Controller implements \SeanMorris\Ids\Routable
 			if(array_filter($formValues))
 			{
 				$listBy = 'BySearch';
-				
+
 				if(static::$pageSize)
 				{
 					$listBy = 'Page' . $listBy;
@@ -1290,7 +1296,7 @@ class Controller implements \SeanMorris\Ids\Routable
 							)){
 								$parent->addSubject($property, $model);
 								$parent->storeRelationships($property, $parent->{$property});
-								
+
 								\SeanMorris\Ids\Log::debug($parent);
 							}
 
