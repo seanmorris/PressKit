@@ -744,7 +744,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 				$pageArgs   = $args;
 				$pageArgs[] = $lastId;
 				$pageArgs[] = $pageSize;
-				
+
 				$models = $class::$selectorFunction(...$pageArgs);
 
 				break;

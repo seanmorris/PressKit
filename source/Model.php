@@ -463,43 +463,48 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected function ensureState($force = FALSE)
 	{
-		\SeanMorris\Ids\Log::debug(
-			'ENSURE'
-		);
+		\SeanMorris\Ids\Log::debug(sprintf(
+			'Ensuring %s::[%s] has a state associated.'
+			, get_called_class()
+			, $this->id ?? '-'
+		));
 
-		if($this->id && $this->state && !is_object($this->state))
+		if(isset(static::$hasOne['state']) && static::$hasOne['state'])
 		{
-			$this->state = $this->getSubject('state', TRUE);
-		}
-
-		if(isset(static::$hasOne['state'])
-			&& static::$hasOne['state']
-			&& ((!$this->state || !is_object($this->state)) || $force)
-		){
-			\SeanMorris\Ids\Log::debug(
-				'Creating new state '
-				. static::$hasOne['state']
-				. ' for '
-				. get_class($this)
-			);
-			$stateClass = static::$hasOne['state'];
-			$state = new $stateClass;
-			$owner = \SeanMorris\Access\Route\AccessRoute::_currentUser();
-			$state->consume([
-				'owner' => $owner ? $owner->id : NULL
-			]);
-
-			if($this->id)
+			if($this->state && !is_object($this->state))
 			{
+				$this->state = $this->getSubject('state', TRUE);
 			}
-			$state->save();
-			// $this->state = $state->id;
 
-			$this->state = $state;
-			// $this->id && $this->postUpdate();
+			if((!$this->state || !is_object($this->state)) || $force)
+			{
+				\SeanMorris\Ids\Log::debug(
+					'Creating new state '
+					. static::$hasOne['state']
+					. ' for '
+					. get_class($this)
+				);
+				\SeanMorris\Ids\Log::trace();
+				$stateClass = static::$hasOne['state'];
+				$state = new $stateClass;
+				$owner = \SeanMorris\Access\Route\AccessRoute::_currentUser();
+				$state->consume([
+					'owner' => $owner ? $owner->id : NULL
+				]);
 
-			return $state;
+				if($this->id)
+				{
+				}
+				$state->save();
+				// $this->state = $state->id;
+
+				$this->state = $state;
+				// $this->id && $this->postUpdate();
+
+				return $state;
+			}
 		}
+
 
 		return $this->state;
 	}
