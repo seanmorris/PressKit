@@ -49,9 +49,9 @@ class Model extends \SeanMorris\Ids\Model
 		);
 	}
 
-	protected static function instantiate($skeleton, $args = [], $rawArgs = [])
+	protected static function instantiate($skeleton, $args = [], $rawArgs = [], $select = NULL)
 	{
-		if(!$instance = parent::instantiate($skeleton, $args, $rawArgs))
+	    if(!$instance = parent::instantiate($skeleton, $args, $rawArgs, $select))
 		{
 			return;
 		}
