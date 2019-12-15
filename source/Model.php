@@ -2,6 +2,7 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
+	private   $_initialized = false;
 	protected $_selected, $_stub = false;
 
 	protected static
@@ -51,7 +52,7 @@ class Model extends \SeanMorris\Ids\Model
 
 	protected static function instantiate($skeleton, $args = [], $rawArgs = [], $select = NULL)
 	{
-	    if(!$instance = parent::instantiate($skeleton, $args, $rawArgs, $select))
+		if(!$instance = parent::instantiate($skeleton, $args, $rawArgs, $select))
 		{
 			return;
 		}
@@ -68,7 +69,6 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		$instance->_selected = microtime(TRUE);
-		$tester = $instance;
 
 		if($stateClass = $instance->canHaveOne('state'))
 		{
@@ -108,6 +108,8 @@ class Model extends \SeanMorris\Ids\Model
 
 			return FALSE;
 		}
+
+		$instance->_initialized = true;
 
 		Listener::publish(
 			sprintf(
@@ -192,11 +194,6 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function can($action, $point = NULL)
 	{
-		// if($this->_stub && $action == 'read')
-		// {
-		// 	return true;
-		// }
-
 		if(php_sapi_name() == 'cli')
 		{
 			return true;
@@ -215,8 +212,6 @@ class Model extends \SeanMorris\Ids\Model
 			return TRUE;
 
 			$isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
-
-			// \SeanMorris\Ids\Log::debug("Model lacks state.");
 
 			if($isAdmin || $isEditor || $action === 'read' || $action === 'view')
 			{
@@ -241,15 +236,6 @@ class Model extends \SeanMorris\Ids\Model
 			$state  = $this->getSubject('state');
 		}
 
-		// \SeanMorris\Ids\Log::debug(
-		// 	sprintf(
-		// 		'Checking %s(%d) has a state... '
-		// 		, get_called_class()
-		// 		, $this->id
-		// 	)
-		// 	, $state
-		// );
-
 		if(!$state || !is_object($state))
 		{
 			\SeanMorris\Ids\Log::error($state);
@@ -272,15 +258,6 @@ class Model extends \SeanMorris\Ids\Model
 				return FALSE;
 			}
 		}
-		else
-		{
-			/*
-			\SeanMorris\Ids\Log::debug(
-				sprintf('%s(%d) has a state... ', get_called_class(), $this->id)
-				, $state ? 1 : 0
-			);
-			*/
-		}
 
 		if(php_sapi_name() == 'cli')
 		{
@@ -295,28 +272,6 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			$allowed = $state->can($user, $action);
 		}
-
-		// \SeanMorris\Ids\Log::debug(sprintf(
-		// 	'Checking if user[%d] "%s" can %s'
-		// 		. PHP_EOL
-		// 		. '%s[%d] in state %s[%d] (%d)'
-		// 	, $user->id
-		// 	, $user->username
-		// 	, $action . ($point
-		// 		? sprintf(' property $%s on', $point)
-		// 		: NULL
-		// 	)
-		// 	, get_called_class()
-		// 	, $this->id
-		// 	, get_class($state)
-		// 	, $state->id
-		// 	, $state->state
-		// ), $allowed ? 1:0);
-
-		// if($allowed && $point && isset($this->{$point}))
-		// {
-		// 	\SeanMorris\Ids\Log::debug('Content:', $this->{$point});
-		// }
 
 		return $allowed;
 	}
@@ -495,11 +450,10 @@ class Model extends \SeanMorris\Ids\Model
 				if($this->id)
 				{
 				}
+
 				$state->save();
-				// $this->state = $state->id;
 
 				$this->state = $state;
-				// $this->id && $this->postUpdate();
 
 				return $state;
 			}
@@ -511,28 +465,27 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function __get($name)
 	{
-		/*
-		if($name == 'state')
+		if(!$this->_initialized || $this->can('read', $name))
 		{
-			return;
+			return parent::__get($name);;
 		}
-		*/
-
-		// \SeanMorris\Ids\Log::debug('Trying to __get ' . $name);
 
 		if(!$this->can('read', $name))
 		{
-			// \SeanMorris\Ids\Log::debug('Nope.');
 			return;
 		}
-
-		// \SeanMorris\Ids\Log::debug('ok.');
 
 		return parent::__get($name);
 	}
 
 	public function __set($name, $value)
 	{
+		if(!$this->_initialized)
+		{
+			$this->$name = $value;
+			return;
+		}
+
 		if(!$this->can('write', $name))
 		{
 			return;
@@ -570,7 +523,7 @@ class Model extends \SeanMorris\Ids\Model
 
 		if(!$solrSettings = static::solrSettings())
 		{
-			throw new Exception('No solr settings found.');
+			throw new \Exception('No solr settings found.');
 		}
 
 		$solrSettings = $solrSettings->endpoint->main;
@@ -616,34 +569,6 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function stub()
 	{
-		// $structure = [];
-
-		// $structure[ get_class($this) ] = [$this->publicId];
-
-		// foreach($this->getProperties() as $property)
-		// {
-		// 	if(!$manyClass = $this->canHaveMany($property))
-		// 	{
-		// 		continue;
-		// 	}
-
-		// 	$subjects = $this->getSubjects($property, TRUE);
-
-		// 	$subjectIds = array_map(
-		// 		function($subject)
-		// 		{
-		// 			return $subject->publicId;
-		// 		}
-		// 		, $subjects
-		// 	);
-
-		// 	$structure[ $manyClass] = $subjectIds;
-		// }
-
-		// var_dump($structure);
-
-		// die;
-
 		$state = $this->getSubject('state', TRUE);
 
 		return (object) [
@@ -673,30 +598,11 @@ class Model extends \SeanMorris\Ids\Model
 			$document->{$key} = $value;
 		}
 
-		// $document->id             = $this->id;
-		// $document->publicId       = $this->publicId;
-		// $document->title          = $this->title;
-		// $document->content_type_t = get_class($this);
-
-		// $document->state_i        = is_object($this->state)
-		// 	? $this->state->id
-		// 	: $this->state;
-
 		return $document;
 	}
 
 	public static function solrClear(array $args = [])
 	{
-		// $queryString = http_build_query(
-		// 	$args = [
-		// 		'wt'             => 'json'
-		// 		, 'version'      => 2.2
-		// 		, 'content_type_t' => get_called_class()
-		// 	]                // Non overrideable defaults
-		// 	+ $args          // Supplied args
-		// 	+ ['rows' => 10] // Overrideable defaults
-		// );
-
 		$args = $args ? $args : ['*'=>'*'];
 
 		$queryString = implode(';', array_map(
@@ -725,17 +631,6 @@ class Model extends \SeanMorris\Ids\Model
 			, $solrSettings->port
 			, $solrSettings->path
 		);
-
-		// $url = sprintf(
-		// 	'http://%s:%d%s/update?stream.body=%s'
-		// 	, $solrSettings->host
-		// 	, $solrSettings->port
-		// 	, $solrSettings->path
-		// 	, urlencode(sprintf(
-		// 		'<delete><query>%s</query></delete>'
-		// 		, $queryString
-		// 	))
-		// );
 
 		$queryString = sprintf(
 			'<delete><query>%s</query></delete>'
@@ -792,8 +687,6 @@ class Model extends \SeanMorris\Ids\Model
 			, $this->id
 			, addSlashes(get_called_class())
 		);
-
-		// var_dump($query);die;
 
 		$update->addDeleteQuery($query);
 
@@ -891,7 +784,7 @@ class Model extends \SeanMorris\Ids\Model
 			, get_called_class()
 		), $skeleton);
 
-		$stub        = new static;
+		$stub = new static;
 
 		$stub->_stub = true;
 		$stub->state = $skeleton->state_i        ?? NULL;
@@ -939,13 +832,13 @@ class Model extends \SeanMorris\Ids\Model
 			}
 		}
 
+		$stub->_initialized = true;
+
 		return $stub;
 	}
 
 	public function childIds($depth = 4)
 	{
-		// $structure = [get_called_class() => [$this->id]];
-
 		$structure = [];
 
 		if(!$depth)
@@ -1030,19 +923,6 @@ class Model extends \SeanMorris\Ids\Model
 		}
 
 		$structure = array_map('array_unique', $structure);
-
-		// if($structure[get_called_class()])
-		// {
-		// 	$index = array_search(
-		// 		$this->id
-		// 		, $structure[get_called_class()]
-		// 	);
-
-		// 	if($index !== FALSE)
-		// 	{
-		// 		unset($structure[get_called_class()][$index]);
-		// 	}
-		// }
 
 		return $structure;
 	}
