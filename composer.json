@@ -1,23 +1,23 @@
 {
-    "name": "seanmorris/presskit",
-    "authors": [
-        {
-            "name": "Sean Morris",
-            "email": "sean@sean-morris.com"
-        }
-    ],
-    "require": {
-        "seanmorris/ids": "dev-master",
-        "seanmorris/access": "dev-master",
-        "seanmorris/theme": ">=1",
-        "seanmorris/form": "dev-master",
-        "seanmorris/message": "dev-master",
-        "seanmorris/kallisti": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "SeanMorris\\PressKit\\Test\\": "test/",
-            "SeanMorris\\PressKit\\": "source/"
-        }
-    }
+	"name": "seanmorris/presskit",
+	"authors": [
+		{
+			"name": "Sean Morris",
+			"email": "sean@sean-morris.com"
+		}
+	],
+	"require": {
+		"seanmorris/ids": "dev-sm-abstract-log as dev-master",
+		"seanmorris/access": "dev-master",
+		"seanmorris/theme": ">=1",
+		"seanmorris/form": "dev-master",
+		"seanmorris/message": "dev-master",
+		"seanmorris/kallisti": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"SeanMorris\\PressKit\\Test\\": "test/",
+			"SeanMorris\\PressKit\\":"source/"
+		}
+	}
 }

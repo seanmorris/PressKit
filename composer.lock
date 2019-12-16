@@ -1,41 +1,286 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "344e7200fbd8269c5e4bffae83cbe7a8",
-    "content-hash": "467ac65cc57bff866697408e506ccdc2",
+    "content-hash": "b8079c7d65741fa105ca755e4967f165",
     "packages": [
         {
-            "name": "seanmorris/rhino",
+            "name": "hautelook/phpass",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hautelook/phpass.git",
+                "reference": "b2daca28508000d1dd126e93ec472d771626a774"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hautelook/phpass/zipball/b2daca28508000d1dd126e93ec472d771626a774",
+                "reference": "b2daca28508000d1dd126e93ec472d771626a774",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Hautelook": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Public Domain"
+            ],
+            "authors": [
+                {
+                    "name": "Solar Designer",
+                    "email": "solar@openwall.com",
+                    "homepage": "http://openwall.com/phpass/"
+                }
+            ],
+            "description": "Portable PHP password hashing framework",
+            "homepage": "http://github.com/hautelook/phpass/",
+            "keywords": [
+                "blowfish",
+                "crypt",
+                "password",
+                "security"
+            ],
+            "time": "2012-08-31T00:00:00+00:00"
+        },
+        {
+            "name": "seanmorris/access",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "/home/sean/packages/SeanMorris/Rhino",
-                "reference": "862881f021c39aac6d81b9eb0e2fbd5d51cbf1f8"
+                "url": "https://github.com/seanmorris/access.git",
+                "reference": "bc0af03a58fc6bdae2cbe93d70d3605f2e406d1c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/access/zipball/bc0af03a58fc6bdae2cbe93d70d3605f2e406d1c",
+                "reference": "bc0af03a58fc6bdae2cbe93d70d3605f2e406d1c",
+                "shasum": ""
+            },
+            "require": {
+                "hautelook/phpass": "^1.0"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "^1.1"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "SeanMorris\\Rhino\\Test\\": "test/",
-                    "SeanMorris\\Rhino\\": "source/"
+                    "SeanMorris\\Access\\Test\\": "test/",
+                    "SeanMorris\\Access\\": "source/",
+                    "seanmorris\\access\\": "source/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Sean Morris",
                     "email": "sean@sean-morris.com"
                 }
             ],
-            "time": "2016-01-31 00:33:00"
+            "time": "2019-09-30T23:54:31+00:00"
+        },
+        {
+            "name": "seanmorris/form",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seanmorris/form.git",
+                "reference": "1a060505b4638fe7e1c4784de13b775ec66500fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/form/zipball/1a060505b4638fe7e1c4784de13b775ec66500fc",
+                "reference": "1a060505b4638fe7e1c4784de13b775ec66500fc",
+                "shasum": ""
+            },
+            "require": {
+                "seanmorris/theme": "1.0.*"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Form\\Test\\": "test/",
+                    "SeanMorris\\Form\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "sean@sean-morris.com"
+                }
+            ],
+            "description": "Simple, Object oriented forms for PHP.",
+            "time": "2019-02-13T14:43:44+00:00"
+        },
+        {
+            "name": "seanmorris/ids",
+            "version": "dev-sm-abstract-log",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seanmorris/ids.git",
+                "reference": "dbea541841e2200e53e2953b629afd665d5ca8af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/ids/zipball/dbea541841e2200e53e2953b629afd665d5ca8af",
+                "reference": "dbea541841e2200e53e2953b629afd665d5ca8af",
+                "shasum": ""
+            },
+            "require-dev": {
+                "simpletest/simpletest": "dev-master"
+            },
+            "bin": [
+                "bin/idilic"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Ids\\Test\\": "test/",
+                    "SeanMorris\\Ids\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "sean@sean-morris.com"
+                }
+            ],
+            "time": "2019-12-16T03:11:03+00:00"
+        },
+        {
+            "name": "seanmorris/kallisti",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seanmorris/kallisti.git",
+                "reference": "d59d9e1457ad132dc6748bbbbdb514dc311e53a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/kallisti/zipball/d59d9e1457ad132dc6748bbbbdb514dc311e53a9",
+                "reference": "d59d9e1457ad132dc6748bbbbdb514dc311e53a9",
+                "shasum": ""
+            },
+            "require-dev": {
+                "simpletest/simpletest": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Kallisti\\Test\\": "test/",
+                    "SeanMorris\\Kallisti\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "inquire@seanmorr.is"
+                }
+            ],
+            "description": "Chaos Management Engine",
+            "time": "2019-07-21T23:15:36+00:00"
+        },
+        {
+            "name": "seanmorris/message",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seanmorris/message.git",
+                "reference": "73c1b67f72dedba14c572e6e80c2c4fdd7ac8d3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/message/zipball/73c1b67f72dedba14c572e6e80c2c4fdd7ac8d3e",
+                "reference": "73c1b67f72dedba14c572e6e80c2c4fdd7ac8d3e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Message\\Test\\": "test/",
+                    "SeanMorris\\Message\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "sean@sean-morris.com"
+                }
+            ],
+            "time": "2018-05-07T18:57:24+00:00"
+        },
+        {
+            "name": "seanmorris/theme",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seanmorris/theme.git",
+                "reference": "97554e153312026c7db4af8ae3653d20fe9d117d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seanmorris/theme/zipball/97554e153312026c7db4af8ae3653d20fe9d117d",
+                "reference": "97554e153312026c7db4af8ae3653d20fe9d117d",
+                "shasum": ""
+            },
+            "require-dev": {
+                "simpletest/simpletest": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SeanMorris\\Theme\\Test\\": "test/",
+                    "SeanMorris\\Theme\\": "source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sean Morris",
+                    "email": "sean@sean-morris.com"
+                }
+            ],
+            "description": "Simple, sane templating and theming for PHP",
+            "time": "2017-07-02T12:52:16+00:00"
         }
     ],
     "packages-dev": [],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "dev-master",
+            "alias_normalized": "9999999-dev",
+            "version": "dev-sm-abstract-log",
+            "package": "seanmorris/ids"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "seanmorris/rhino": 20
+        "seanmorris/ids": 20,
+        "seanmorris/access": 20,
+        "seanmorris/form": 20,
+        "seanmorris/message": 20,
+        "seanmorris/kallisti": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
