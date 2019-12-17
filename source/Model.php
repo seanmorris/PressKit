@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
-	private   $_initialized = false;
+	private   $_initialized = false, $canCache = [];
 	protected $_selected, $_stub = false;
 
 	protected static
@@ -132,6 +132,8 @@ class Model extends \SeanMorris\Ids\Model
 			return parent::update();
 		}
 
+		$this->canCache = [];
+
 		$result = parent::create();
 
 		return $result;
@@ -139,6 +141,8 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function update()
 	{
+		$this->canCache = [];
+
 		if($this->_stub)
 		{
 			return;
@@ -182,6 +186,8 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function delete($override = FALSE)
 	{
+		$this->canCache = [];
+
 		if($override || $this->can('delete'))
 		{
 			return parent::delete();
@@ -199,26 +205,34 @@ class Model extends \SeanMorris\Ids\Model
 			return true;
 		}
 
+		$key = get_called_class() . '::' . $this->id
+			. '::' . $action . '::' . $point;
+
+		if(isset($this->canCache[$key]))
+		{
+			return $this->canCache[$key];
+		}
+
 		$user    = \SeanMorris\Access\Route\AccessRoute::_currentUser();
 		$isAdmin = $user->hasRole('SeanMorris\Access\Role\Administrator');
 
 		if($isAdmin)
 		{
-			return TRUE;
+			return $this->canCache[$key] = TRUE;
 		}
 
 		if(!isset(static::$hasOne['state']))
 		{
-			return TRUE;
+			return $this->canCache[$key] = TRUE;
 
 			$isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
 
 			if($isAdmin || $isEditor || $action === 'read' || $action === 'view')
 			{
-				return true;
+				return $this->canCache[$key] = TRUE;
 			}
 
-			return $isAdmin;
+			return $this->canCache[$key] = $isAdmin;
 		}
 
 		\SeanMorris\Ids\Log::debug($this->state);
@@ -255,13 +269,13 @@ class Model extends \SeanMorris\Ids\Model
 					, $this->id
 				), $action, $point);
 
-				return FALSE;
+				return $this->canCache[$key] = FALSE;
 			}
 		}
 
 		if(php_sapi_name() == 'cli')
 		{
-			return TRUE;
+			return $this->canCache[$key] = TRUE;
 		}
 
 		if($point)
@@ -273,7 +287,7 @@ class Model extends \SeanMorris\Ids\Model
 			$allowed = $state->can($user, $action);
 		}
 
-		return $allowed;
+		return $this->canCache[$key] = $allowed;
 	}
 
 	public static function canStatic($action)
