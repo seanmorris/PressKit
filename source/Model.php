@@ -134,9 +134,7 @@ class Model extends \SeanMorris\Ids\Model
 
 		$this->canCache = [];
 
-		$result = parent::create();
-
-		return $result;
+		return parent::create();
 	}
 
 	public function update()

@@ -81,12 +81,11 @@ class State extends \SeanMorris\Ids\Model
 		$result = $this->_can($user, $point, $action);
 
 		\SeanMorris\Ids\Log::debug([
-			'subclass' => get_called_class() . '::can',
-			'$this'   => $this,
+			'subclass' => get_called_class(),
 			'$point'  => $point,
 			'$action' => $action,
 			'$result' => $result,
-			'$user'   => $user
+// 			'$user'   => $user
 		]);
 
 		if($action == 'write')
@@ -146,16 +145,22 @@ class State extends \SeanMorris\Ids\Model
 		\SeanMorris\Ids\Log::debug(
 			sprintf('Role needed for %s %s:', $action, $point)
 			, $role
-			, 'Current State'
-			, $this
+			, sprintf(
+				'Current State: %s[%d]::{%d}'
+				, static::class
+				, $this->id
+				, is_object($this->state)
+					? $this->state->id
+					: $this->state
+			)
 		);
 
-		if($pointCheck)
+		$isOwner = FALSE;
+
+		if(is_array($role) && $pointCheck)
 		{
 			$role = $role[$action];
 		}
-
-		$isOwner = FALSE;
 
 		if(is_array($role))
 		{

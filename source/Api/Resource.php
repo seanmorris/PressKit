@@ -120,10 +120,15 @@ class Resource
 		{
 			if($user->id)
 			{
-				$this->meta(
-					'currentUser'
-					, $user->toApi(1)
-				);
+				$value = $user->toApi(1);
+
+				$value['_permissions'] = [
+					'read'     => true
+					, 'update' => $user->can('update')
+					, 'delete' => $user->can('delete')
+				];
+
+				$this->meta('currentUser', $value);
 			}
 		}
 
@@ -209,7 +214,7 @@ class Resource
 						{
 							$v = $vv->unconsume();
 						}*/
-						
+
 					}
 					else if(!$this->lightLoad && is_array($vv = $object->getSubjects($k)))
 					{
@@ -274,7 +279,7 @@ class Resource
 	public function toJson($type = 'json', $depth = NULL)
 	{
 		$struct = $this->toStructure($type, $depth);
-		
+
 		$res = json_encode($struct);
 
 		if($res === FALSE)
@@ -295,7 +300,7 @@ class Resource
 	public function toBob($type = 'bob', $depth = NULL)
 	{
 		$struct = $this->toStructure($type, $depth);
-		
+
 		// return \SeanMorris\Bob\Bank::encode(['a'=>1,'b'=>2]);
 		return \SeanMorris\Bob\Bank::encode($struct);
 	}
