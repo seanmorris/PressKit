@@ -2,39 +2,27 @@ version: '2.4'
 
 services:
 
-  server:
-    ports: ['80:80']
-    extends:
-      file: base.yml
-      service: server
-    env_file:
-      ../../.env
-    depends_on:
-      - database
-    volumes:
-      - ../../:/app
-      - /tmp:/tmp
-    environment:
-      DHOST_IP: ${DHOST_IP}
-      XDEBUG_CONFIG: ${XDEBUG_CONFIG}
-
   idilic:
     extends:
       file: base.yml
       service: idilic
-    env_file:
-      ../../.env
-    depends_on:
-      - database
-    volumes:
-      - ../../:/app
-      - /tmp:/tmp
+    depends_on: [database]
+    volumes: ["../../:/app", "/tmp:/tmp"]
+    environment:
+      DHOST_IP: ${DHOST_IP}
+      XDEBUG_CONFIG: ${XDEBUG_CONFIG}
+
+  server:
+    extends:
+      file: base.yml
+      service: server
+    depends_on: [database]
+    volumes: ["../../:/app", "/tmp:/tmp"]
     environment:
       DHOST_IP: ${DHOST_IP}
       XDEBUG_CONFIG: ${XDEBUG_CONFIG}
 
   database:
-    ports: ['9996:3306']
     extends:
       file: base.yml
       service: database

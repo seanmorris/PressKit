@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32824874635e5595a9453acc36bd7665",
+    "content-hash": "1e07f9125f47e5bf4b7bcbdafb0eb135",
     "packages": [
         {
             "name": "hautelook/phpass",
@@ -129,16 +129,16 @@
         },
         {
             "name": "seanmorris/ids",
-            "version": "dev-sm-abstract-log",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/seanmorris/ids.git",
-                "reference": "4f77923315bf79e12638eaf5efc269abacdb85c4"
+                "reference": "366164d10c298f8b29d87088ea956fe455f25d34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/seanmorris/ids/zipball/4f77923315bf79e12638eaf5efc269abacdb85c4",
-                "reference": "4f77923315bf79e12638eaf5efc269abacdb85c4",
+                "url": "https://api.github.com/repos/seanmorris/ids/zipball/366164d10c298f8b29d87088ea956fe455f25d34",
+                "reference": "366164d10c298f8b29d87088ea956fe455f25d34",
                 "shasum": ""
             },
             "require-dev": {
@@ -161,7 +161,7 @@
                     "email": "sean@sean-morris.com"
                 }
             ],
-            "time": "2019-12-16T05:28:06+00:00"
+            "time": "2019-12-21T07:30:07+00:00"
         },
         {
             "name": "seanmorris/kallisti",
@@ -272,16 +272,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/simpletest/simpletest.git",
-                "reference": "7c241978fccb2b41522f152cf441bcbf1aeffb16"
+                "reference": "3fea8f4a04b193538f71fa6f7c77c32bdcb0402f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/7c241978fccb2b41522f152cf441bcbf1aeffb16",
-                "reference": "7c241978fccb2b41522f152cf441bcbf1aeffb16",
+                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/3fea8f4a04b193538f71fa6f7c77c32bdcb0402f",
+                "reference": "3fea8f4a04b193538f71fa6f7c77c32bdcb0402f",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
+            },
+            "require-dev": {
+                "ext-dom": "*",
+                "ext-mbstring": "*",
+                "ext-tidy": "*"
             },
             "type": "library",
             "autoload": {
@@ -339,17 +344,10 @@
                 "testing",
                 "unit-test"
             ],
-            "time": "2019-09-17T23:16:37+00:00"
+            "time": "2019-12-18T15:12:09+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "dev-master",
-            "alias_normalized": "9999999-dev",
-            "version": "dev-sm-abstract-log",
-            "package": "seanmorris/ids"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "seanmorris/ids": 20,

@@ -7,7 +7,7 @@
 		}
 	],
 	"require": {
-		"seanmorris/ids": "dev-sm-abstract-log as dev-master",
+		"seanmorris/ids": "dev-master",
 		"seanmorris/access": "dev-master",
 		"seanmorris/theme": ">=1",
 		"seanmorris/form": "dev-master",
