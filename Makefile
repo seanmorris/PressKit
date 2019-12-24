@@ -1,5 +1,8 @@
-PROJECT?=presskit
-REPO   ?=seanmorris
+#!make
+
+PROJECT ?=presskit
+REPO    ?=seanmorris
+MAKEDIR :=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
 -include .env
 -include .env.${TARGET}

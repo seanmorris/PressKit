@@ -133,12 +133,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/seanmorris/ids.git",
-                "reference": "366164d10c298f8b29d87088ea956fe455f25d34"
+                "reference": "6c027235329af9d35e5702064a6930b9acd88e89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/seanmorris/ids/zipball/366164d10c298f8b29d87088ea956fe455f25d34",
-                "reference": "366164d10c298f8b29d87088ea956fe455f25d34",
+                "url": "https://api.github.com/repos/seanmorris/ids/zipball/6c027235329af9d35e5702064a6930b9acd88e89",
+                "reference": "6c027235329af9d35e5702064a6930b9acd88e89",
                 "shasum": ""
             },
             "require-dev": {
@@ -161,7 +161,7 @@
                     "email": "sean@sean-morris.com"
                 }
             ],
-            "time": "2019-12-21T07:30:07+00:00"
+            "time": "2019-12-23T01:58:45+00:00"
         },
         {
             "name": "seanmorris/kallisti",
