@@ -120,10 +120,15 @@ class Resource
 		{
 			if($user->id)
 			{
-				$this->meta(
-					'currentUser'
-					, $user->toApi(1)
-				);
+				$value = $user->toApi(1);
+
+				$value['_permissions'] = [
+					'read'     => true
+					, 'update' => $user->can('update')
+					, 'delete' => $user->can('delete')
+				];
+
+				$this->meta('currentUser', $value);
 			}
 		}
 
