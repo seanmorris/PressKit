@@ -1,5 +1,6 @@
 .env
 .env.*
+.var
 vendor*
 vendor/*
 !.env.sample
