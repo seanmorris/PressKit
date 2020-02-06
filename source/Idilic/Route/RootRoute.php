@@ -636,7 +636,7 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 					$state = $model->getSubject('state');
 
-					if(!$state || $state->state <= 0)
+					if(!$state || ($state->state < 0))
 					{
 						return;
 					}
@@ -716,8 +716,6 @@ class RootRoute implements \SeanMorris\Ids\Routable
 				foreach($models() as $model)
 				{
 					$loaded = TRUE;
-
-					fwrite(STDERR, $model->id . PHP_EOL);
 
 					$callback($model);
 

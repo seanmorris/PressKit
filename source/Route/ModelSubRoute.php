@@ -143,8 +143,9 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		}
 
 		$form = new $formClass([
-			'_router' => $router
+			'_router'       => $router
 			, '_controller' => $this
+			, '_model'      => $model
 		]);
 
 		$parentController = $router->parent()->routes();
