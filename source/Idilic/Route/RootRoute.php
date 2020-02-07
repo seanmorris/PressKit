@@ -523,7 +523,10 @@ class RootRoute implements \SeanMorris\Ids\Routable
 			}
 		}
 
-		$package = \SeanMorris\Ids\Package::getRoot();
+		$package       = \SeanMorris\Ids\Package::getRoot();
+		$lastMigration = \SeanMorris\PressKit\MigrationRecord::loadOnebyPackage(
+			$package::name()
+		);
 
 		array_map(
 			function($migration) use($package)

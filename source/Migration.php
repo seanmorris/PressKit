@@ -6,39 +6,29 @@ class Migration
 	{
 		$package = \SeanMorris\Ids\Package::getRoot();
 
-		$current = $package->getVar('migration');
-
 		$classes = \SeanMorris\Ids\Meta::classes(static::class);
 
 		$classes = array_filter($classes, function($class) {
 			return $class !== static::class;
 		});
 
-		if($current === NULL)
-		{
-			$package->setVar('migration', (object)[]);
-		}
-
-		$current = $package->getVar('migration');
-
 		if(!$all)
 		{
-			$classes = array_filter(
-				static::classify($classes)
-				, function($class) use($current, $package)
+			$classes = array_filter(static::classify($classes), function($class) use($package) {
+
+				$lastMigration = \SeanMorris\PressKit\MigrationRecord::loadOnebyPackage(
+					$class->namespace
+				);
+
+				$currentVersion = -1;
+
+				if($lastMigration)
 				{
-					$currentPackage = $package->getVar('migration:' . $class->namespace);
-
-					if($currentPackage === NULL)
-					{
-						$package->setVar('migration:' . $class->namespace, -1);
-					}
-
-					$currentPackage = $package->getVar('migration:' . $class->namespace);
-
-					return $class->version > $currentPackage;
+					$currentVersion = $lastMigration->version;
 				}
-			);
+
+				return $class->version > $currentVersion;
+			});
 		}
 
 		usort($classes, function($a, $b) {
