@@ -174,7 +174,7 @@ class State extends \SeanMorris\Ids\Model
 
 			if($this->owner)
 			{
-				$owner = $this->getSubject('owner');
+				$owner = $this->getSubject('owner', TRUE);
 			}
 
 			$owner && \SeanMorris\Ids\Log::debug(sprintf(
