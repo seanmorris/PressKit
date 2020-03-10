@@ -1,8 +1,9 @@
 #!make
+.PHONY: init
 
-PROJECT ?=presskit
-REPO    ?=seanmorris
-MAKEDIR :=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+SHELL    = /bin/bash
+PROJECT  ?=presskit
+REPO     ?=seanmorris
 
 -include .env
 -include .env.${TARGET}

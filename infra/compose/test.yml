@@ -4,20 +4,22 @@ services:
 
   idilic:
     depends_on: [database]
-    volumes: ["../../:/app", "/tmp:/tmp"]
+    volumes: ['../../:/app', '/tmp:/tmp']
     extends:
       file: base.yml
       service: idilic
 
   server:
+    ports: ['${IDS_EXPOSE_HTTP:-0}:8080']
     depends_on: [database]
-    volumes: ["../../:/app", "/tmp:/tmp"]
+    volumes: ['../../:/app', '/tmp:/tmp']
     extends:
       file: base.yml
       service: server
 
   database:
-    volumes: ["../../:/app", "/tmp:/tmp"]
+    ports: ['${IDS_EXPOSE_SQL:-0}:${IDS_DATABASES_MAIN_PORT}']
+    volumes: ['../../:/app', '/tmp:/tmp']
     extends:
       file: base.yml
       service: database

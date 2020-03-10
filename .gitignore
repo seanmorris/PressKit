@@ -1,7 +1,8 @@
 .env
-.env.*
+.env*.default
 .var
-vendor*
+.env_*
+.lock_env
 vendor/*
-!.env.sample
-!.env.*.sample
+infra/apt/cache
+!./config/.env*.default

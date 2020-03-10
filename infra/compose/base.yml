@@ -3,13 +3,17 @@ version: '2.4'
 services:
 
   server:
+    build:
+      context: ../../
     extends:
-      file: ../../vendor/seanmorris/ids/infra/compose/base.yml
+      file: ../../${CORERELDIR}infra/compose/base.yml
       service: server
 
   idilic:
+    build:
+      context: ../../
     extends:
-      file: ../../vendor/seanmorris/ids/infra/compose/base.yml
+      file: ../../${CORERELDIR}infra/compose/base.yml
       service: idilic
 
   database:
