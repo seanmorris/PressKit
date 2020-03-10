@@ -39,7 +39,7 @@ class Listener
 	{
 		$agent = static::getAgent();
 
-		// var_dump($channel);die;
+		\SeanMorris\Ids\Log::trace($channel, $message);
 
 		return $agent->send($channel, $message);
 	}

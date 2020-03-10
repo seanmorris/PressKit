@@ -69,7 +69,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			{
 				$this->context['title'] = $this->title;
 			}
-			
+
 			if($theme = $this->_getTheme($router))
 			{
 				\SeanMorris\Ids\Log::debug(sprintf(
@@ -100,9 +100,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 				$resourceClass = $parentController::$resourceClass ?? static::$resourceClass;
 				$resource = new $resourceClass($router);
 				$resource->model($this->getModel($router));
-				//\SeanMorris\Ids\Log::debug($resource);
-				// echo $resource->encode($params['api']);
-				// die;
+
 				return $resource;
 			}
 		}
@@ -145,8 +143,9 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 		}
 
 		$form = new $formClass([
-			'_router' => $router
+			'_router'       => $router
 			, '_controller' => $this
+			, '_model'      => $model
 		]);
 
 		$parentController = $router->parent()->routes();
@@ -504,7 +503,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			}
 
 			return false;
-		}		
+		}
 
 		return false;
 	}

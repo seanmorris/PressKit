@@ -183,13 +183,16 @@ class Controller implements \SeanMorris\Ids\Routable
 				$referrerDomain .= ':' . $referrer['port'];
 			}
 
-			$corsDomainsIndex = array_flip($corsDomains);
+			foreach($corsDomains as $i => $corsDomain)
+			{
+				$corsDomainsIndex[$corsDomain] = $i;
+			}
 
 			if(isset($corsDomainsIndex[$referrerDomain]))
 			{
 				$index = $corsDomainsIndex[$referrerDomain];
 
-				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains[$index]));
+				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains->$index));
 				header('Access-Control-Allow-Credentials: true');
 				header('Access-Control-Allow-Methods: GET,POST,HEAD,OPTIONS');
 				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -1489,7 +1492,6 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$modelRoute->title = $model->{$titleField};
 			}
-
 
 			return $router->resumeRouting($modelRoute);
 		}

@@ -104,9 +104,9 @@ class Form extends \SeanMorris\Form\Form
 	{
 		if(!$override)
 		{
-			$values = $this->processSetValuePermisions($values, $this->originalSkeleton);	
+			$values = $this->processSetValuePermisions($values, $this->originalSkeleton);
 		}
-		
+
 		return parent::setValues($values, $override);
 	}
 
@@ -164,6 +164,7 @@ class Form extends \SeanMorris\Form\Form
 					, 'value'   => NULL
 					, 'type'    => $field->type()
 					, 'attrs'   => $field->attrs()
+					, 'errors'  => $field->errors()
 					, 'options' => $field->options()
 				];
 
