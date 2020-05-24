@@ -136,34 +136,24 @@ class Image extends \SeanMorris\PressKit\Model
 	{
 		$tmpFile = NULL;
 
-		if(array_key_exists('url', $skeleton) && !$skeleton['url'] && $instance->url)
-		{
-			$skeleton['url'] = $instance->url;
-		}
-
 		if(isset($skeleton['image']))
 		{
 			$tmpFile = $skeleton['image'];
 
-			if(isset($skeleton['image'])
-				&& $skeleton['image']
-				&& is_string($skeleton['image'])
-				&& !is_numeric($skeleton['image'])
-			){
+
+			if($tmpFile && $tmpFile instanceof \SeanMorris\Ids\Disk\File)
+			{
+				$instance->store($tmpFile);
+			}
+			else if(is_string($skeleton['image']) && !is_numeric($skeleton['image']))
+			{
 				$instance->url = $skeleton['url'] = $skeleton['image'];
 			}
-			else if($tmpFile && !($tmpFile instanceof \SeanMorris\Ids\Disk\File))
-			{
-				return FALSE;
-			}
-		}		
-
-		if(!$tmpFile)
-		{
-			return;
 		}
-
-		$instance->store($tmpFile);
+		else if(array_key_exists('url', $skeleton) && !$skeleton['url'] && $instance->url)
+		{
+			$skeleton['url'] = $instance->url;
+		}
 	}
 
 	protected static function afterDelete($instance)
@@ -283,7 +273,7 @@ class Image extends \SeanMorris\PressKit\Model
 		}
 
 		$image       = new \Imagick($file->name());
-		$orientation = $image->getImageOrientation(); 
+		$orientation = $image->getImageOrientation();
 
 		\SeanMorris\Ids\Log::debug('Orientation:', $orientation);
 
@@ -352,8 +342,8 @@ class Image extends \SeanMorris\PressKit\Model
 
 			$imageGeometry  = $imagick->getImageGeometry();
 
-			$originalWidth  = $imageGeometry['width']; 
-			$originalHeight = $imageGeometry['height']; 
+			$originalWidth  = $imageGeometry['width'];
+			$originalHeight = $imageGeometry['height'];
 
 			$originalRatio  = $originalWidth/$originalHeight;
 
@@ -361,7 +351,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 			$widthRatio = $originalWidth / $width;
 			$heightRatio = $originalHeight / $height;
-			
+
 			if($originalRatio > $newRatio)
 			{
 				$sampleHeight = $height;
@@ -407,7 +397,7 @@ class Image extends \SeanMorris\PressKit\Model
 
 		// $widthRatio = $originalWidth / $width;
 		// $heightRatio = $originalHeight / $height;
-		
+
 		// if($originalRatio > $newRatio)
 		// {
 		// 	$sampleHeight = $originalHeight;
@@ -610,7 +600,7 @@ class Image extends \SeanMorris\PressKit\Model
 			// list($originalWidth, $originalHeight,)
 			// 	 = $info
 			// 	 = getimagesizefromstring($image);
-			
+
 			// $originalWidth  = $imagick->getImageWidth();
 			// $originalHeight = $imagick->getImageHeight();
 
