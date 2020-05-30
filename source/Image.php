@@ -140,7 +140,6 @@ class Image extends \SeanMorris\PressKit\Model
 		{
 			$tmpFile = $skeleton['image'];
 
-
 			if($tmpFile && $tmpFile instanceof \SeanMorris\Ids\Disk\File)
 			{
 				$instance->store($tmpFile);

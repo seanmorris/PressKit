@@ -17,7 +17,7 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 		]
 	;
 
-	protected static 
+	protected static
 		$forms = [
 			'edit' => 'SeanMorris\PressKit\Form\ImageForm',
 			'search' => 'SeanMorris\PressKit\Form\ImageSearchForm',
@@ -77,7 +77,9 @@ class ImageRoute extends \SeanMorris\PressKit\Controller
 		$images     = [];
 		$modelClass = $this->modelClass;
 
-		if($submitPost && $params = array_replace_recursive($router->request()->post(), $router->request()->files()))
+		$files = $params = array_replace_recursive($router->request()->post(), $router->request()->files());
+
+		if($submitPost && $files)
 		{
 			if(isset($params['image']) && is_array($params['image']))
 			{

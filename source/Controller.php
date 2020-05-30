@@ -239,18 +239,14 @@ class Controller implements \SeanMorris\Ids\Routable
 				return TRUE;
 			}
 
-			$session = \SeanMorris\Ids\Meta::staticSession();
-
-			if(isset($session['user']))
+			if($currentUser = \SeanMorris\Access\Route\AccessRoute::_currentUser())
 			{
 				\SeanMorris\Ids\Log::debug(sprintf(
 					'Access requires %s.'
 					, $roleNeeded
 				));
 
-				$user = $session['user'];
-
-				if($user->hasRole($roleNeeded))
+				if($currentUser->hasRole($roleNeeded))
 				{
 					\SeanMorris\Ids\Log::debug('Access granted.');
 
