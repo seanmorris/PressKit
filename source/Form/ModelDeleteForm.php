@@ -18,8 +18,9 @@ class ModelDeleteForm extends \SeanMorris\PressKit\Form\Form
 			'type' => 'select',
 			'value' => '0',
 			'_options' => [
-				'Yes'  => 1
-				, 'No' => 0
+				NULL     => NULL
+				, 'Yes'  => 1
+				, 'No'   => 0
 			]
 		];
 
