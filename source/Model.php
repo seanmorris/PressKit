@@ -715,23 +715,16 @@ class Model extends \SeanMorris\Ids\Model
 
 		while($class)
 		{
-			if($solrSettings = \SeanMorris\Ids\Settings::read(
-				'solr-cores'
-				, $class
-			)){
+			$solrSettings = \SeanMorris\Ids\Settings::read(
+				'solr-cores', $class
+			);
+
+			if($solrSettings)
+			{
 				break;
 			}
 
 			$class = get_parent_class($class);
-
-		}
-
-		if(!$solrSettings)
-		{
-			if(!$solrSettings = \SeanMorris\Ids\Settings::read('solr', 'endpoint', 'main'))
-			{
-				return FALSE;
-			}
 		}
 
 		return $solrSettings;
@@ -745,7 +738,10 @@ class Model extends \SeanMorris\Ids\Model
 		{
 			if($solrSettings = static::solrSettings())
 			{
-				$solrClient = new \Solarium\Client($solrSettings);
+				if($config = $solrSettings->dumpStruct())
+				{
+					$solrClient = new \Solarium\Client($config);
+				}
 			}
 		}
 
