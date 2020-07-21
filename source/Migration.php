@@ -6,7 +6,7 @@ class Migration
 	{
 		$package = \SeanMorris\Ids\Package::getRoot();
 
-		$classes = \SeanMorris\Ids\Meta::classes(static::class);
+		$classes = \SeanMorris\Ids\Linker::classes(static::class);
 
 		$classes = array_filter($classes, function($class) {
 			return $class !== static::class;
@@ -51,12 +51,14 @@ class Migration
 				$versionNo  = end($splitClass);
 				$short      = end($splitSpace);
 
-				return (object)[
+				$result = (object)[
 					'namespace' => $namespace
 					, 'version' => $versionNo
 					, 'short'   => $short
 					, 'class'   => $class
 				];
+
+				return $result;
 			}
 			, $classes
 		);
