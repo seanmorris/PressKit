@@ -5,7 +5,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 	public function __construct($fieldDef, $form)
 	{
 		$fieldDef['type'] = 'fieldset';
-		
+
 		$fieldDef['_multi'] = isset($fieldDef['_multi'])
 			? $fieldDef['_multi']
 			: false
@@ -48,7 +48,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 		}
 		else
 		{
-			$children =& $fieldDef;	
+			$children =& $fieldDef;
 		}
 
 		$children['_children']['selected'] = [
@@ -61,7 +61,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 			'type' => 'html'
 			, 'value' => '<div class = "selection">test</div>'
 		];
-		
+
 		/*
 		$children['_children']['keyword'] = [
 			'_title' => 'Search'
@@ -93,7 +93,7 @@ class ModelReferenceField extends \SeanMorris\Form\Fieldset
 			$children['_children']['remove'] = [
 				'value' => 'Remove'
 				, 'type' => 'button'
-				, '-button' => 'PressKit.FieldSetWidget.remove'		
+				, '-button' => 'PressKit.FieldSetWidget.remove'
 			];
 		}
 
