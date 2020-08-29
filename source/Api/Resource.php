@@ -99,6 +99,7 @@ class Resource
 				, $type
 				, $depth
 			);
+
 			$this->meta['count'] = count($this->models);
 
 			foreach($this->models as $object)
@@ -176,53 +177,53 @@ class Resource
 		}
 
 		$value = NULL;
+		$value = [];
 
 		switch(TRUE)
 		{
 			case $object instanceof \SeanMorris\PressKit\Model:
 
 				// $value = $object->toApi($this->lightLoad ? 0 : $depth);
+
 				$value = $object->toApi($depth);
-
-				foreach($value as $k => &$v)
+				if($depth > 0)
 				{
-					if($depth <= 0)
-					{
-						continue;
-					}
 
-					if(!($subjectClass = $object::getSubjectClass($k))
-						|| ($skipSubjects[$k] ?? FALSE)
-					) {
-						continue;
-					}
-
-					if($this->lightLoad)
+					foreach($value as $k => &$v)
 					{
-						continue;
-					}
+						if(!($subjectClass = $object::getSubjectClass($k))
+							|| ($skipSubjects[$k] ?? FALSE)
+						) {
+							continue;
+						}
 
-					if(!$this->lightLoad && is_object($vv = $object->getSubject($k)))
-					{
-						$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth - 1);
-						// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
-						// {
-						// 	$v = $this->processObject($vv, $type, $k, $object, $k, $depth-1);
-						//}
-						/*
-						else if(is_object($vv) && $vv instanceof \SeanMorris\Ids\Model)
+						if($this->lightLoad)
 						{
-							$v = $vv->unconsume();
-						}*/
+							continue;
+						}
 
-					}
-					else if(!$this->lightLoad && is_array($vv = $object->getSubjects($k)))
-					{
-						$v  = [];
-
-						foreach($vv as $kk => $subject)
+						if(!$this->lightLoad && is_object($vv = $object->getSubject($k)))
 						{
-							$v[] = $this->processObject($subject, $type, $kk, $object, $k, [], $depth - 1);
+							$v = $this->processObject($vv, $type, $k, $object, $k, [], $depth - 1);
+							// if(is_object($v)/* && $vv instanceof \SeanMorris\PressKit\Model*/)
+							// {
+							// 	$v = $this->processObject($vv, $type, $k, $object, $k, $depth-1);
+							//}
+							/*
+							else if(is_object($vv) && $vv instanceof \SeanMorris\Ids\Model)
+							{
+								$v = $vv->unconsume();
+							}*/
+
+						}
+						else if(!$this->lightLoad && is_array($vv = $object->getSubjects($k)))
+						{
+							$v  = [];
+
+							foreach($vv as $kk => $subject)
+							{
+								$v[] = $this->processObject($subject, $type, $kk, $object, $k, [], $depth - 1);
+							}
 						}
 					}
 				}
@@ -276,9 +277,9 @@ class Resource
 		);
 	}
 
-	public function toJson($type = 'json', $depth = NULL)
+	public function toJson($depth = NULL)
 	{
-		$struct = $this->toStructure($type, $depth);
+		$struct = $this->toStructure('json', $depth);
 
 		$res = json_encode($struct);
 
@@ -291,23 +292,23 @@ class Resource
 		return $res;
 	}
 
-	public function toXml($type = 'xml', $depth = NULL)
+	public function toXml($depth = NULL)
 	{
-		return \xmlrpc_encode($this->toStructure($type, $depth));
+		return \xmlrpc_encode($this->toStructure('xml', $depth));
 	}
 
 
-	public function toBob($type = 'bob', $depth = NULL)
+	public function toBob($depth = NULL)
 	{
-		$struct = $this->toStructure($type, $depth);
+		$struct = $this->toStructure('bob', $depth);
 
 		// return \SeanMorris\Bob\Bank::encode(['a'=>1,'b'=>2]);
 		return \SeanMorris\Bob\Bank::encode($struct);
 	}
 
-	public function toYaml($type = 'yaml', $depth = NULL)
+	public function toYaml($depth = NULL)
 	{
-		$struct  = $this->toStructure($type, $depth);
+		$struct  = $this->toStructure('yaml', $depth);
 		$toArray = function($x) use(&$toArray)
 		{
 			return is_scalar($x)

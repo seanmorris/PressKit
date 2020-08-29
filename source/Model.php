@@ -2,11 +2,12 @@
 namespace SeanMorris\PressKit;
 class Model extends \SeanMorris\Ids\Model
 {
-	private   $_initialized = false, $canCache = [];
+	private   $_initialized = false;
 	protected $_selected, $_stub = false;
 
 	protected static
-	$byOwner = [
+	$canCache  = []
+	, $byOwner = [
 		'with' => ['state' => 'byOwner']
 		// 'join' => [
 		// 	'SeanMorris\PressKit\State' => [
@@ -132,14 +133,14 @@ class Model extends \SeanMorris\Ids\Model
 			return parent::update();
 		}
 
-		$this->canCache = [];
+		static::$canCache = [];
 
 		return parent::create();
 	}
 
 	public function update()
 	{
-		$this->canCache = [];
+		static::$canCache = [];
 
 		if($this->_stub)
 		{
@@ -184,7 +185,7 @@ class Model extends \SeanMorris\Ids\Model
 
 	public function delete($override = FALSE)
 	{
-		$this->canCache = [];
+		static::$canCache = [];
 
 		if($override || $this->can('delete'))
 		{
@@ -206,9 +207,9 @@ class Model extends \SeanMorris\Ids\Model
 		$key = get_called_class() . '::' . $this->id
 			. '::' . $action . '::' . $point;
 
-		if(isset($this->canCache[$key]))
+		if(isset(static::$canCache[$key]))
 		{
-			return $this->canCache[$key];
+			return static::$canCache[$key];
 		}
 
 		$user    = \SeanMorris\Access\Route\AccessRoute::_currentUser();
@@ -216,21 +217,21 @@ class Model extends \SeanMorris\Ids\Model
 
 		if($isAdmin)
 		{
-			return $this->canCache[$key] = TRUE;
+			return static::$canCache[$key] = TRUE;
 		}
 
 		if(!isset(static::$hasOne['state']))
 		{
-			return $this->canCache[$key] = TRUE;
+			return static::$canCache[$key] = TRUE;
 
-			$isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
+			// $isEditor = $user->hasRole('SeanMorris\Access\Role\Editor');
 
-			if($isAdmin || $isEditor || $action === 'read' || $action === 'view')
-			{
-				return $this->canCache[$key] = TRUE;
-			}
+			// if($isAdmin || $isEditor || $action === 'read' || $action === 'view')
+			// {
+			// 	return static::$canCache[$key] = TRUE;
+			// }
 
-			return $this->canCache[$key] = $isAdmin;
+			// return static::$canCache[$key] = $isAdmin;
 		}
 
 		\SeanMorris\Ids\Log::debug($this->state);
@@ -267,13 +268,13 @@ class Model extends \SeanMorris\Ids\Model
 					, $this->id
 				), $action, $point);
 
-				return $this->canCache[$key] = FALSE;
+				return static::$canCache[$key] = FALSE;
 			}
 		}
 
 		if(php_sapi_name() == 'cli')
 		{
-			return $this->canCache[$key] = TRUE;
+			return static::$canCache[$key] = TRUE;
 		}
 
 		if($point)
@@ -285,7 +286,7 @@ class Model extends \SeanMorris\Ids\Model
 			$allowed = $state->can($user, $action);
 		}
 
-		return $this->canCache[$key] = $allowed;
+		return static::$canCache[$key] = $allowed;
 	}
 
 	public static function canStatic($action)

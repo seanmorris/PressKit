@@ -392,9 +392,10 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			, '_multi' => FALSE
 		];
 
-		$skeleton['submit'] = [
-			'_title' => 'Submit'
-			, 'type' => 'submit'
+		$skeleton['submit'] += [
+			'_title'  => 'Submit'
+			, 'value' => 'submit'
+			, 'type'  => 'submit'
 		];
 
 		$post = $router->request()->post();

@@ -6,8 +6,11 @@ class UserForm extends \SeanMorris\PressKit\Form\Form
 	{
 		$skeleton += static::skeleton($skeleton);
 
-		$skeleton['submit'] = [
+		$skeleton['submit'] = $skeleton['submit'] ?? [];
+
+		$skeleton['submit'] += [
 			'_title' => 'Submit',
+			'value' => 'Submit',
 			'type' => 'submit',
 		];
 

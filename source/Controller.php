@@ -434,6 +434,11 @@ class Controller implements \SeanMorris\Ids\Routable
 			return $body;
 		}
 
+		if($body instanceof \Iterator)
+		{
+			return $body;
+		}
+
 		if($body instanceof \SeanMorris\Ids\Http\Http303)
 		{
 			return;
