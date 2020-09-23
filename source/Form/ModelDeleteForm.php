@@ -25,8 +25,9 @@ class ModelDeleteForm extends \SeanMorris\PressKit\Form\Form
 		];
 
 		$skeleton['submit'] = [
-			'_title' => 'Submit',
-			'type' => 'submit',
+			'_title'  => 'Submit'
+			, 'value' => 'Submit'
+			, 'type'  => 'submit'
 		];
 
 		parent::__construct($skeleton);
