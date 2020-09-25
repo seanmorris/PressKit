@@ -8,15 +8,10 @@ class ModelDeleteForm extends \SeanMorris\PressKit\Form\Form
 
 		$skeleton['_method'] = 'POST';
 
-		$skeleton['del'] = [
+		$skeleton['delete'] = [
 			'_title' => 'Delete?',
-			'type' => 'fieldset',
-		];
-
-		$skeleton['del']['_children']['delete'] = [
-			'_title' => NULL,
 			'type' => 'select',
-			'value' => '0',
+			'value' => 0,
 			'_options' => [
 				NULL     => NULL
 				, 'Yes'  => 1
