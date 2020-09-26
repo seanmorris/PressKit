@@ -571,7 +571,10 @@ class Model extends \SeanMorris\Ids\Model
 
 			foreach($resp->docs as $doc)
 			{
-				$stubs[] = static::instantiateStub($doc);
+				if($stub = static::instantiateStub($doc))
+				{
+					$stubs[] = $stub;
+				}
 			}
 
 			$resp->docs = $stubs;

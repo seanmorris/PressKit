@@ -718,7 +718,10 @@ class Image extends \SeanMorris\PressKit\Model
 
 	protected static function instantiateStub($skeleton)
 	{
-		$stub = parent::instantiateStub($skeleton);
+		if(!$stub = parent::instantiateStub($skeleton))
+		{
+			return FALSE;
+		}
 
 		if(is_string($skeleton))
 		{
