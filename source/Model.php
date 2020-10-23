@@ -217,6 +217,7 @@ class Model extends \SeanMorris\Ids\Model
 
 		if($isAdmin)
 		{
+			\SeanMorris\Ids\Log::debug('User is an admin.');
 			return static::$canCache[$key] = TRUE;
 		}
 
