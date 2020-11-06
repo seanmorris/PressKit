@@ -243,7 +243,7 @@ class State extends \SeanMorris\Ids\Model
 	{
 		if($force || $this->canChange($to))
 		{
-			$this->state = $to;
+			$this->__set('state', $to);
 			return true;
 		}
 
@@ -337,10 +337,13 @@ class State extends \SeanMorris\Ids\Model
 
 		if(is_a(get_parent_class($state), 'PressKit\\State', true))
 		{
-			$parent			= new $parentClass;
-			$parent->id 	= $state->id;
-			$parent->state	= $state->state;
-			$parent->owner	= $state->owner;
+			$parent = new $parentClass;
+
+			$parent->consume([
+				'id'      => $state->id
+				, 'owner' => $state->owner
+				, 'state' => $state->state
+			], true);
 
 			return $parent;
 		}
@@ -352,7 +355,7 @@ class State extends \SeanMorris\Ids\Model
 	{
 		if($override && isset($skeleton['state']))
 		{
-			$this->state = $skeleton['state'];
+			$this->__set('state', $skeleton['state']);
 		}
 
 		if(!$override && isset($skeleton['state']))
@@ -365,17 +368,20 @@ class State extends \SeanMorris\Ids\Model
 		parent::consume($skeleton, $override);
 	}
 
-	public function __set($name, $value)
-	{
-		if($name == 'state')
-		{
-			$this->change($skeleton['state']);
-		}
-		else
-		{
-			parent::__set($name, $value);
-		}
-	}
+	// public function __set($name, $value)
+	// {
+	// 	if($name == 'state')
+	// 	{
+	// 		if($this->canChange($value))
+	// 		{
+	// 			$this->__set('state', $value);
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		parent::__set($name, $value);
+	// 	}
+	// }
 
 	public function unconsume($children = NULL)
 	{
