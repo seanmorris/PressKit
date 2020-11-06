@@ -259,7 +259,6 @@ class Image extends \SeanMorris\PressKit\Model
 		return file_get_contents($this->location());
 	}
 
-
 	protected function orient(\SeanMorris\Ids\Disk\File $file = NULL)
 	{
 		\SeanMorris\Ids\Log::trace('Orienting...', $this);

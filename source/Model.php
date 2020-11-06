@@ -253,8 +253,6 @@ class Model extends \SeanMorris\Ids\Model
 		if(!$state || !is_object($state))
 		{
 			\SeanMorris\Ids\Log::error($state);
-			// die;
-			// ;
 
 			if(is_array($state))
 			{

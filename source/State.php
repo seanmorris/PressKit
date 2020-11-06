@@ -159,7 +159,7 @@ class State extends \SeanMorris\Ids\Model
 
 		if(is_array($role) && $pointCheck)
 		{
-			$role = $role[$action];
+			$role = $role[$action] ?? FALSE;
 		}
 
 		if(is_array($role))
