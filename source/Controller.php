@@ -195,7 +195,7 @@ class Controller implements \SeanMorris\Ids\Routable
 				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains->$index));
 				header('Access-Control-Allow-Credentials: true');
 				header('Access-Control-Allow-Methods: GET,POST,HEAD,OPTIONS');
-				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With,Cache-Control');
 			}
 
 			if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS')
