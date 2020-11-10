@@ -149,26 +149,23 @@ class Model extends \SeanMorris\Ids\Model
 
 		if($this->can('update'))
 		{
-			Listener::publish(
-				sprintf(
-					'model:beforeUpdate:%s:%s'
-					, get_class($this)
-					, $this->id
-				)
-				, $this
+			$beforeChannel = sprintf(
+				'model:beforeUpdate:%s:%s'
+				, get_class($this)
+				, $this->id
 			);
+
+			$afterChannel  = sprintf(
+				'model:afterUpdate:%s:%s'
+				, get_class($this)
+				, $this->id
+			);
+
+			Listener::publish($beforeChannel, $this);
 
 			$result = parent::update();
 
-			Listener::publish(
-				sprintf(
-					'model:afterUpdate:%s:%s'
-					, get_class($this)
-					, $this->id
-				)
-				, $this
-				, $result
-			);
+			Listener::publish($afterChannel, $this, $result);
 
 			return $result;
 		}

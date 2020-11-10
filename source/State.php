@@ -104,7 +104,7 @@ class State extends \SeanMorris\Ids\Model
 
 		$userArray = $user->unconsume(FALSE, TRUE);
 
-		\SeanMorris\Ids\Log::debug(sprintf(
+		\SeanMorris\Ids\Log::warn(sprintf(
 			'Checking if %s[%d] can %s%s on %s[%d]'
 			, get_class($user)
 			, $userArray['id']
@@ -125,7 +125,7 @@ class State extends \SeanMorris\Ids\Model
 				return $super;
 			}
 
-			// \SeanMorris\Ids\Log::debug('Cannot.');
+			\SeanMorris\Ids\Log::error('Cannot, [0].');
 			return FALSE;
 		}
 		elseif(!isset(static::$states[$this->state][$point]))
@@ -136,7 +136,7 @@ class State extends \SeanMorris\Ids\Model
 				return TRUE;
 			}
 
-			\SeanMorris\Ids\Log::debug('Cannot.');
+			\SeanMorris\Ids\Log::error('Cannot, [1].');
 			return FALSE;
 		}
 
@@ -166,7 +166,7 @@ class State extends \SeanMorris\Ids\Model
 		{
 			if(!isset($role[0], $role[1]))
 			{
-				\SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot, [2].');
 				return false;
 			}
 
@@ -205,13 +205,13 @@ class State extends \SeanMorris\Ids\Model
 			}
 			else if($role == 0)
 			{
-				\SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot, [3].');
 				return FALSE;
 			}
 
 			if($role < 0)
 			{
-				\SeanMorris\Ids\Log::debug('Cannot.');
+				\SeanMorris\Ids\Log::debug('Cannot, [4].');
 				return FALSE;
 			}
 		}
@@ -234,7 +234,7 @@ class State extends \SeanMorris\Ids\Model
 			return true;
 		}
 
-		\SeanMorris\Ids\Log::debug('Cannot.');
+		\SeanMorris\Ids\Log::debug('Cannot, [5].');
 
 		return false;
 	}
