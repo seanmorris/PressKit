@@ -104,7 +104,7 @@ class State extends \SeanMorris\Ids\Model
 
 		$userArray = $user->unconsume(FALSE, TRUE);
 
-		\SeanMorris\Ids\Log::warn(sprintf(
+		\SeanMorris\Ids\Log::debug(sprintf(
 			'Checking if %s[%d] can %s%s on %s[%d]'
 			, get_class($user)
 			, $userArray['id']
@@ -125,7 +125,7 @@ class State extends \SeanMorris\Ids\Model
 				return $super;
 			}
 
-			\SeanMorris\Ids\Log::error('Cannot, [0].');
+			\SeanMorris\Ids\Log::error(sprintf('Cannot, [0] (%s).', $point));
 			return FALSE;
 		}
 		elseif(!isset(static::$states[$this->state][$point]))
@@ -136,7 +136,7 @@ class State extends \SeanMorris\Ids\Model
 				return TRUE;
 			}
 
-			\SeanMorris\Ids\Log::error('Cannot, [1].');
+			\SeanMorris\Ids\Log::error(sprintf('Cannot, [1] (%s, %s).', $point, $action));
 			return FALSE;
 		}
 
