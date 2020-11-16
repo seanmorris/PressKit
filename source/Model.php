@@ -630,6 +630,11 @@ class Model extends \SeanMorris\Ids\Model
 
 		$solrSettings = static::solrSettings();
 
+		if(!$solrSettings->endpoint)
+		{
+			return;
+		}
+
 		$solrSettings = $solrSettings->endpoint->main;
 
 		if(!$solrSettings)
