@@ -95,7 +95,7 @@ class ModelSubRoute extends \SeanMorris\PressKit\Controller
 			if($params['api'] == 'html')
 			{
 			}
-			else if($params['api'])
+			else if(array_key_exists('api', $params))
 			{
 				$resourceClass = $parentController::$resourceClass ?? static::$resourceClass;
 				$resource = new $resourceClass($router);
