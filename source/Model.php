@@ -628,7 +628,10 @@ class Model extends \SeanMorris\Ids\Model
 
 		$client = new \GuzzleHttp\Client();
 
-		$solrSettings = static::solrSettings();
+		if(!$solrSettings = static::solrSettings())
+		{
+			return;
+		}
 
 		if(!$solrSettings->endpoint)
 		{
