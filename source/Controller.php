@@ -192,10 +192,35 @@ class Controller implements \SeanMorris\Ids\Routable
 			{
 				$index = $corsDomainsIndex[$referrerDomain];
 
+				if($corsHeaders = \SeanMorris\Ids\Settings::read('corsHeaders'))
+				{
+					$corsHeaders = $corsHeaders->dumpStruct();
+				}
+				else
+				{
+					$corsHeaders = [
+						'Content-Type'
+						, 'Authorization'
+						, 'X-Requested-With'
+						, 'Cache-Control'
+						, 'Last-Event-Id'
+						, 'Pragma'
+					];
+				}
+
+				if($corsMethods = \SeanMorris\Ids\Settings::read('corsMethods'))
+				{
+					$corsMethods = $corsMethods->dumpStruct();
+				}
+				else
+				{
+					$corsMethods = ['GET','POST','HEAD','OPTIONS'];
+				}
+
 				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains->$index));
 				header('Access-Control-Allow-Credentials: true');
-				header('Access-Control-Allow-Methods: GET,POST,HEAD,OPTIONS');
-				header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With,Cache-Control,Last-Event-Id,Pragma');
+				header('Access-Control-Allow-Methods: ' . implode(', ', $corsMethods));
+				header('Access-Control-Allow-Headers: ' . implode(', ', $corsHeaders));
 			}
 
 			if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS')
