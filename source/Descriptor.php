@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit;
 class Descriptor extends Model
 {
-	protected $id, $name, $info;
+	protected $id, $name, $info = [];
 	protected static
 		$table = 'Descriptor'
 		, $byName = [
@@ -36,13 +36,18 @@ class Descriptor extends Model
 		}
 		else
 		{
-			$this->info['hasOne'][$property] = $class;	
+			$this->info['hasOne'][$property] = $class;
 		}
 	}
 
 	public static function beforeWrite($instance, &$skeleton)
 	{
 		$skeleton['info'] = json_encode($instance->info);
+	}
+
+	public static function afterWrite($instance, &$skeleton)
+	{
+		$instance->info = json_decode($instance->info, TRUE);
 	}
 
 	public static function afterRead($instance)
@@ -57,13 +62,23 @@ class Descriptor extends Model
 
 	public function getColumnDef($column)
 	{
+		if(!$this->info)
+		{
+			$this->info = [];
+		}
+
+		if(!isset($this->info['schema']))
+		{
+			$this->info['schema'] = [];
+		}
+
 		if(!isset($this->info['schema'][$column]))
 		{
 			$this->info['schema'][$column] = static::DEFAULT_COLUMN;
 		}
 
 		$prec = static::NUMBER_PRECEDENCE;
-		
+
 		if(!$this->info['schema'][$column]['numeric'] && $column !== 'id')
 		{
 			$prec = static::TEXT_PRECEDENCE;

@@ -34,12 +34,12 @@ class Scaffold extends Model
 		{
 			static::$table = static::$descriptor->name;
 		}
-		
+
 		if(isset(static::$descriptor->info['hasOne']))
 		{
 			static::$hasOne = static::$descriptor->info['hasOne'];
 		}
-		
+
 		if(isset(static::$descriptor->info['hasMany']))
 		{
 			static::$hasMany = static::$descriptor->info['hasMany'];
@@ -129,7 +129,7 @@ class Scaffold extends Model
 			{
 				continue;
 			}
-			
+
 			if(in_array($column, $addressedColumns))
 			{
 				continue;
@@ -141,7 +141,7 @@ class Scaffold extends Model
 					, static::$table
 					, $column
 					, static::$descriptor->getColumnDef($column)
-				));	
+				));
 			}
 			catch(\PDOException $exception)
 			{
@@ -196,8 +196,6 @@ class Scaffold extends Model
 		}
 
 		$obj = new $fullClass($config);
-
-		\SeanMorris\Ids\Log::trace();
 
 		return $obj;
 	}
@@ -369,7 +367,7 @@ class Scaffold extends Model
 			}
 			else
 			{
-				$properties[$property] = $value; 
+				$properties[$property] = $value;
 			}
 		}
 

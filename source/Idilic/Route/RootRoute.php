@@ -42,47 +42,47 @@ class RootRoute implements \SeanMorris\Ids\Routable
 
 			$line = array_combine($header, $line);
 
-			$addressParts = json_decode($line['addressComponents'], TRUE);
+			// $addressParts = json_decode($line['addressComponents'], TRUE);
 
-			$addressPartsNamed = [];
+			// $addressPartsNamed = [];
 
-			if($addressParts)
-			{
-				foreach($addressParts as $addressPart)
-				{
-					$addressPartsNamed[ $addressPart['types'][0] ] = $addressPart;
-				}
+			// if($addressParts)
+			// {
+			// 	foreach($addressParts as $addressPart)
+			// 	{
+			// 		$addressPartsNamed[ $addressPart['types'][0] ] = $addressPart;
+			// 	}
 
-				if(isset($addressPartsNamed['street_number']))
-				{
-					$line['street_number'] = $addressPartsNamed['street_number']['long_name'];
-				}
+			// 	if(isset($addressPartsNamed['street_number']))
+			// 	{
+			// 		$line['street_number'] = $addressPartsNamed['street_number']['long_name'];
+			// 	}
 
-				if(isset($addressPartsNamed['route']))
-				{
-					$line['route'] = $addressPartsNamed['route']['long_name'];
-				}
+			// 	if(isset($addressPartsNamed['route']))
+			// 	{
+			// 		$line['route'] = $addressPartsNamed['route']['long_name'];
+			// 	}
 
-				if(isset($addressPartsNamed['locality']))
-				{
-					$line['city'] = $addressPartsNamed['locality']['long_name'];
-				}
+			// 	if(isset($addressPartsNamed['locality']))
+			// 	{
+			// 		$line['city'] = $addressPartsNamed['locality']['long_name'];
+			// 	}
 
-				if(isset($addressPartsNamed['administrative_area_level_1']))
-				{
-					$line['state'] = $addressPartsNamed['administrative_area_level_1']['short_name'];
-				}
+			// 	if(isset($addressPartsNamed['administrative_area_level_1']))
+			// 	{
+			// 		$line['state'] = $addressPartsNamed['administrative_area_level_1']['short_name'];
+			// 	}
 
-				if(isset($addressPartsNamed['postal_code']))
-				{
-					$line['postal_code'] = $addressPartsNamed['postal_code']['short_name'];
-				}
+			// 	if(isset($addressPartsNamed['postal_code']))
+			// 	{
+			// 		$line['postal_code'] = $addressPartsNamed['postal_code']['short_name'];
+			// 	}
 
-				if(isset($addressPartsNamed['country']['short_name']))
-				{
-					$line['country'] = $addressPartsNamed['country']['short_name'];
-				}
-			}
+			// 	if(isset($addressPartsNamed['country']['short_name']))
+			// 	{
+			// 		$line['country'] = $addressPartsNamed['country']['short_name'];
+			// 	}
+			// }
 
 			$info = [
 				'name'   => $name
