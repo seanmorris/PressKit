@@ -308,7 +308,7 @@ class Controller implements \SeanMorris\Ids\Routable
 
 		$user = null;
 
-		if(isset($session['user']))
+		if(is_array($session) && isset($session['user']))
 		{
 			$user = $session['user'];
 		}
