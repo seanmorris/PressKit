@@ -217,6 +217,8 @@ class Controller implements \SeanMorris\Ids\Routable
 					$corsMethods = ['GET','POST','HEAD','OPTIONS'];
 				}
 
+				$corsDomains = (object) $corsDomains;
+
 				header(sprintf('Access-Control-Allow-Origin: %s', $corsDomains->$index));
 				header('Access-Control-Allow-Credentials: true');
 				header('Access-Control-Allow-Methods: ' . implode(', ', $corsMethods));

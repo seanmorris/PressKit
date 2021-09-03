@@ -2,7 +2,7 @@
 namespace SeanMorris\PressKit;
 class Listener
 {
-	protected static $hub, $agent;
+	protected static $hub, $agents = [];
 
 	protected static function getHub()
 	{
@@ -18,16 +18,16 @@ class Listener
 
 	protected static function getAgent()
 	{
-		if(static::$agent)
+		if(static::$agents[get_called_class()] ?? FALSE)
 		{
-			return static::$agent;
+			return static::$agents[get_called_class()];
 		}
 
-		static::$agent = new \SeanMorris\Kallisti\Agent;
+		static::$agents[get_called_class()] = new \SeanMorris\Kallisti\Agent;
 
-		static::$agent->register(static::getHub());
+		static::$agents[get_called_class()]->register(static::getHub());
 
-		return static::$agent;
+		return static::$agents[get_called_class()];
 	}
 
 	protected static function channel()
@@ -35,13 +35,14 @@ class Listener
 		return '*';
 	}
 
-	public static function publish($channel, ...$message)
+	public static function publish($channel, ...$messages)
 	{
 		$agent = static::getAgent();
 
-		\SeanMorris\Ids\Log::trace($channel, $message);
-
-		return $agent->send($channel, $message);
+		foreach($messages as $message)
+		{
+			return $agent->send($channel, $message);
+		}
 	}
 
 	public static function listen()
