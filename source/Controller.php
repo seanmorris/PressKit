@@ -804,7 +804,18 @@ class Controller implements \SeanMorris\Ids\Routable
 		{
 			if(is_array($panels))
 			{
-				$body = implode(PHP_EOL . PHP_EOL, $panels);
+				if(count($panels) > 1)
+				{
+					$body = implode(PHP_EOL . PHP_EOL, $panels);
+				}
+				else if(count($panels) === 1)
+				{
+					$body = $panels[0];
+				}
+				else if(count($panels) === 0)
+				{
+					$body = NULL;
+				}
 			}
 
 			if($theme && (!$router->parent() || $top))
@@ -1557,7 +1568,6 @@ class Controller implements \SeanMorris\Ids\Routable
 		{
 			return;
 		}
-		\SeanMorris\Ids\Log::trace();
 		return new \SeanMorris\Ids\Http\Http404('Not Found: '. $router->path()->pathString());
 		return FALSE;
 		//return 404;
